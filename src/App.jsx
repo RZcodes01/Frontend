@@ -8,6 +8,7 @@ import Homepage from "./pages/Homepage";
 import { Route, Routes } from "react-router-dom";
 import Community from "./pages/Community";
 import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/" element={<Homepage/>}/>
       <Route path="/community" element={<Community/>}/>
       <Route path="/register" element={<Register/>}/>
+      <Route path="/login" element={<Login/>}/>
     </Routes>
   );
 }
