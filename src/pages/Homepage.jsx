@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import LearningOptions from '../components/LearningOptions'
 import Skills from './Skills'
-import Projects from '../components/Projects'
 import Footer from '../components/Footer'
 
 const Homepage = () => {
@@ -13,7 +12,6 @@ const Homepage = () => {
             <Hero />
             <LearningOptions />
             {/* <Skills /> */}
-            <Projects />
             {/* <Community /> */}
             <Footer />
         </div>
