@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Trophy, Medal, Search, ArrowLeft, Users, Zap, Star, TrendingUp, Award } from 'lucide-react';
 
-const Leaderboard = ({ communityName = "Full Stack Development" }) => {
+const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, onBack }) => {
   // Comprehensive mock data with multiple communities
   const [communities] = useState({
     "Full Stack Development": [
@@ -325,9 +325,9 @@ const Leaderboard = ({ communityName = "Full Stack Development" }) => {
                       <span className="text-sm text-slate-600 font-medium">{project.reviews}</span>
                     </td>
                     <td className="px-6 py-5 text-right">
-                      <button className="text-xs font-bold text-indigo-600 hover:text-indigo-700 hover:underline uppercase tracking-wide px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-all">
-                        View Details →
-                      </button>
+                    <button onClick={() => onViewProject(project)} className="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg font-bold hover:bg-indigo-600 hover:text-white transition-all">
+                    View Details
+                  </button>
                     </td>
                   </tr>
                 ))}
