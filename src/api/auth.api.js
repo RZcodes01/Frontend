@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    baseURL: "http://localhost:4000/auth",
+    baseURL: "https://skillconnect-backend-7ftb.onrender.com/auth",
 });
 
 API.interceptors.request.use((config) => {
