@@ -102,7 +102,7 @@ const Project = () => {
                 <span className="text-sm font-semibold">Live Project Showcase</span>
               </div>
               <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4">
-                Project Communities
+                Projects
               </h1>
               <p className="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed">
                 Join talented creators, compete on leaderboards, and showcase your best work to the world.
