@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import bgImage from "../assets/register_bg.png"; 
+import loginBg from "../assets/login_bg.png";
 const Register = () => {
   const [activeForm, setActiveForm] = useState("student");
   const navigate = useNavigate()
@@ -50,13 +51,18 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+    <div 
+      className="min-h-screen bg-cover bg-center py-12 px-4"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+      }}
+    >
       {/* Toggle Buttons */}
       <div className="max-w-4xl mx-auto mb-8 flex justify-center gap-4">
         <button
           onClick={() => setActiveForm("student")}
           className={`px-8 py-3 rounded-lg font-semibold transition-all ${activeForm === "student"
-              ? "bg-indigo-600 text-white shadow-lg"
+              ? "bg-blue-600 text-white shadow-lg"
               : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
         >
@@ -66,7 +72,7 @@ const Register = () => {
         <button
           onClick={() => setActiveForm("mentor")}
           className={`px-8 py-3 rounded-lg font-semibold transition-all ${activeForm === "mentor"
-              ? "bg-purple-600 text-white shadow-lg"
+              ? "bg-blue-600 text-white shadow-lg"
               : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
         >
@@ -76,8 +82,8 @@ const Register = () => {
 
       {/* STUDENT FORM */}
       {activeForm === "student" && (
-        <div className="max-w-md mx-auto bg-white shadow-xl rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+        <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl p-8">
+          <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
             SkillConnect
           </h2>
 
@@ -91,7 +97,7 @@ const Register = () => {
                 value={studentData.name}
                 onChange={handleStudentChange}
                 required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
@@ -104,7 +110,7 @@ const Register = () => {
                 value={studentData.email}
                 onChange={handleStudentChange}
                 required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
@@ -117,7 +123,7 @@ const Register = () => {
                 value={studentData.password}
                 onChange={handleStudentChange}
                 required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
@@ -130,13 +136,13 @@ const Register = () => {
                 value={studentData.phone}
                 onChange={handleStudentChange}
                 required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-400 outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition font-semibold"
+              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold"
             >
               Register
             </button>
@@ -144,7 +150,7 @@ const Register = () => {
 
           <p className="text-center text-gray-500 text-sm mt-4">
             Already have an account?{" "}
-            <span onClick={()=> navigate("/login")} className="text-indigo-600 font-medium cursor-pointer hover:underline">
+            <span onClick={()=> navigate("/login")} className="text-blue-600 font-medium cursor-pointer hover:underline">
               Login
             </span>
           </p>
@@ -153,8 +159,8 @@ const Register = () => {
 
       {/* MENTOR FORM */}
       {activeForm === "mentor" && (
-        <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-center text-purple-600 mb-2">
+        <div className="max-w-2xl mx-auto bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl p-8">
+          <h2 className="text-3xl font-bold text-center text-blue-600 mb-2">
             Mentor Registration
           </h2>
           <p className="text-center text-gray-600 mb-6">
@@ -173,7 +179,7 @@ const Register = () => {
                 value={mentorData.name}
                 onChange={handleMentorChange}
                 required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
@@ -189,7 +195,7 @@ const Register = () => {
                   value={mentorData.email}
                   onChange={handleMentorChange}
                   required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 />
               </div>
 
@@ -204,7 +210,7 @@ const Register = () => {
                   value={mentorData.phone}
                   onChange={handleMentorChange}
                   required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 />
               </div>
             </div>
@@ -220,7 +226,7 @@ const Register = () => {
                 value={mentorData.password}
                 onChange={handleMentorChange}
                 required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
               />
             </div>
 
@@ -237,7 +243,7 @@ const Register = () => {
                   value={mentorData.experience_year}
                   onChange={handleMentorChange}
                   required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 />
               </div>
 
@@ -252,7 +258,7 @@ const Register = () => {
                   value={mentorData.expertise}
                   onChange={handleMentorChange}
                   required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 />
               </div>
             </div>
@@ -267,7 +273,7 @@ const Register = () => {
                 accept=".pdf,.doc,.docx"
                 onChange={handleFileChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Accepted formats: PDF, DOC, DOCX (Max 5MB)
@@ -285,14 +291,14 @@ const Register = () => {
                 onChange={handleMentorChange}
                 required
                 rows="4"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-400 outline-none resize-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none resize-none"
               />
               <p className="text-xs text-gray-500 mt-1">Minimum 50 characters</p>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold shadow-md hover:shadow-lg"
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md hover:shadow-lg"
             >
               Register as Mentor
             </button>
@@ -300,7 +306,7 @@ const Register = () => {
 
           <p className="text-center text-gray-500 text-sm mt-6">
             Already have an account?{" "}
-            <button onClick={()=> navigate("/login")} className="text-purple-600 font-medium cursor-pointer hover:underline">
+            <button onClick={()=> navigate("/login")} className="text-blue-600 font-medium cursor-pointer hover:underline">
               Login
             </button>
           </p>

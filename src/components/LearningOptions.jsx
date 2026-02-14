@@ -1,80 +1,93 @@
 export default function LearningOptions() {
   return (
-    <section className="relative py-20 bg-slate-950 overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 -left-32 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-purple-600/20 rounded-full blur-3xl"></div>
+    <section className="relative py-24 bg-[#0a0a0c] text-slate-200 border-b border-slate-800 overflow-hidden">
+      
+      {/* --- MATCHING HERO BACKGROUND STRUCTURE --- */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+        <div className="absolute top-0 left-[15%] w-px h-full bg-slate-800"></div>
+        <div className="absolute top-0 left-[85%] w-px h-full bg-slate-800"></div>
       </div>
 
-      <div className="relative container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-white">
-          Learning <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400">Options</span>
-        </h2>
-        <p className="text-center text-slate-400 mb-14 max-w-2xl mx-auto">
-          Choose the path that fits your learning style and goals
-        </p>
+      <div className="relative z-10 container mx-auto px-6">
+        {/* Header matching Hero typography */}
+        <div className="mb-16">
+          <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1 rounded-md mb-4">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-cyan-500">Path Selection</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+            Choose your <span className="text-cyan-500 italic">learning velocity.</span>
+          </h2>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Free Learning Card */}
-          <div className="group relative bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-3xl shadow-2xl hover:bg-white/10 transition duration-300">
-            <div className="absolute -top-4 -left-4 w-20 h-20 bg-gradient-to-br from-green-400/30 to-cyan-400/30 rounded-full blur-2xl group-hover:scale-110 transition"></div>
-            <div className="relative">
-              <div className="w-14 h-14 mb-6 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-400 flex items-center justify-center text-2xl">
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl">
+          
+          {/* OPTION 01: SELF-PACED (Matching 'Search Bar' Style) */}
+          <div className="group bg-slate-900/50 border border-slate-800 p-8 rounded-2xl hover:border-slate-600 transition-all">
+            <div className="flex flex-col h-full">
+              <div className="w-12 h-12 mb-6 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl group-hover:border-cyan-500/50 transition-colors">
                 🎓
               </div>
-              <h3 className="text-2xl font-bold mb-3 text-white">Free Learning</h3>
-              <p className="text-slate-300 leading-relaxed">
-                Short clips, self-paced basics to kickstart your journey at your own pace.
+              
+              <h3 className="text-2xl font-bold text-white mb-4">Self-Paced Discovery</h3>
+              <p className="text-slate-400 leading-relaxed mb-8 flex-grow">
+                Complete modules at your own speed. Perfect for independent learners 
+                who want high-quality documentation and video assets without a fixed schedule.
               </p>
-              <div className="mt-6 pt-6 border-t border-white/10">
-                <ul className="space-y-2 text-slate-400 text-sm">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span> Self-paced learning
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span> Basic tutorials
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-400">✓</span> Community access
-                  </li>
-                </ul>
+
+              <div className="space-y-3 mb-10">
+                {['Basic tutorials', 'Community access', 'Automated Progress Tracking'].map((item) => (
+                  <div key={item} className="flex items-center gap-3 text-sm text-slate-300">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+                    {item}
+                  </div>
+                ))}
               </div>
+
+              <button className="w-full py-4 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700 border border-slate-700 transition-all">
+                Access Catalog
+              </button>
             </div>
           </div>
 
-          {/* Mentor-Led Learning Card */}
-          <div className="group relative bg-gradient-to-br from-yellow-400/10 to-orange-400/10 backdrop-blur-xl border-2 border-yellow-400/30 p-10 rounded-3xl shadow-2xl hover:border-yellow-400/50 transition duration-300">
-            <div className="absolute -top-6 -right-6 px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-black text-sm font-bold rounded-full shadow-lg">
-              ⭐ Popular
+          {/* OPTION 02: GUIDED (Matching 'Mentor Online' Style) */}
+          <div className="group relative bg-slate-900 border-2 border-cyan-500/30 p-8 rounded-2xl shadow-[0_0_30px_rgba(6,182,212,0.05)]">
+            {/* 'Popular' tag matching the Hero's 'Mentor Online' badge */}
+            <div className="absolute -top-4 right-6 bg-cyan-500 text-black px-3 py-1 rounded font-bold text-[10px] tracking-widest uppercase">
+              Most Effective
             </div>
-            <div className="absolute -top-4 -left-4 w-20 h-20 bg-gradient-to-br from-yellow-400/40 to-orange-400/40 rounded-full blur-2xl group-hover:scale-110 transition"></div>
-            <div className="relative">
-              <div className="w-14 h-14 mb-6 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-400 flex items-center justify-center text-2xl">
+
+            <div className="flex flex-col h-full">
+              <div className="w-12 h-12 mb-6 rounded-xl bg-cyan-500 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(6,182,212,0.4)]">
                 🚀
               </div>
-              <h3 className="text-2xl font-bold mb-3 text-white">Mentor-Led Learning</h3>
-              <p className="text-slate-300 leading-relaxed">
-                Live sessions, real-world projects & industry-recognized certificates.
+              
+              <h3 className="text-2xl font-bold text-white mb-4">Mentor-Led Cohort</h3>
+              <p className="text-slate-400 leading-relaxed mb-8 flex-grow">
+                Join a live group with industry professionals. Includes 1-on-1 reviews, 
+                real-world project deployment, and career networking.
               </p>
-              <div className="mt-6 pt-6 border-t border-white/20">
-                <ul className="space-y-2 text-slate-300 text-sm">
-                  <li className="flex items-center gap-2">
-                    <span className="text-yellow-400">✓</span> Live mentor sessions
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-yellow-400">✓</span> Hands-on projects
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-yellow-400">✓</span> Verified certificates
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-yellow-400">✓</span> Career support
-                  </li>
-                </ul>
+
+              <div className="space-y-3 mb-10">
+                {[
+                  { text: 'Live mentor sessions', color: 'text-emerald-400' },
+                  { text: 'Hands-on projects', color: 'text-emerald-400' },
+                  { text: 'Verified Industry Certificate', color: 'text-emerald-400' },
+                  { text: 'Job Placement Support', color: 'text-emerald-400' }
+                ].map((item) => (
+                  <div key={item.text} className="flex items-center gap-3 text-sm text-slate-200">
+                    <span className={item.color}>✓</span>
+                    {item.text}
+                  </div>
+                ))}
               </div>
+
+              <button className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-cyan-500 transition-all">
+                Enroll in Cohort
+              </button>
             </div>
           </div>
+
         </div>
       </div>
     </section>

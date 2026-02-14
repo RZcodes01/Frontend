@@ -112,12 +112,6 @@ const Login = () => {
           OR
         </div>
 
-        {/* Google */}
-        <button className="w-full flex items-center justify-center gap-2 border py-2 rounded-lg hover:bg-gray-50 transition">
-          <FaGoogle className="text-red-500" />
-          Continue with Google
-        </button>
-
         <p className="text-sm text-center mt-4 text-gray-500">
           Don’t have an account?{" "}
           <span className="text-blue-600 cursor-pointer">
