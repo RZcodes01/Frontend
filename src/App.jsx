@@ -11,17 +11,21 @@ import Login from "./pages/Login";
 import Project from "./pages/Project";
 import Leaderboard from "./pages/Leaderboard";
 import ProjectDetail from "./pages/ProjectDetail";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Homepage/>}/>
-      <Route path="/community" element={<Community/>}/>
-      <Route path="/register" element={<Register/>}/>
-      <Route path="/login" element={<Login/>}/>
-      <Route path="/project" element={<Project/>}/>
-      <Route path="/leaderboard" element={<Leaderboard/>}/>
-      <Route path="/projectdetail" element={<ProjectDetail/>}/>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/community" element={<Community />} />
+        <Route path="/project" element={<Project />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/projectdetail" element={<ProjectDetail />} />
+      </Route>
     </Routes>
   );
 }
