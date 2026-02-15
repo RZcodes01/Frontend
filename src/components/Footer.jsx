@@ -24,9 +24,6 @@ export default function Footer() {
             {/* Social Links */}
             <div className="flex gap-3">
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition">
-                <span className="text-lg">𝕏</span>
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition">
                 <span className="text-lg">in</span>
               </a>
               <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition">
@@ -53,41 +50,13 @@ export default function Footer() {
           <div>
             <h4 className="font-bold mb-4 text-white">Learning</h4>
             <ul className="space-y-2 text-slate-400 text-sm">
-              <li><a href="#" className="hover:text-yellow-400 transition">Free Courses</a></li>
+              <li><a href="#" className="hover:text-yellow-400 transition">Self Paced Program</a></li>
               <li><a href="#" className="hover:text-yellow-400 transition">Mentor-Led Programs</a></li>
               <li><a href="#" className="hover:text-yellow-400 transition">Certifications</a></li>
               <li><a href="#" className="hover:text-yellow-400 transition">Community</a></li>
             </ul>
           </div>
 
-          {/* Support */}
-          <div>
-            <h4 className="font-bold mb-4 text-white">Support</h4>
-            <ul className="space-y-2 text-slate-400 text-sm">
-              <li><a href="#" className="hover:text-yellow-400 transition">Help Center</a></li>
-              <li><a href="#" className="hover:text-yellow-400 transition">Contact Us</a></li>
-              <li><a href="#" className="hover:text-yellow-400 transition">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-yellow-400 transition">Terms of Service</a></li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Newsletter Section */}
-        <div className="max-w-2xl mx-auto mb-12 text-center">
-          <h4 className="text-xl font-bold mb-3 text-white">Stay Updated</h4>
-          <p className="text-slate-400 text-sm mb-6">
-            Get the latest courses, projects, and career tips delivered to your inbox
-          </p>
-          <div className="flex max-w-md mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-6 py-3 bg-transparent text-white placeholder-slate-400 outline-none text-sm"
-            />
-            <button className="px-6 py-3 font-semibold bg-gradient-to-r from-yellow-400 to-orange-400 text-black hover:scale-105 transition text-sm">
-              Subscribe
-            </button>
-          </div>
         </div>
 
         {/* Bottom Bar */}
