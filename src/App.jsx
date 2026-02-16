@@ -12,6 +12,7 @@ import Project from "./pages/Project";
 import Leaderboard from "./pages/Leaderboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
+import StudentDashboard from "./pages/StudentDashboard";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/project" element={<Project />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/projectdetail" element={<ProjectDetail />} />
+        <Route path="/dashboard" element={<StudentDashboard />} />
       </Route>
     </Routes>
   );
