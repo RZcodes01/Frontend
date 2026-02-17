@@ -36,17 +36,8 @@ export default function StudentDashboard() {
       { id: 2, course: "UI/UX Design", topic: "Prototyping in Figma", time: "Tomorrow, 10:00 AM", duration: "2 hours", type: "workshop" },
       { id: 3, course: "Data Analytics", topic: "Data Visualization", time: "Friday, 2:00 PM", duration: "1 hour", type: "live" }
     ],
-    achievements: [
-      { id: 1, title: "Fast Learner", description: "Completed 3 courses in a month", icon: "⚡" },
-      { id: 2, title: "Perfect Attendance", description: "Attended 20 sessions in a row", icon: "🎯" },
-      { id: 3, title: "Top Performer", description: "Scored 95%+ on 5 quizzes", icon: "🏆" },
-      { id: 4, title: "Community Helper", description: "Helped 10 peers", icon: "🤝" }
-    ],
-    recentActivity: [
-      { id: 1, text: "Completed 'React Hooks' module", time: "2 hours ago" },
-      { id: 2, text: "Submitted assignment for Web Development", time: "Yesterday" },
-      { id: 3, text: "Earned 'Fast Learner' badge", time: "2 days ago" }
-    ],
+    
+    
     weeklyGoal: { target: 10, completed: 7, label: "hours of learning" }
   };
 
@@ -117,54 +108,7 @@ export default function StudentDashboard() {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-lg">
-              <div className="flex justify-between items-center mb-4"><h2 className="text-lg font-bold">Weekly Goal</h2><TrendingUp className="w-5 h-5"/></div>
-              <div className="flex items-end space-x-2 mb-2"><span className="text-4xl font-bold">{studentData.weeklyGoal.completed}</span><span className="text-xl opacity-75 mb-1">/ {studentData.weeklyGoal.target}</span></div>
-              <div className="w-full bg-white/20 rounded-full h-3"><div className="bg-white h-3 rounded-full" style={{ width: '70%' }}></div></div>
-              <p className="text-sm mt-3 opacity-90">Keep it up! You're on track.</p>
-            </div>
-
-                {/* Achievements */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-gray-900">Recent Achievements</h2>
-                <Award className="w-5 h-5 text-yellow-500" />
-              </div>
-              <div className="space-y-3">
-                {studentData.achievements.slice(0, 3).map((achievement) => (
-                  <div key={achievement.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <span className="text-2xl">{achievement.icon}</span>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 text-sm">{achievement.title}</h4>
-                      <p className="text-xs text-gray-600 mt-0.5">{achievement.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium text-center">
-                View All Achievements
-              </button>
-            </div>
-
-            {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h2>
-              <div className="space-y-4">
-                {studentData.recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-900">{activity.text}</p>
-                      <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ... other sidebar elements (Achievements, Activity) would follow the same pattern ... */}
-          </div>
+        
         </div>
       </main>
     </div>
