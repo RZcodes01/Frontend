@@ -2,6 +2,7 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import LearningOptions from '../components/LearningOptions'
+import TrendingCommunities from '../components/TrendingCommunities';
 import Footer from '../components/Footer'
 
 const Homepage = () => {
@@ -10,8 +11,7 @@ const Homepage = () => {
             <Navbar />
             <Hero />
             <LearningOptions />
-            {/* <Skills /> */}
-            {/* <Community /> */}
+            <TrendingCommunities />
             <Footer />
         </div>
     )

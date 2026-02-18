@@ -1,6 +1,5 @@
 import Navbar from "./components/Navbar";
 import { Route, Routes, Outlet } from "react-router-dom";
-
 import Homepage from "./pages/Homepage";
 import Community from "./pages/Community";
 import Register from "./pages/Register";
