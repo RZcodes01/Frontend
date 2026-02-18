@@ -15,3 +15,5 @@ API.interceptors.request.use((config) => {
 })
 
 export const fetchAllCommunities = () => API.get(`/`)
+
+export const fetchCommunityById = (id) => API.get(`/${id}`)

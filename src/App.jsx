@@ -13,6 +13,7 @@ import Leaderboard from "./pages/Leaderboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentDashboard from "./pages/StudentDashboard";
+import SingleCommunity from "./pages/SingleCommunity";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Homepage />} />
         <Route path="/community" element={<Community />} />
+        <Route path="/community/:communityId" element={<SingleCommunity />} />
         <Route path="/project" element={<Project />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/projectdetail" element={<ProjectDetail />} />
