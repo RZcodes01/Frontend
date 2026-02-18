@@ -50,7 +50,7 @@ export default function Navbar() {
 
   const navLinks = [
     { path: '/', label: 'Home' },
-    { path: '#skills', label: 'Quick Skills' },
+    { path: '/quickskills', label: 'Quick Skills' },
     { path: '/project', label: 'Projects' },
     { path: '/community', label: 'Community' },
   ];

@@ -1,7 +1,6 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import LearningOptions from "./components/LearningOptions";
-import Skills from "./pages/Skills";
 import Footer from "./components/Footer";
 import Homepage from "./pages/Homepage";
 import { Route, Routes } from "react-router-dom";
@@ -14,6 +13,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
 import StudentDashboard from "./pages/StudentDashboard";
 import SingleCommunity from "./pages/SingleCommunity";
+import QuickSkills from "./pages/QuickSkills";
 
 export default function App() {
   return (
@@ -29,6 +29,7 @@ export default function App() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/projectdetail" element={<ProjectDetail />} />
         <Route path="/dashboard" element={<StudentDashboard />} />
+        <Route path="/QuickSkills" element={<QuickSkills />} />
       </Route>
     </Routes>
   );

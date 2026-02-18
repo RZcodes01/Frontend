@@ -2,7 +2,6 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import LearningOptions from '../components/LearningOptions'
-import Skills from './Skills'
 import Footer from '../components/Footer'
 
 const Homepage = () => {
