@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import bgImage from "../assets/login_bg.png";
-import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { FaEnvelope, FaLock } from "react-icons/fa";
+import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../api/auth.api";
 
 const Login = () => {
@@ -35,7 +35,7 @@ const Login = () => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/"); // change route as needed
+      navigate("/");
     } catch (err) {
       setError(
         err?.response?.data?.message || "Login failed"
@@ -51,6 +51,7 @@ const Login = () => {
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className="relative bg-white w-[380px] rounded-2xl shadow-xl p-8">
+
         {/* Logo */}
         <div className="flex items-center gap-2 mb-6">
           <div className="w-8 h-8 bg-blue-600 rounded-full"></div>
@@ -74,6 +75,7 @@ const Login = () => {
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
+              required
               className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -87,6 +89,7 @@ const Login = () => {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
+              required
               className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -112,12 +115,17 @@ const Login = () => {
           OR
         </div>
 
+        {/* SIGN UP LINK (UPDATED) */}
         <p className="text-sm text-center mt-4 text-gray-500">
           Don’t have an account?{" "}
-          <span className="text-blue-600 cursor-pointer">
+          <Link
+            to="/register"
+            className="text-blue-600 font-semibold hover:underline"
+          >
             Sign up
-          </span>
+          </Link>
         </p>
+
       </div>
     </div>
   );
