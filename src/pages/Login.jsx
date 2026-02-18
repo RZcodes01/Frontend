@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import bgImage from "../assets/login_bg.png";
 import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth.api";
 
 const Login = () => {
@@ -114,9 +114,9 @@ const Login = () => {
 
         <p className="text-sm text-center mt-4 text-gray-500">
           Don’t have an account?{" "}
-          <span className="text-blue-600 cursor-pointer">
+          <Link to="/register" className="text-blue-600 font-semibold hover:underline cursor-pointer">
             Sign up
-          </span>
+          </Link>
         </p>
       </div>
     </div>
