@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { fetchAllCommunities } from "../api/community.api";
+import { useNavigate } from "react-router-dom";
 
 export default function Community() {
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate()
 
   useEffect(() => {
     const getCommunities = async () => {
@@ -95,7 +97,7 @@ export default function Community() {
             const borderColor = borderColors[index % borderColors.length];
 
             return (
-              <div
+              <div onClick={()=> navigate(`/community/${community._id}`)}
                 key={community._id}
                 className={`group relative bg-white/5 backdrop-blur-xl border ${borderColor} rounded-3xl p-6 hover:bg-white/10 transition duration-300 transform hover:-translate-y-2`}
               >
