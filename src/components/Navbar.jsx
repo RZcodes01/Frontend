@@ -14,16 +14,18 @@ export default function Navbar() {
     name: 'Alex Dev',
   };
 
-  // --- CUSTOM LOGIC: BROADCAST TO DASHBOARD ---
+  // --- LOGIC: TOGGLE & EVENT BROADCAST ---
   const handleProfileClick = () => {
-    // 1. Toggle the dropdown menu visibility for the Navbar
-    setIsProfileOpen(!isProfileOpen);
-    navigate('/dashboard');
-    // 2. Dispatch the custom event that StudentDashboard.jsx is listening for
-    const event = new CustomEvent('profileMenuOpened');
-    window.dispatchEvent(event);
+    // Toggle the dropdown
+    const nextState = !isProfileOpen;
+    setIsProfileOpen(nextState);
     
-    console.log("Navbar: Profile clicked, event dispatched to Dashboard!");
+    // If we are opening the menu, broadcast the event
+    if (nextState) {
+      const event = new CustomEvent('profileMenuOpened');
+      window.dispatchEvent(event);
+      console.log("Navbar: Profile event dispatched!");
+    }
   };
 
   // Handle scroll effect
@@ -54,6 +56,8 @@ export default function Navbar() {
   ];
 
   const handleLogout = () => {
+    setIsProfileOpen(false);
+    setIsMenuOpen(false);
     console.log("Logged out");
     navigate('/login');
   };
@@ -79,7 +83,6 @@ export default function Navbar() {
               <h1 className="font-black text-xl sm:text-2xl text-white tracking-tight leading-none">
                 Skill<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-600">Connect</span>
               </h1>
-              <p className="text-[9px] text-slate-500 font-semibold tracking-wider uppercase">Learn. Build. Grow.</p>
             </div>
           </Link>
 
@@ -100,7 +103,7 @@ export default function Navbar() {
               </Link>
             ))}
 
-            {/* Desktop Profile Button */}
+            {/* Desktop Profile Button & Dropdown */}
             <div className="relative ml-4" ref={profileRef}>
               <button 
                 onClick={handleProfileClick}
@@ -119,10 +122,37 @@ export default function Navbar() {
                 </div>
                 <svg className={`w-4 h-4 text-slate-400 transition-all duration-300 ${isProfileOpen ? 'rotate-180 text-cyan-400' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </button>
+
+              {/* Desktop Dropdown Menu */}
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-3 w-52 py-2 bg-slate-900 border border-slate-800 rounded-xl shadow-2xl animate-in fade-in zoom-in duration-200">
+                  <div className="px-4 py-2 border-b border-slate-800 mb-1">
+                    <p className="text-xs text-slate-500 font-medium">Signed in as</p>
+                    <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                  </div>
+                  
+                  <Link 
+                    to="/dashboard" 
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition-colors"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    Go to Dashboard
+                  </Link>
+
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors mt-1 border-t border-slate-800/50 pt-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Log Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Mobile Menu Button (Hamburger) */}
+          {/* Mobile Menu Button */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden relative p-2.5 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-800/50"
@@ -136,10 +166,13 @@ export default function Navbar() {
         {/* Mobile Menu Content */}
         {isMenuOpen && (
           <div className="md:hidden pb-6 space-y-4 animate-in slide-in-from-top-5 duration-300">
-            {/* Profile Section Mobile - TRIGGERS DASHBOARD EVENT */}
             <div className="pt-4 pb-4 border-t border-slate-800/50">
               <button 
-                onClick={handleProfileClick}
+                onClick={() => {
+                  handleProfileClick();
+                  navigate('/dashboard');
+                  setIsMenuOpen(false);
+                }}
                 className="w-full flex items-center gap-3 mb-4 p-3 bg-slate-900/50 rounded-xl border border-slate-800/50 hover:bg-slate-800/80 transition-all text-left"
               >
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-slate-700 flex items-center justify-center">
@@ -147,17 +180,17 @@ export default function Navbar() {
                 </div>
                 <div>
                   <p className="text-white font-bold">{user.name}</p>
-                  <p className="text-xs text-slate-400 font-medium">Student Profile (Click to Sync)</p>
+                  <p className="text-xs text-slate-400 font-medium">View Student Dashboard</p>
                 </div>
               </button>
             </div>
 
-            {/* Navigation Links Mobile */}
             <div className="space-y-1">
               {navLinks.map(({ path, label }) => (
                 <Link 
                   key={path} 
                   to={path} 
+                  onClick={() => setIsMenuOpen(false)}
                   className={`flex items-center justify-between py-3.5 px-4 font-semibold rounded-lg ${
                     isActive(path) ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' : 'text-slate-300'
                   }`}
@@ -166,7 +199,6 @@ export default function Navbar() {
                 </Link>
               ))}
               
-              {/* Logout Button Mobile */}
               <button 
                 onClick={handleLogout} 
                 className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg font-bold border border-red-500/20 mt-4"
