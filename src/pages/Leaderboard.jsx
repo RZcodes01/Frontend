@@ -67,12 +67,12 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
             <h2 className="font-bold text-white text-lg">{selectedCommunity}</h2>
             <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1 text-cyan-400 font-medium">
-                <Users size={12} />
+                
                 <span>{(currentProjects.length * 120).toLocaleString()} Members</span>
               </span>
               <span className="text-neutral-700">•</span>
               <span className="flex items-center gap-1 text-cyan-300 font-medium">
-                <Star size={12} />
+                
                 <span>{totalProjects} Projects</span>
               </span>
             </div>
@@ -84,56 +84,15 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 mt-8">
-        {/* Community Tabs */}
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {Object.keys(communities).map((community) => (
-            <button
-              key={community}
-              onClick={() => setSelectedCommunity(community)}
-              className={`px-5 py-2.5 rounded-xl font-semibold text-sm whitespace-nowrap transition-all ${
-                selectedCommunity === community
-                  ? 'bg-cyan-400 text-black shadow-md shadow-cyan-500/20'
-                  : 'bg-neutral-900 text-neutral-400 hover:bg-neutral-800 hover:text-white border border-neutral-800'
-              }`}
-            >
-              {community}
-              <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-                selectedCommunity === community
-                  ? 'bg-black/20 text-black'
-                  : 'bg-neutral-800 text-neutral-500'
-              }`}>
-                {communities[community].length}
-              </span>
-            </button>
-          ))}
-        </div>
+    
 
         {/* Header Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-cyan-400 p-6 rounded-2xl text-black shadow-lg shadow-cyan-500/20">
-            <div className="flex items-center gap-2 mb-2">
-              <Trophy size={20} className="text-black/60" />
-              <p className="text-black/70 text-sm font-medium">Season Ends In</p>
-            </div>
-            <p className="text-2xl font-bold">04d : 12h : 34m</p>
-          </div>
-          
-          <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 hover:border-cyan-400/40 transition-colors">
-            <div className="flex justify-between items-start mb-2">
-              <p className="text-neutral-500 text-sm font-medium">Community Avg</p>
-              <div className="bg-cyan-400/10 p-2 rounded-lg">
-                <Zap size={18} className="text-cyan-400" />
-              </div>
-            </div>
-            <p className="text-3xl font-bold text-white">{avgScore}%</p>
-            <p className="text-xs text-cyan-400 font-medium mt-1">↑ 2.3% from last week</p>
-          </div>
 
           <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 hover:border-cyan-400/40 transition-colors">
             <div className="flex justify-between items-start mb-2">
               <p className="text-neutral-500 text-sm font-medium">Total Projects</p>
               <div className="bg-cyan-400/10 p-2 rounded-lg">
-                <Award size={18} className="text-cyan-400" />
               </div>
             </div>
             <p className="text-3xl font-bold text-white">{totalProjects}</p>
@@ -144,11 +103,10 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
             <div className="flex justify-between items-start mb-2">
               <p className="text-neutral-500 text-sm font-medium">Trending Now</p>
               <div className="bg-cyan-400/10 p-2 rounded-lg">
-                <TrendingUp size={18} className="text-cyan-400" />
               </div>
             </div>
             <p className="text-3xl font-bold text-white">{trendingCount}</p>
-            <p className="text-xs text-neutral-500 mt-1">Hot projects this week</p>
+            <p className="text-xs text-neutral-500 mt-1">Projects of this week</p>
           </div>
         </div>
 
@@ -162,7 +120,6 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-neutral-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-md">
                   2
                 </div>
-                <Medal className="mx-auto text-neutral-500 mb-3 group-hover:scale-110 transition-transform" size={48} />
                 <p className="text-neutral-500 font-bold text-xs uppercase tracking-wider mb-1">Silver Medal</p>
                 <h3 className="font-bold text-xl text-white mb-1">{currentProjects[1]?.student}</h3>
                 <p className="text-cyan-400 font-semibold text-sm mb-3">{currentProjects[1]?.title}</p>
@@ -181,12 +138,11 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
               {/* 1st Place */}
               <div className="w-full md:w-80 bg-neutral-900 border-4 border-yellow-500/60 rounded-2xl p-8 text-center shadow-2xl shadow-yellow-500/10 order-1 md:order-2 h-80 flex flex-col justify-center relative overflow-hidden group">
                 <div className="absolute top-0 right-0 bg-yellow-500/20 border-l border-b border-yellow-500/40 text-yellow-400 px-4 py-1.5 font-bold text-[10px] uppercase tracking-wider rounded-bl-xl">
-                  🏆 Champion
+                   Champion
                 </div>
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-lg shadow-yellow-500/30">
                   1
                 </div>
-                <Trophy className="mx-auto text-yellow-500 mb-3 group-hover:scale-110 transition-transform animate-pulse" size={64} />
                 <p className="text-yellow-500 font-bold text-sm uppercase tracking-wider mb-1">Gold Medal</p>
                 <h3 className="font-black text-2xl text-white mb-1">{currentProjects[0]?.student}</h3>
                 <p className="text-cyan-400 font-bold text-base mb-4">{currentProjects[0]?.title}</p>
@@ -207,7 +163,6 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-md">
                   3
                 </div>
-                <Medal className="mx-auto text-orange-500 mb-3 group-hover:scale-110 transition-transform" size={44} />
                 <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-1">Bronze Medal</p>
                 <h3 className="font-bold text-lg text-white mb-1">{currentProjects[2]?.student}</h3>
                 <p className="text-cyan-400 font-semibold text-sm mb-3">{currentProjects[2]?.title}</p>

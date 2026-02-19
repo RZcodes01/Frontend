@@ -58,7 +58,7 @@ export default function Community() {
         {/* Header */}
         <div className="text-center mb-16">
           <span className="inline-flex items-center gap-2 px-4 py-1 mb-4 text-sm rounded-full bg-cyan-400/10 border border-cyan-400/30 text-cyan-400">
-            👥 Join Active Communities
+             Join Active Communities
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Find Your{" "}
@@ -101,12 +101,6 @@ export default function Community() {
                 key={community._id}
                 className={`group relative bg-neutral-900 border ${borderColor} rounded-3xl p-6 hover:bg-neutral-800 hover:border-cyan-400/60 transition duration-300 transform hover:-translate-y-2 cursor-pointer`}
               >
-                {/* Icon */}
-                <div
-                  className={`w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br ${color} flex items-center justify-center text-3xl shadow-lg shadow-cyan-500/10 group-hover:scale-110 transition`}
-                >
-                  {community.icon || "👥"}
-                </div>
 
                 {/* Community Name */}
                 <h3 className="text-2xl font-bold text-white mb-3">

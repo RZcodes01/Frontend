@@ -25,9 +25,6 @@ export default function LearningOptions() {
           {/* OPTION 01: SELF-PACED (Matching 'Search Bar' Style) */}
           <div className="group bg-slate-900/50 border border-slate-800 p-8 rounded-2xl hover:border-slate-600 transition-all">
             <div className="flex flex-col h-full">
-              <div className="w-12 h-12 mb-6 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-xl group-hover:border-cyan-500/50 transition-colors">
-                🎓
-              </div>
               
               <h3 className="text-2xl font-bold text-white mb-4">Self-Paced Discovery</h3>
               <p className="text-slate-400 leading-relaxed mb-8 flex-grow">
@@ -43,10 +40,6 @@ export default function LearningOptions() {
                   </div>
                 ))}
               </div>
-
-              <button className="w-full py-4 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700 border border-slate-700 transition-all">
-                Access Catalog
-              </button>
             </div>
           </div>
 
@@ -58,10 +51,6 @@ export default function LearningOptions() {
             </div>
 
             <div className="flex flex-col h-full">
-              <div className="w-12 h-12 mb-6 rounded-xl bg-cyan-500 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-                🚀
-              </div>
-              
               <h3 className="text-2xl font-bold text-white mb-4">Mentor-Led Cohort</h3>
               <p className="text-slate-400 leading-relaxed mb-8 flex-grow">
                 Join a live group with industry professionals. Includes 1-on-1 reviews, 
@@ -81,10 +70,6 @@ export default function LearningOptions() {
                   </div>
                 ))}
               </div>
-
-              <button className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-cyan-500 transition-all">
-                Enroll in Cohort
-              </button>
             </div>
           </div>
 

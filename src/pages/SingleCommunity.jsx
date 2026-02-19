@@ -47,7 +47,6 @@ export default function App() {
             <div className="max-w-6xl mx-auto px-6 py-12">
                 <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-8 mb-12">
                     <div className="flex items-center gap-3 mb-4">
-                        <Users className="w-8 h-8 text-cyan-400" />
                         <h2 className="text-3xl font-bold text-white">
                             {course?.name || ""}
                         </h2>
@@ -60,7 +59,7 @@ export default function App() {
                 {/* Syllabus Section */}
                 <div className="mb-12">
                     <div className="flex items-center gap-3 mb-6">
-                        <BookOpen className="w-8 h-8 text-cyan-400" />
+                        
                         <h2 className="text-3xl font-bold text-white">
                             Course Syllabus
                         </h2>
@@ -110,7 +109,6 @@ export default function App() {
                 {/* Pro Features Section */}
                 <div className="mb-8">
                     <div className="flex items-center gap-3 mb-6">
-                        <Crown className="w-8 h-8 text-cyan-400" />
                         <h2 className="text-3xl font-bold text-white">
                             Pro Features
                         </h2>

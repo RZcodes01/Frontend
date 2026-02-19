@@ -10,7 +10,6 @@ const TrendingCommunities = () => {
 
   return (
     <section className="bg-[#0a0a0c] text-white py-20 relative overflow-hidden">
-      {/* Background Glow Effect to match Hero */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -42,9 +41,6 @@ const TrendingCommunities = () => {
               
               <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-800">
                 <span className="text-gray-400 text-sm">{item.members} members</span>
-                <button className="bg-[#1a1a1e] hover:bg-cyan-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-                  Join Now
-                </button>
               </div>
             </div>
           ))}

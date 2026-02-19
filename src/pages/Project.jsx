@@ -14,8 +14,7 @@ const Project = () => {
   const communities = [
     { 
       id: 1, 
-      name: "Full Stack Development", 
-      icon: <Code className="text-cyan-400" size={28} />, 
+      name: "Full Stack Development",  
       projectCount: 145, 
       activeMentors: 8,
       totalMembers: 1247,
@@ -31,7 +30,6 @@ const Project = () => {
     { 
       id: 2, 
       name: "UI/UX Design", 
-      icon: <Paintbrush className="text-cyan-400" size={28} />, 
       projectCount: 89, 
       activeMentors: 5,
       totalMembers: 892,
@@ -47,7 +45,6 @@ const Project = () => {
     { 
       id: 3, 
       name: "Data Science", 
-      icon: <Database className="text-cyan-400" size={28} />, 
       projectCount: 62, 
       activeMentors: 4,
       totalMembers: 634,
@@ -63,7 +60,6 @@ const Project = () => {
     { 
       id: 4, 
       name: "Mobile Development", 
-      icon: <Smartphone className="text-cyan-400" size={28} />, 
       projectCount: 78, 
       activeMentors: 6,
       totalMembers: 956,
@@ -134,7 +130,7 @@ const Project = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
             <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 hover:border-cyan-400/50 transition-colors">
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-cyan-400/10 p-2 rounded-lg"><Trophy className="text-cyan-400" size={24} /></div>
+                <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
                 <div>
                   <p className="text-neutral-400 text-sm font-medium">Total Projects</p>
                   <p className="text-3xl font-bold text-white">{totalProjects}</p>
@@ -143,7 +139,7 @@ const Project = () => {
             </div>
             <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 hover:border-cyan-400/50 transition-colors">
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-cyan-400/10 p-2 rounded-lg"><Users className="text-cyan-400" size={24} /></div>
+                <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
                 <div>
                   <p className="text-neutral-400 text-sm font-medium">Active Members</p>
                   <p className="text-3xl font-bold text-white">{totalMembers.toLocaleString()}</p>
@@ -152,7 +148,7 @@ const Project = () => {
             </div>
             <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 hover:border-cyan-400/50 transition-colors">
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-cyan-400/10 p-2 rounded-lg"><Award className="text-cyan-400" size={24} /></div>
+                <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
                 <div>
                   <p className="text-neutral-400 text-sm font-medium">Expert Mentors</p>
                   <p className="text-3xl font-bold text-white">{totalMentors}</p>
@@ -248,14 +244,6 @@ const Project = () => {
             ))}
           </div>
         )}
-
-        <div className="mt-16 bg-neutral-900 border border-neutral-800 rounded-2xl p-8 md:p-12 text-white text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 pointer-events-none" />
-          <h2 className="text-3xl font-bold mb-3 relative z-10">Ready to showcase your work?</h2>
-          <button className="relative z-10 bg-cyan-400 hover:bg-cyan-300 text-black px-8 py-3 rounded-xl font-bold hover:scale-105 transition-all">
-            Submit Your First Project
-          </button>
-        </div>
       </div>
     </div>
   );

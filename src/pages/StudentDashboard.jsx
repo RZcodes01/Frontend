@@ -15,8 +15,8 @@ export default function StudentDashboard() {
   }, []);
 
   const studentData = {
-    name: "Alex Morgan",
-    level: "Intermediate",
+    name: "Alex Dev",
+    level: "Student",
     coursesCompleted: 8,
     currentCourses: [
       { id: 1, title: "Advanced Web Development", instructor: "Sarah Chen", progress: 68, nextSession: "Today, 3:00 PM", duration: "2h 30m remaining" },
@@ -60,13 +60,13 @@ export default function StudentDashboard() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {studentData.name.split(' ')[0]}! 👋</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome back, {studentData.name.split(' ')[0]}! </h1>
           <p className="text-neutral-400">Ready to continue your learning journey?</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard icon={<BookOpen className="text-cyan-400"/>} bg="bg-cyan-400/10" label="Courses in Progress" val={studentData.currentCourses.length} badge="Active" bColor="text-cyan-400 bg-cyan-400/10 border border-cyan-400/20" />
-          <StatCard icon={<Award className="text-cyan-400"/>} bg="bg-cyan-400/10" label="Courses Completed" val={studentData.coursesCompleted} badge="+2 this week" bColor="text-cyan-400 bg-cyan-400/10 border border-cyan-400/20" />
+          <StatCard  bg="bg-cyan-400/10" label="Courses in Progress" val={studentData.currentCourses.length} badge="Active" bColor="text-cyan-400 bg-cyan-400/10 border border-cyan-400/20" />
+          <StatCard  bg="bg-cyan-400/10" label="Courses Completed" val={studentData.coursesCompleted} badge="+2 this week" bColor="text-cyan-400 bg-cyan-400/10 border border-cyan-400/20" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
