@@ -5,9 +5,8 @@ export default function Hero() {
 
   return (
     <section
-      className="relative min-h-screen flex items-center justify-center bg-[#0a0a0c] text-slate-200 overflow-hidden"
-    >
-      {/* BACKGROUND */}
+      className="relative min-h-screen flex items-center justify-center bg-[#0a0a0c] text-slate-200 overflow-hidden">
+
       <div className="absolute inset-0 z-0">
         <div
           className="absolute inset-0 opacity-40"
@@ -25,16 +24,12 @@ export default function Hero() {
         />
       </div>
 
-      {/* MAIN CONTENT */}
       <div className="relative z-10 w-full flex flex-col px-4 sm:px-8 lg:px-16 py-20 sm:py-24 lg:py-32 max-w-7xl mx-auto">
 
-        {/* HERO BODY — stacks vertically on mobile, side-by-side on xl */}
         <div className="flex flex-col xl:flex-row xl:items-center gap-12 xl:gap-20">
 
-          {/* LEFT: Copy */}
           <div className="flex flex-col gap-8 flex-1">
 
-            {/* Headline */}
             <div className="flex flex-col gap-3">
               <h1
                 className="font-black tracking-tight text-white leading-none"
@@ -67,7 +62,6 @@ export default function Hero() {
               </p>
             </div>
 
-            {/* Search Bar */}
             <div className="flex flex-col gap-4 w-full max-w-2xl">
               <div
                 className="flex flex-col sm:flex-row overflow-hidden rounded-2xl shadow-2xl w-full"
