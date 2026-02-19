@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const getToken = () => localStorage.getItem("accessToken")
+const getToken = () => localStorage.getItem("accessToken");
 
 const API = axios.create({
     baseURL: "https://skillconnect-backend-7ftb.onrender.com",
@@ -9,10 +9,10 @@ const API = axios.create({
 API.interceptors.request.use((config) => {
     const token = getToken();
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+        config.headers.Authorization = `Bearer ${token}`;
     }
-    return config
-})
+    return config;
+});
 
 export const fetchReels = async () => {
     const res = await API.get("/reelr/reels/all");
@@ -20,13 +20,6 @@ export const fetchReels = async () => {
 };
 
 export const uploadReel = async (formData) => {
-  const res = await API.post("/reelr/reels/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  return res.data;
+    const res = await API.post("/reelr/reels/upload", formData);
+    return res.data;
 };
-
-
