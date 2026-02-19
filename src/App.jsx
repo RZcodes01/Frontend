@@ -42,10 +42,10 @@ export default function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
-          <Route path="/quickskills" element={<QuickSkills />} />
 
         </Route>
       </Route>
+          <Route path="/quickskills" element={<QuickSkills />} />
 
     </Routes>
   );

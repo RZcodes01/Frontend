@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
+
+
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    background: #000;
+}

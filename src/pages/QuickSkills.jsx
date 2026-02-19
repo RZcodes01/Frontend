@@ -1,27 +1,28 @@
 import { useState, useRef, useEffect } from "react";
 import { Heart, MessageCircle, Eye, Plus, X, Play, Send, ThumbsUp, ChevronDown } from "lucide-react";
+import Navbar from "../components/Navbar";
 
 // ─── Seed Data ────────────────────────────────────────────────────────────────
 const seedComments = {
   1: [
-    { id: 1, user: "@fluffy_fan",    avatar: "🐰", text: "This bunny is too cute! 😍",                    likes: 42, liked: false, time: "2h" },
-    { id: 2, user: "@opengl_nerd",   avatar: "🎮", text: "Blender Institute classics never get old.",      likes: 18, liked: false, time: "1h" },
-    { id: 3, user: "@mia.renders",   avatar: "🌸", text: "The animation quality for 2008 is insane!",     likes: 31, liked: false, time: "45m" },
+    { id: 1, user: "@fluffy_fan", avatar: "🐰", text: "This bunny is too cute! 😍", likes: 42, liked: false, time: "2h" },
+    { id: 2, user: "@opengl_nerd", avatar: "🎮", text: "Blender Institute classics never get old.", likes: 18, liked: false, time: "1h" },
+    { id: 3, user: "@mia.renders", avatar: "🌸", text: "The animation quality for 2008 is insane!", likes: 31, liked: false, time: "45m" },
   ],
   2: [
-    { id: 1, user: "@cinephile99",   avatar: "🎬", text: "Absolute classic right here 🎞️",               likes: 77, liked: false, time: "3h" },
-    { id: 2, user: "@moviebuff_raj", avatar: "🍿", text: "Used to watch this every weekend as a kid.",    likes: 25, liked: false, time: "2h" },
+    { id: 1, user: "@cinephile99", avatar: "🎬", text: "Absolute classic right here 🎞️", likes: 77, liked: false, time: "3h" },
+    { id: 2, user: "@moviebuff_raj", avatar: "🍿", text: "Used to watch this every weekend as a kid.", likes: 25, liked: false, time: "2h" },
   ],
 };
 
 const initialReels = [
-  { id: 1, video: "https://www.w3schools.com/html/mov_bbb.mp4", title: "Big Buck Bunny 🐰",    creator: "@bunny_official", likes: 1200, views: 15000 },
-  { id: 2, video: "https://www.w3schools.com/html/movie.mp4",   title: "Classic Movie Clip 🎬", creator: "@classic_clips",  likes: 980,  views: 8700  },
+  { id: 1, video: "https://www.w3schools.com/html/mov_bbb.mp4", title: "Big Buck Bunny 🐰", creator: "@bunny_official", likes: 1200, views: 15000 },
+  { id: 2, video: "https://www.w3schools.com/html/movie.mp4", title: "Classic Movie Clip 🎬", creator: "@classic_clips", likes: 980, views: 8700 },
 ];
 
 function formatCount(n) {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
-  if (n >= 1_000)     return (n / 1_000).toFixed(1) + "K";
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
   return n;
 }
 
@@ -223,7 +224,7 @@ function Reel({ reel, isActive, onUpload, comments, onOpenComments }) {
 
   useEffect(() => {
     if (!videoRef.current) return;
-    if (isActive) videoRef.current.play().catch(() => {});
+    if (isActive) videoRef.current.play().catch(() => { });
     else { videoRef.current.pause(); videoRef.current.currentTime = 0; }
     setPlaying(isActive);
   }, [isActive]);
@@ -313,27 +314,45 @@ export default function ReelsPage() {
   const [openCommentsId, setOpenCommentsId] = useState(null);
   const containerRef = useRef();
 
+  const NAVBAR_HEIGHT = 80; // matches your navbar height
+
   const handleScroll = () => {
     if (!containerRef.current) return;
-    setActiveIndex(Math.round(containerRef.current.scrollTop / containerRef.current.clientHeight));
+    setActiveIndex(
+      Math.round(
+        containerRef.current.scrollTop /
+        containerRef.current.clientHeight
+      )
+    );
   };
 
   const handleUpload = (reel) => {
     setReels(prev => [reel, ...prev]);
     setAllComments(prev => ({ [reel.id]: [], ...prev }));
     setActiveIndex(0);
-    setTimeout(() => containerRef.current?.scrollTo({ top: 0, behavior: "smooth" }), 100);
+    setTimeout(() => {
+      containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
   };
 
   const handleAddComment = (reelId, comment) => {
-    setAllComments(prev => ({ ...prev, [reelId]: [...(prev[reelId] || []), comment] }));
+    setAllComments(prev => ({
+      ...prev,
+      [reelId]: [...(prev[reelId] || []), comment],
+    }));
   };
 
   const handleLikeComment = (reelId, commentId) => {
     setAllComments(prev => ({
       ...prev,
       [reelId]: prev[reelId].map(c =>
-        c.id === commentId ? { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 } : c
+        c.id === commentId
+          ? {
+            ...c,
+            liked: !c.liked,
+            likes: c.liked ? c.likes - 1 : c.likes + 1,
+          }
+          : c
       ),
     }));
   };
@@ -341,20 +360,41 @@ export default function ReelsPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; width: 100%; background: #000; overflow: hidden; }
-        ::-webkit-scrollbar { display: none; }
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes slideUp { from { transform: translateY(40px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
-        @keyframes sheetUp { from { transform: translateX(-50%) translateY(100%) } to { transform: translateX(-50%) translateY(0) } }
-      `}</style>
+  ::-webkit-scrollbar { display: none; }
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes slideUp { from { transform: translateY(40px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+  @keyframes sheetUp { from { transform: translateX(-50%) translateY(100%) } to { transform: translateX(-50%) translateY(0) } }
+`}</style>
 
-      <div style={{ height: "100dvh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
+
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Reel viewport under navbar */}
+      <div
+        style={{
+          height: `calc(100dvh - ${NAVBAR_HEIGHT}px)`,
+          marginTop: `${NAVBAR_HEIGHT}px`,
+          width: "100vw",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#000",
+        }}
+      >
         <div
           ref={containerRef}
           onScroll={handleScroll}
-          style={{ height: "100dvh", width: "calc(100dvh * 9 / 16)", maxWidth: "100vw", overflowY: "scroll", scrollSnapType: "y mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", position: "relative" }}
+          style={{
+            height: "100%",
+            width: "calc(100dvh * 9 / 16)",
+            maxWidth: "100vw",
+            overflowY: "scroll",
+            scrollSnapType: "y mandatory",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            position: "relative",
+          }}
         >
           {reels.map((reel, i) => (
             <Reel
