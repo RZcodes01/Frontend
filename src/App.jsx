@@ -40,12 +40,8 @@ export default function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
-<<<<<<< HEAD
 
-=======
           <Route path="/quickskills" element={<QuickSkills />} />
-          <Route path="/quickskills" element={<QuickSkills />} />
->>>>>>> ed4e23f0c057f3af0c15d500a2ecd847afa6ff2e
         </Route>
       </Route>
           <Route path="/quickskills" element={<QuickSkills />} />
