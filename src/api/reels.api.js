@@ -19,3 +19,14 @@ export const fetchReels = async () => {
     return res.data.allReels;
 };
 
+export const uploadReel = async (formData) => {
+  const res = await API.post("/reelr/reels/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return res.data;
+};
+
+

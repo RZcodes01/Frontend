@@ -12,6 +12,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import SingleCommunity from "./pages/SingleCommunity";
 import QuickSkills from "./pages/QuickSkills";
 import QuickSkillPreview from "./components/QuickSkillPreview";
+import ReelUpload from "./pages/ReelUpload";
 
 function MainLayout() {
   return (
@@ -42,9 +43,11 @@ export default function App() {
           <Route path="/dashboard" element={<StudentDashboard />} />
 
           <Route path="/quickskills" element={<QuickSkills />} />
+          <Route path="/upload-skill" element={<ReelUpload />} />
+          
         </Route>
       </Route>
-          <Route path="/quickskills" element={<QuickSkills />} />
+          {/* <Route path="/quickskills" element={<QuickSkills />} /> */}
 
     </Routes>
   );
