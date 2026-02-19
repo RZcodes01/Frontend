@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import bgImage from "../assets/login_bg.png";
-import { FaEnvelope, FaLock } from "react-icons/fa";
-import { useNavigate, Link } from "react-router-dom";
+import { FaEnvelope, FaLock, FaGoogle } from "react-icons/fa";
 import { loginUser } from "../api/auth.api";
 
 const Login = () => {
@@ -37,9 +37,7 @@ const Login = () => {
 
       navigate("/");
     } catch (err) {
-      setError(
-        err?.response?.data?.message || "Login failed"
-      );
+      setError(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -111,11 +109,18 @@ const Login = () => {
           </button>
         </form>
 
+        {/* OR Divider */}
         <div className="text-center text-gray-400 my-4">
           OR
         </div>
 
-        {/* SIGN UP LINK (UPDATED) */}
+        {/* Optional Google Button */}
+        <button className="w-full flex items-center justify-center gap-2 border py-2 rounded-lg hover:bg-gray-100 transition">
+          <FaGoogle />
+          Continue with Google
+        </button>
+
+        {/* SIGN UP LINK */}
         <p className="text-sm text-center mt-4 text-gray-500">
           Don’t have an account?{" "}
           <Link

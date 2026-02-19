@@ -1,42 +1,20 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import bgImage from "../assets/register_bg.png"; 
-import loginBg from "../assets/login_bg.png";
+// import bgImage from "../assets/register_bg.png"; 
+
 const Register = () => {
   const [activeForm, setActiveForm] = useState("student");
   const navigate = useNavigate()
 
-  // Student Form State
-  const [studentData, setStudentData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-  });
-
-  // Mentor Form State
+  // --- Logic & State (Unchanged) ---
+  const [studentData, setStudentData] = useState({ name: "", email: "", password: "", phone: "" });
   const [mentorData, setMentorData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    resume: null,
-    experience_year: "",
-    expertise: "",
-    bio: "",
+    name: "", email: "", password: "", phone: "", resume: null, experience_year: "", expertise: "", bio: "",
   });
 
-  const handleStudentChange = (e) => {
-    setStudentData({ ...studentData, [e.target.name]: e.target.value });
-  };
-
-  const handleMentorChange = (e) => {
-    setMentorData({ ...mentorData, [e.target.name]: e.target.value });
-  };
-
-  const handleFileChange = (e) => {
-    setMentorData({ ...mentorData, resume: e.target.files[0] });
-  };
+  const handleStudentChange = (e) => setStudentData({ ...studentData, [e.target.name]: e.target.value });
+  const handleMentorChange = (e) => setMentorData({ ...mentorData, [e.target.name]: e.target.value });
+  const handleFileChange = (e) => setMentorData({ ...mentorData, resume: e.target.files[0] });
 
   const handleStudentSubmit = (e) => {
     e.preventDefault();
@@ -52,266 +30,180 @@ const Register = () => {
 
   return (
     <div 
-      className="min-h-screen bg-cover bg-center py-12 px-4"
-      style={{
-        backgroundImage: `url(${bgImage})`,
-      }}
+      className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-10 px-4 bg-cover bg-center"
+      
     >
-      {/* Toggle Buttons */}
-      <div className="max-w-4xl mx-auto mb-8 flex justify-center gap-4">
-        <button
-          onClick={() => setActiveForm("student")}
-          className={`px-8 py-3 rounded-lg font-semibold transition-all ${activeForm === "student"
-              ? "bg-blue-600 text-white shadow-lg"
-              : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-        >
-          Student Registration
-        </button>
-
-        <button
-          onClick={() => setActiveForm("mentor")}
-          className={`px-8 py-3 rounded-lg font-semibold transition-all ${activeForm === "mentor"
-              ? "bg-blue-600 text-white shadow-lg"
-              : "bg-white text-gray-700 hover:bg-gray-50"
-            }`}
-        >
-          Mentor Registration
-        </button>
+      {/* Skillconnect Branding */}
+      <div className="flex items-center gap-2 mb-8 bg-white/80 backdrop-blur px-6 py-2 rounded-full shadow-sm">
+        <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
+        <h1 className="text-xl font-bold text-blue-600 tracking-tight">Skillconnect</h1>
       </div>
 
-      {/* STUDENT FORM */}
-      {activeForm === "student" && (
-        <div className="max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
-            SkillConnect
-          </h2>
-
-          <form onSubmit={handleStudentSubmit} className="space-y-4">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Name</label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter your name"
-                value={studentData.name}
-                onChange={handleStudentChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter your email"
-                value={studentData.email}
-                onChange={handleStudentChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                value={studentData.password}
-                onChange={handleStudentChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                placeholder="Enter your phone number"
-                value={studentData.phone}
-                onChange={handleStudentChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold"
-            >
-              Register
-            </button>
-          </form>
-
-          <p className="text-center text-gray-500 text-sm mt-4">
-            Already have an account?{" "}
-            <span onClick={()=> navigate("/login")} className="text-blue-600 font-medium cursor-pointer hover:underline">
-              Login
-            </span>
-          </p>
+      {/* Main Container */}
+      <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100">
+        
+        {/* Toggle Headers */}
+        <div className="flex bg-slate-100 p-1.5 rounded-xl mb-8">
+          <button
+            onClick={() => setActiveForm("student")}
+            className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 ${
+              activeForm === "student" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            Student
+          </button>
+          <button
+            onClick={() => setActiveForm("mentor")}
+            className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 ${
+              activeForm === "mentor" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            Mentor
+          </button>
         </div>
-      )}
 
-      {/* MENTOR FORM */}
-      {activeForm === "mentor" && (
-        <div className="max-w-2xl mx-auto bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-center text-blue-600 mb-2">
-            Mentor Registration
-          </h2>
-          <p className="text-center text-gray-600 mb-6">
-            Join our community of expert mentors
-          </p>
+        <h2 className="text-2xl font-bold text-slate-800 text-center mb-2">
+          {activeForm === "student" ? "Join as a Student" : "Apply as a Mentor"}
+        </h2>
+        <p className="text-slate-500 text-center mb-8 text-sm">
+          {activeForm === "student" ? "Start your learning journey today" : "Share your expertise with the world"}
+        </p>
 
-          <form onSubmit={handleMentorSubmit} className="space-y-4">
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Full Name <span className="text-red-500">*</span>
-              </label>
+        {/* --- STUDENT FORM --- */}
+        {activeForm === "student" && (
+          <form onSubmit={handleStudentSubmit} className="space-y-5">
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-slate-700 ml-1">Full Name</label>
               <input
-                type="text"
-                name="name"
-                placeholder="Enter your full name"
-                value={mentorData.name}
-                onChange={handleMentorChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                type="text" name="name" placeholder="John Doe"
+                value={studentData.name} onChange={handleStudentChange} required
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white outline-none transition-all"
               />
             </div>
-
+            <div className="space-y-1">
+              <label className="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+              <input
+                type="email" name="email" placeholder="john@example.com"
+                value={studentData.email} onChange={handleStudentChange} required
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white outline-none transition-all"
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">
-                  Email <span className="text-red-500">*</span>
-                </label>
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-slate-700 ml-1">Phone</label>
                 <input
-                  type="email"
-                  name="email"
-                  placeholder="your.email@example.com"
-                  value={mentorData.email}
-                  onChange={handleMentorChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                  type="tel" name="phone" placeholder="+1..."
+                  value={studentData.phone} onChange={handleStudentChange} required
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white outline-none transition-all"
                 />
               </div>
-
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">
-                  Phone <span className="text-red-500">*</span>
-                </label>
+              <div className="space-y-1">
+                <label className="text-sm font-semibold text-slate-700 ml-1">Password</label>
                 <input
-                  type="tel"
-                  name="phone"
-                  placeholder="+1 (555) 123-4567"
-                  value={mentorData.phone}
-                  onChange={handleMentorChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                  type="password" name="password" placeholder="••••••••"
+                  value={studentData.password} onChange={handleStudentChange} required
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 focus:bg-white outline-none transition-all"
                 />
               </div>
             </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Password <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Create a strong password"
-                value={mentorData.password}
-                onChange={handleMentorChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">
-                  Years of Experience <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  name="experience_year"
-                  placeholder="e.g., 5"
-                  min="0"
-                  value={mentorData.experience_year}
-                  onChange={handleMentorChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-medium mb-1">
-                  Expertise <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="expertise"
-                  placeholder="e.g., Web Development, AI"
-                  value={mentorData.expertise}
-                  onChange={handleMentorChange}
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Resume <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="file"
-                name="resume"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileChange}
-                required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Accepted formats: PDF, DOC, DOCX (Max 5MB)
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-gray-700 font-medium mb-1">
-                Bio <span className="text-red-500">*</span>
-              </label>
-              <textarea
-                name="bio"
-                placeholder="Tell us about yourself, your background, and what you can offer as a mentor..."
-                value={mentorData.bio}
-                onChange={handleMentorChange}
-                required
-                rows="4"
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none resize-none"
-              />
-              <p className="text-xs text-gray-500 mt-1">Minimum 50 characters</p>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md hover:shadow-lg"
-            >
-              Register as Mentor
+            <button type="submit" className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-[0.98] mt-4">
+              Create Student Account
             </button>
           </form>
+        )}
 
-          <p className="text-center text-gray-500 text-sm mt-6">
+        {/* --- MENTOR FORM --- */}
+{activeForm === "mentor" && (
+  <form onSubmit={handleMentorSubmit} className="space-y-5">
+    <div className="space-y-1">
+      <label className="text-sm font-semibold text-slate-700 ml-1">Full Name</label>
+      <input
+        type="text" name="name" placeholder="Dr. Sarah Smith"
+        value={mentorData.name} onChange={handleMentorChange} required
+        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all"
+      />
+    </div>
+
+    <div className="space-y-1">
+      <label className="text-sm font-semibold text-slate-700 ml-1">Email Address</label>
+      <input
+        type="email" name="email" placeholder="sarah@mentor.com"
+        value={mentorData.email} onChange={handleMentorChange} required
+        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all"
+      />
+    </div>
+
+    {/* Phone and Password Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-1">
+        <label className="text-sm font-semibold text-slate-700 ml-1">Phone</label>
+        <input
+          type="tel" name="phone" placeholder="+1..."
+          value={mentorData.phone} onChange={handleMentorChange} required
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all"
+        />
+      </div>
+      <div className="space-y-1">
+        <label className="text-sm font-semibold text-slate-700 ml-1">Password</label>
+        <input
+          type="password" name="password" placeholder="••••••••"
+          value={mentorData.password} onChange={handleMentorChange} required
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all"
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-1">
+        <label className="text-sm font-semibold text-slate-700 ml-1">Experience (Yrs)</label>
+        <input
+          type="number" name="experience_year" placeholder="5"
+          value={mentorData.experience_year} onChange={handleMentorChange} required
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all"
+        />
+      </div>
+      <div className="space-y-1">
+        <label className="text-sm font-semibold text-slate-700 ml-1">Expertise</label>
+        <input
+          type="text" name="expertise" placeholder="UI/UX, Python"
+          value={mentorData.expertise} onChange={handleMentorChange} required
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all"
+        />
+      </div>
+    </div>
+
+    <div className="space-y-1">
+      <label className="text-sm font-semibold text-slate-700 ml-1">Resume (PDF/DOC)</label>
+      <input
+        type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} required
+        className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border border-dashed border-slate-300 p-2 rounded-xl"
+      />
+    </div>
+
+    <div className="space-y-1">
+      <label className="text-sm font-semibold text-slate-700 ml-1">Short Bio</label>
+      <textarea
+        name="bio" rows="3" placeholder="Tell us about your teaching style..."
+        value={mentorData.bio} onChange={handleMentorChange} required
+        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-400 outline-none transition-all resize-none"
+      />
+    </div>
+
+    <button type="submit" className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-[0.98]">
+      Apply as Mentor
+    </button>
+  </form>
+)}
+
+        <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+          <p className="text-slate-500 text-sm">
             Already have an account?{" "}
-            <button onClick={()=> navigate("/login")} className="text-blue-600 font-medium cursor-pointer hover:underline">
-              Login
+            <button onClick={() => navigate("/login")} className="text-blue-600 font-bold hover:underline underline-offset-4">
+              Log In
             </button>
           </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }
