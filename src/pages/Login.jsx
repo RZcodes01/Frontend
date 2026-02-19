@@ -35,11 +35,9 @@ const Login = () => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/"); // change route as needed
+      navigate("/");
     } catch (err) {
-      setError(
-        err?.response?.data?.message || "Login failed"
-      );
+      setError(err?.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -51,6 +49,7 @@ const Login = () => {
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className="relative bg-white w-[380px] rounded-2xl shadow-xl p-8">
+
         {/* Logo */}
         <div className="flex items-center gap-2 mb-6">
           <div className="w-8 h-8 bg-blue-600 rounded-full"></div>
@@ -74,6 +73,7 @@ const Login = () => {
               placeholder="Email"
               value={form.email}
               onChange={handleChange}
+              required
               className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -87,6 +87,7 @@ const Login = () => {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
+              required
               className="w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
@@ -108,16 +109,28 @@ const Login = () => {
           </button>
         </form>
 
+        {/* OR Divider */}
         <div className="text-center text-gray-400 my-4">
           OR
         </div>
 
+        {/* Optional Google Button */}
+        <button className="w-full flex items-center justify-center gap-2 border py-2 rounded-lg hover:bg-gray-100 transition">
+          <FaGoogle />
+          Continue with Google
+        </button>
+
+        {/* SIGN UP LINK */}
         <p className="text-sm text-center mt-4 text-gray-500">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-600 font-semibold hover:underline cursor-pointer">
+          <Link
+            to="/register"
+            className="text-blue-600 font-semibold hover:underline"
+          >
             Sign up
           </Link>
         </p>
+
       </div>
     </div>
   );
