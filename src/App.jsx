@@ -11,9 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import StudentDashboard from "./pages/StudentDashboard";
 import SingleCommunity from "./pages/SingleCommunity";
 import QuickSkills from "./pages/QuickSkills";
+import QuickSkillPreview from "./components/QuickSkillPreview";
 
-
-// ✅ Layout for all protected pages
 function MainLayout() {
   return (
     <>
@@ -26,12 +25,11 @@ function MainLayout() {
 export default function App() {
   return (
     <Routes>
-      
-      {/* 🔓 Public Routes (No Navbar) */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* 🔐 Protected Routes (With Navbar + Footer) */}
+      {/* <Route path="/" element={<QuickSkillPreview />} /> */}
+
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
 
@@ -42,7 +40,12 @@ export default function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
+<<<<<<< HEAD
 
+=======
+          <Route path="/quickskills" element={<QuickSkills />} />
+          <Route path="/quickskills" element={<QuickSkills />} />
+>>>>>>> ed4e23f0c057f3af0c15d500a2ecd847afa6ff2e
         </Route>
       </Route>
           <Route path="/quickskills" element={<QuickSkills />} />
