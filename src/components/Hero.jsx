@@ -1,7 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
   const [hovered, setHovered] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate("/community", { state: { search: searchQuery.trim() } });
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSearch();
+  };
 
   return (
     <section
@@ -88,16 +101,19 @@ export default function Hero() {
                   <input
                     type="text"
                     placeholder="What do you want to learn today?"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className="bg-transparent text-white w-full outline-none text-sm sm:text-base placeholder-slate-600"
                   />
                 </div>
                 <button
+                  onClick={handleSearch}
                   className="font-black uppercase tracking-tighter text-slate-950 px-8 py-4 w-full sm:w-auto transition-colors duration-150 text-sm sm:text-base"
                   style={{ background: "#22d3ee" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#67e8f9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#22d3ee")}
-                >
-                  Start Learning
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#22d3ee")}>
+                  Search
                 </button>
               </div>
             </div>

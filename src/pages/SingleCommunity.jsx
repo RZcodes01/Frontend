@@ -14,11 +14,15 @@ import {
 import { useEffect, useState } from 'react';
 import { fetchCommunityById } from '../api/community.api';
 import { useParams } from 'react-router-dom';
+import BatchSelectionPage from './Batchselection';
+import PaymentPage from './Payment';
 
 export default function App() {
     const [course, setCourse] = useState(null);
     const [selectedModule, setSelectedModule] = useState(null); // State to toggle views
     const { communityId } = useParams();
+    const [page, setPage] = useState('overview'); // 'overview' | 'batches' | 'payment'
+    const [selectedBatch, setSelectedBatch] = useState(null);
 
     useEffect(() => {
         const fetchCommunity = async () => {
@@ -33,6 +37,27 @@ export default function App() {
         fetchCommunity();
     }, [communityId]);
 
+    if (page === 'batches') {
+    return (
+        <BatchSelectionPage
+            onBack={() => setPage('overview')}
+            onSelectBatch={(batch) => {
+                setSelectedBatch(batch);
+                setPage('payment');
+            }}
+        />
+    );
+}
+
+if (page === 'payment' && selectedBatch) {
+    return (
+        <PaymentPage
+            batch={selectedBatch}
+            onBack={() => setPage('batches')}
+            onSuccess={() => console.log('Payment done!')}
+        />
+    );
+}
     return (
         <div className="min-h-screen bg-neutral-950 text-white">
             {/* 1. BANNER - Only show on the main overview page */}
@@ -274,11 +299,12 @@ export default function App() {
 
                 {/* 4. FINAL CTA */}
                 <div className="text-center mt-12 mb-20">
-                    <button className="bg-cyan-400 hover:bg-cyan-300 text-black px-10 py-5 rounded-xl text-lg font-bold transition-all shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95">
-                        Upgrade to Pro Now
-                    </button>
-                    <p className="mt-4 text-neutral-500 text-sm">Join 500+ other developers in the Pro community</p>
-                </div>
+                <button
+                    onClick={() => setPage('batches')}
+                    className="bg-cyan-400 hover:bg-cyan-300 text-black px-10 py-5 rounded-xl text-lg font-bold transition-all shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95">
+                    Upgrade to Pro Now
+                </button>
+            </div>
             </div>
         </div>
     );
