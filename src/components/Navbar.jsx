@@ -9,18 +9,17 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Mock User Data
+ 
   const user = {
     name: 'Alex Dev',
   };
 
-  // --- LOGIC: TOGGLE & EVENT BROADCAST ---
+
   const handleProfileClick = () => {
-    // Toggle the dropdown
+
     const nextState = !isProfileOpen;
     setIsProfileOpen(nextState);
-    
-    // If we are opening the menu, broadcast the event
+
     if (nextState) {
       const event = new CustomEvent('profileMenuOpened');
       window.dispatchEvent(event);

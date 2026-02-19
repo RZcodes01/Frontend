@@ -9,18 +9,23 @@ const TrendingCommunities = () => {
   ];
 
   return (
-    <section className="bg-[#0a0a0c] text-white py-20 relative overflow-hidden">
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <section className="bg-slate-50 text-slate-900 py-24 border-b border-slate-200">
+      <div className="max-w-6xl mx-auto px-6">
 
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
           <div>
-            <h2 className="text-4xl font-bold tracking-tight">
-              Trending <span className="text-cyan-400">Communities</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
+              Trending Communities
             </h2>
-            <p className="text-gray-400 mt-2">Join fast-growing groups and learn with peers.</p>
+            <p className="text-slate-600 mt-3 max-w-md">
+              Learn alongside motivated peers and grow together in focused skill groups.
+            </p>
           </div>
-          <Link to="/community" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors flex items-center gap-2">
+
+          <Link 
+            to="/community" 
+            className="text-slate-900 font-semibold hover:text-slate-700 transition-colors flex items-center gap-2"
+          >
             View all communities <span>&rarr;</span>
           </Link>
         </div>
@@ -29,22 +34,29 @@ const TrendingCommunities = () => {
           {communities.map((item) => (
             <div 
               key={item.id} 
-              className="group bg-[#111114] border border-gray-800 p-8 rounded-2xl hover:border-cyan-500/50 transition-all duration-300 shadow-xl"
+              className="group bg-white border border-slate-200 p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg mb-6 flex items-center justify-center font-bold text-xl">
+              <div className="w-12 h-12 bg-slate-900 text-white rounded-lg mb-6 flex items-center justify-center font-semibold text-lg">
                 {item.name.charAt(0)}
               </div>
-              <h3 className="text-2xl font-bold mb-1 group-hover:text-cyan-400 transition-colors">
+
+              <h3 className="text-xl font-semibold mb-2 text-slate-900">
                 {item.name}
               </h3>
-              <p className="text-cyan-500 text-sm font-medium mb-4">{item.topic}</p>
+
+              <p className="text-slate-600 text-sm font-medium mb-6">
+                {item.topic}
+              </p>
               
-              <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-800">
-                <span className="text-gray-400 text-sm">{item.members} members</span>
+              <div className="flex items-center justify-between pt-6 border-t border-slate-200">
+                <span className="text-slate-500 text-sm">
+                  {item.members} members
+                </span>
               </div>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

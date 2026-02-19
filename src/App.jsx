@@ -18,18 +18,19 @@ function MainLayout() {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <main className="pt-16 sm:pt-20">
+        <Outlet />
+      </main>
     </>
   );
 }
+
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-
-      {/* <Route path="/" element={<QuickSkillPreview />} /> */}
 
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
