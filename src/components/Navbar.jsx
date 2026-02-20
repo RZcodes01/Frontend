@@ -95,6 +95,14 @@ export default function Navbar() {
               </Link>
             ))}
 
+            {/* Login Button */}
+            <Link
+              to="/login"
+              className="px-5 py-2.5 text-base font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-colors duration-200 rounded-md ml-2"
+            >
+              Login
+            </Link>
+
             {/* Desktop Profile Button & Dropdown */}
             <div className="relative ml-4" ref={profileRef}>
               <button
@@ -201,9 +209,18 @@ export default function Navbar() {
                 </Link>
               ))}
 
+              {/* Mobile Login Button */}
+              <Link
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-cyan-400 text-slate-950 rounded-lg text-base font-bold mt-2 hover:bg-cyan-300 transition-colors"
+              >
+                Login
+              </Link>
+
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 mt-4 hover:bg-red-500/20 transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 mt-2 hover:bg-red-500/20 transition-colors"
               >
                 Logout
               </button>
