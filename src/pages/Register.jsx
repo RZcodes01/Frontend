@@ -26,11 +26,24 @@ const Register = () => {
     bio: ""
   });
 
+  const [companyData, setCompanyData] = useState({
+    company_name: "",
+    company_id: "",
+    email: "",
+    website: "",
+    industry_type: "",
+    description: "",
+    password: ""
+  });
+
   const handleStudentChange = (e) =>
     setStudentData({ ...studentData, [e.target.name]: e.target.value });
 
   const handleMentorChange = (e) =>
     setMentorData({ ...mentorData, [e.target.name]: e.target.value });
+
+  const handleCompanyChange = (e) =>
+    setCompanyData({ ...companyData, [e.target.name]: e.target.value });
 
   // ---------------- STUDENT REGISTER ----------------
   const handleStudentSubmit = async (e) => {
@@ -77,6 +90,27 @@ const Register = () => {
     }
   };
 
+  // ---------------- COMPANY REGISTER ----------------
+  const handleCompanySubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await registerUser({
+        ...companyData,
+        role: "company"
+      });
+
+      alert(res.data.message);
+      navigate("/login");
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-10 px-4">
 
@@ -102,6 +136,16 @@ const Register = () => {
               }`}
           >
             Mentor
+          </button>
+
+          <button
+            onClick={() => setActiveForm("company")}
+            className={`flex-1 py-2.5 rounded-lg font-bold ${activeForm === "company"
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-slate-500"
+              }`}
+          >
+            Company
           </button>
         </div>
 
@@ -209,6 +253,89 @@ const Register = () => {
               className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold"
             >
               {loading ? "Processing..." : "Apply as Mentor"}
+            </button>
+          </form>
+        )}
+
+        {/* COMPANY FORM */}
+        {activeForm === "company" && (
+          <form onSubmit={handleCompanySubmit} className="space-y-5">
+
+            <input
+              type="text"
+              name="company_name"
+              placeholder="Company Name"
+              value={companyData.company_name}
+              onChange={handleCompanyChange}
+              required
+              className="w-full px-4 py-3 border rounded-xl"
+            />
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={companyData.email}
+              onChange={handleCompanyChange}
+              required
+              className="w-full px-4 py-3 border rounded-xl"
+            />
+
+            <input
+              type="url"
+              name="website"
+              placeholder="Website (https://...)"
+              value={companyData.website}
+              onChange={handleCompanyChange}
+              required
+              className="w-full px-4 py-3 border rounded-xl"
+            />
+
+            <select
+              name="industry_type"
+              value={companyData.industry_type}
+              onChange={handleCompanyChange}
+              required
+              className="w-full px-4 py-3 border rounded-xl text-slate-500"
+            >
+              <option value="" disabled>Select Industry Type</option>
+              <option value="technology">Technology</option>
+              <option value="finance">Finance</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="education">Education</option>
+              <option value="ecommerce">E-Commerce</option>
+              <option value="manufacturing">Manufacturing</option>
+              <option value="media">Media & Entertainment</option>
+              <option value="consulting">Consulting</option>
+              <option value="other">Other</option>
+            </select>
+
+            <textarea
+              name="description"
+              placeholder="Company Description"
+              value={companyData.description}
+              onChange={handleCompanyChange}
+              required
+              rows={3}
+              className="w-full px-4 py-3 border rounded-xl resize-none"
+            />
+
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={companyData.password}
+              onChange={handleCompanyChange}
+              required
+              className="w-full px-4 py-3 border rounded-xl"
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold"
+            >
+              {loading ? "Processing..." : "Register Company"}
             </button>
           </form>
         )}
