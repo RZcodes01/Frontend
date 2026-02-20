@@ -109,17 +109,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* OR Divider */}
-        <div className="text-center text-gray-400 my-4">
-          OR
-        </div>
-
-        {/* Optional Google Button */}
-        <button className="w-full flex items-center justify-center gap-2 border py-2 rounded-lg hover:bg-gray-100 transition">
-          <FaGoogle />
-          Continue with Google
-        </button>
-
         {/* SIGN UP LINK */}
         <p className="text-sm text-center mt-4 text-gray-500">
           Don’t have an account?{" "}
