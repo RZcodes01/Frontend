@@ -17,12 +17,13 @@ import ModulePage from "./pages/ModulePage";
 
 function MainLayout() {
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-neutral-950">
       <Navbar />
-      <main className="pt-16 sm:pt-20">
+      {/* Remove pt-16 sm:pt-20 so the page starts at the very top */}
+      <main className="flex-grow">
         <Outlet />
       </main>
-    </>
+    </div>
   );
 }
 
