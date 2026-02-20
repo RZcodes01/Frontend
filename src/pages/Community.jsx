@@ -20,6 +20,7 @@ export default function Community() {
     const getCommunities = async () => {
       try {
         const res = await fetchAllCommunities();
+        console.log("Fetched communities:", res.data.communities);
         setCommunities(res.data.communities);
       } catch (err) {
         setError(
@@ -185,7 +186,7 @@ export default function Community() {
 
                   {/* Join Button */}
                   <button className="w-full py-3 rounded-xl font-semibold bg-cyan-400 hover:bg-cyan-300 text-black transition shadow-lg shadow-cyan-500/20 hover:scale-105">
-                    Join Community
+                    View Community
                   </button>
                 </div>
               );
