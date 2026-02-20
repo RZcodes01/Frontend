@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { fetchMe } from '../api/user.api';
+import { User } from 'lucide-react';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,10 +10,36 @@ export default function Navbar() {
   const profileRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const [myData, setMyData] = useState([])
+  const [isLoggedIn, setisLoggedIn] = useState(false)
 
   const user = {
     name: 'Alex Dev',
   };
+
+  const getInitials = (name) => {
+    if (!name) return "U";
+
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) {
+      return parts[0][0].toUpperCase();
+    }
+
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+
+  useEffect(() => {
+    const fetchMyData = async () => {
+      try {
+        const res = await fetchMe();
+        console.log(res.data)
+        setMyData(res.data.user)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchMyData()
+  }, [])
 
   const handleProfileClick = () => {
     const nextState = !isProfileOpen;
@@ -55,15 +83,17 @@ export default function Navbar() {
     setIsProfileOpen(false);
     setIsMenuOpen(false);
     console.log("Logged out");
+
+    localStorage.removeItem("accessToken");
+
     navigate('/login');
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      scrolled
-        ? 'bg-slate-950 border-b border-cyan-500 shadow-[0_4px_0_0_#06b6d4]'
-        : 'bg-slate-950 border-b border-slate-800'
-    }`}>
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
+      ? 'bg-slate-950 border-b border-cyan-500 shadow-[0_4px_0_0_#06b6d4]'
+      : 'bg-slate-950 border-b border-slate-800'
+      }`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-18 sm:h-22" style={{ height: '72px' }}>
 
@@ -85,11 +115,10 @@ export default function Navbar() {
               <Link
                 key={path}
                 to={path}
-                className={`relative px-5 py-2.5 text-base font-bold transition-all duration-200 rounded-md ${
-                  isActive(path)
-                    ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-500/40'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
-                }`}
+                className={`relative px-5 py-2.5 text-base font-bold transition-all duration-200 rounded-md ${isActive(path)
+                  ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-500/40'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  }`}
               >
                 {label}
               </Link>
@@ -102,20 +131,34 @@ export default function Navbar() {
                 className="flex items-center gap-3 pl-6 ml-4 border-l-2 border-slate-700 group"
               >
                 <div className="relative">
-                  <div className="w-11 h-11 rounded-full bg-slate-800 border-2 border-slate-600 flex items-center justify-center group-hover:border-cyan-500 transition-colors duration-200">
-                    <span className="text-sm font-black text-cyan-400">AD</span>
+                  <div className="w-11 h-11 rounded-full overflow-hidden bg-slate-800 border-2 border-slate-600 flex items-center justify-center group-hover:border-cyan-500 transition-colors duration-200">
+
+                    {myData?.coverImage ? (
+                      <img
+                        src={myData.coverImage}
+                        alt="profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : myData?.name ? (
+                      <span className="text-sm font-black text-cyan-400">
+                        {getInitials(myData.name)}
+                      </span>
+                    ) : (
+                      <User className="w-5 h-5 text-slate-400" />
+                    )}
+
                   </div>
                   <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
                 </div>
                 <div className="hidden lg:flex flex-col items-start -space-y-0.5">
-                  <span className="text-sm font-bold text-white">{user.name}</span>
-                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Student</span>
+                  <span className="text-sm font-bold text-white">{myData?.name}</span>
+                  <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">{myData.role}</span>
                 </div>
                 <svg
                   className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180 text-cyan-400' : ''}`}
                   fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 >
-                  <path d="M19 9l-7 7-7-7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M19 9l-7 7-7-7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
 
@@ -124,7 +167,7 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-3 w-56 py-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl shadow-black/60">
                   <div className="px-4 py-3 border-b border-slate-800 mb-1">
                     <p className="text-xs text-slate-500 font-semibold uppercase tracking-widest mb-0.5">Signed in as</p>
-                    <p className="text-base font-bold text-white truncate">{user.name}</p>
+                    <p className="text-base font-bold text-white truncate">{myData.name}</p>
                   </div>
 
                   <Link
@@ -158,7 +201,7 @@ export default function Navbar() {
             className="md:hidden p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors rounded-lg border border-slate-700"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeWidth="2.5" strokeLinecap="round" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}/>
+              <path strokeWidth="2.5" strokeLinecap="round" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
             </svg>
           </button>
         </div>
@@ -191,11 +234,10 @@ export default function Navbar() {
                   key={path}
                   to={path}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${
-                    isActive(path)
-                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                      : 'text-slate-300 hover:bg-slate-800 hover:text-white border border-transparent'
-                  }`}
+                  className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
+                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white border border-transparent'
+                    }`}
                 >
                   <span>{label}</span>
                 </Link>

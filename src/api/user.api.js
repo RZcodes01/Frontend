@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/auth",
+    baseURL: /*"https://skillconnect-backend-7ftb.onrender.com/community"*/ "http://localhost:4000/users",
 });
 
 API.interceptors.request.use((config) => {
@@ -14,7 +14,4 @@ API.interceptors.request.use((config) => {
     return config
 })
 
-
-export const loginUser = (data) => API.post(`/login`, data)
-
-export const registerUser = (data) => API.post(`/register`, data)
+export const fetchMe = () => API.get(`/me`)
