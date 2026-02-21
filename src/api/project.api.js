@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    baseURL: "http://localhost:4000/userdashboards",
+    baseURL: "https://skillconnect-backend-7ftb.onrender.com/projects",
 });
 
 API.interceptors.request.use((config) => {
@@ -14,9 +14,4 @@ API.interceptors.request.use((config) => {
     return config
 })
 
-export const fetchMyCommunities = () => API.get("/my")
-
-export const fetchMyBatches = () => API.get("/student-batches");
-
-export const fetchMyProjects = () =>
-    API.get("/my-projects");
+export const fetchProjectById = (id) => API.get(`/${id}`)

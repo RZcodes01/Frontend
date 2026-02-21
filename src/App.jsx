@@ -78,6 +78,7 @@ export default function App() {
 
         <Route element={<StudentDashLayout />}>
           <Route path="/dashboard" element={<StudentDashboard />} />
+          <Route path="/projects/:projectId" element={<ProjectDetail/>}/>
         </Route>
 
       </Route>
