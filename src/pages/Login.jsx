@@ -32,10 +32,20 @@ const Login = () => {
 
       const { accessToken, user } = res.data;
 
+      // 1. Store data
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/");
+      // 2. Role-Based Redirection
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "student") {
+        navigate("/dashboard");
+      } else {
+        // Fallback for roles like mentor/company if they log in now
+        navigate("/");
+      }
+
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed");
     } finally {

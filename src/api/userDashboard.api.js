@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    baseURL: "http://localhost:4000/userdashboards",
+    baseURL: "https://skillconnect-backend-7ftb.onrender.com/userdashboards",
 });
 
 API.interceptors.request.use((config) => {

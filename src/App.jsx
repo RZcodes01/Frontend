@@ -16,12 +16,17 @@ import QuickSkillPreview from "./components/QuickSkillPreview";
 import Career from "./pages/Career";
 import ModulePage from "./pages/ModulePage";
 import AdminDashboard from "./pages/AdminDashboard";
+import UploadReel from "./pages/UploadReel";
+
 function MainLayout() {
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-950">
+    <div className="flex flex-col h-screen bg-neutral-950 overflow-hidden">
       <Navbar />
-      {/* Remove pt-16 sm:pt-20 so the page starts at the very top */}
-      <main className="flex-grow">
+      {/* Using h-screen and overflow-hidden on the parent 
+          plus pt-[72px] ensures the content starts after the navbar 
+          and stays within the visible bounds.
+      */}
+      <main className="flex-1 pt-[72px] relative overflow-y-auto">
         <Outlet />
       </main>
     </div>
@@ -69,6 +74,7 @@ export default function App() {
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/quickskills" element={<QuickSkills />} />
+          <Route path="/upload-skill" element={<UploadReel />} />
           <Route path="/community/:id/module/:moduleId" element={<ModulePage />} />
         </Route>
 
@@ -78,7 +84,7 @@ export default function App() {
 
         <Route element={<StudentDashLayout />}>
           <Route path="/dashboard" element={<StudentDashboard />} />
-          <Route path="/projects/:projectId" element={<ProjectDetail/>}/>
+          <Route path="/projects/:projectId" element={<ProjectDetail />} />
         </Route>
 
       </Route>
