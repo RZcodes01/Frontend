@@ -94,7 +94,7 @@ export default function QuickSkillPreview() {
           textAlign: "left"
         }}>
           <h3 style={{ color: "#fff", fontSize: "1rem", fontWeight: 700, margin: 0 }}>
-            Big Buck Bunny 🐰
+            Learn Today
           </h3>
           <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "5px", color: "rgba(255,255,255,0.7)", fontSize: "0.8rem" }}>
             <Eye size={14} /> 15K views

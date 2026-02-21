@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Medal, Search, ArrowLeft, Users, Zap, Star, TrendingUp, Award } from 'lucide-react';
+import { Trophy, Medal, Search, ArrowLeft, Users, Zap, Star, TrendingUp, Award, X, Upload, Link, Github } from 'lucide-react';
 
 const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, onBack }) => {
   const [communities] = useState({
@@ -40,6 +40,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
 
   const [selectedCommunity, setSelectedCommunity] = useState(communityName);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   const currentProjects = communities[selectedCommunity] || [];
   
@@ -56,7 +57,108 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
   const trendingCount = currentProjects.filter(p => p.trending).length;
 
   return (
-    <div className="min-h-screen bg-neutral-950 pb-20">
+    <div className="min-h-screen bg-neutral-950 pb-20 relative">
+      {/* Project Submission Overlay/Page */}
+      {isSubmitModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-neutral-950 overflow-y-auto">
+          <div className="max-w-3xl mx-auto px-6 py-12">
+            <button 
+              onClick={() => setIsSubmitModalOpen(false)}
+              className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors mb-8 group"
+            >
+              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+              <span>Back to Leaderboard</span>
+            </button>
+
+            <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 shadow-2xl">
+              <div className="mb-10">
+                <h2 className="text-3xl font-bold text-white mb-2">Submit Your Project</h2>
+                <p className="text-neutral-400">Complete the form below to submit your weekly task for mentor review.</p>
+              </div>
+
+              <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); setIsSubmitModalOpen(false); }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-neutral-300">Project Title</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Modern E-commerce Dashboard" 
+                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-neutral-300">Community</label>
+                    <input 
+                      type="text" 
+                      disabled 
+                      value={selectedCommunity}
+                      className="w-full bg-neutral-800/50 border border-neutral-800 rounded-xl px-4 py-3 text-neutral-500 cursor-not-allowed"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-neutral-300">Description</label>
+                  <textarea 
+                    rows="4" 
+                    placeholder="Briefly describe your project and the challenges you solved..."
+                    className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
+                  ></textarea>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+                      <Link size={16} className="text-cyan-400" /> Live Demo URL
+                    </label>
+                    <input 
+                      type="url" 
+                      placeholder="https://your-demo.com" 
+                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-neutral-300 flex items-center gap-2">
+                      <Github size={16} className="text-cyan-400" /> Repository Link
+                    </label>
+                    <input 
+                      type="url" 
+                      placeholder="https://github.com/your-username/repo" 
+                      className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-3 text-white focus:ring-2 focus:ring-cyan-400 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-neutral-300">Project Screenshot</label>
+                  <div className="border-2 border-dashed border-neutral-800 rounded-2xl p-10 text-center hover:border-cyan-400/50 transition-colors cursor-pointer group">
+                    <Upload className="mx-auto text-neutral-600 group-hover:text-cyan-400 transition-colors mb-4" size={32} />
+                    <p className="text-neutral-400 text-sm">Click to upload or drag and drop</p>
+                    <p className="text-neutral-600 text-xs mt-1">PNG, JPG up to 5MB</p>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex gap-4">
+                  <button 
+                    type="submit"
+                    className="flex-1 bg-cyan-400 hover:bg-cyan-300 text-black font-bold py-4 rounded-xl shadow-lg shadow-cyan-400/10 transition-all hover:scale-[1.02]"
+                  >
+                    Submit Project
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={() => setIsSubmitModalOpen(false)}
+                    className="px-8 border border-neutral-800 text-neutral-400 hover:bg-neutral-800 rounded-xl transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Navigation Bar */}
       <nav className="bg-neutral-900 border-b border-neutral-800 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
@@ -67,33 +169,30 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
             <h2 className="font-bold text-white text-lg">{selectedCommunity}</h2>
             <div className="flex items-center gap-3 text-xs">
               <span className="flex items-center gap-1 text-cyan-400 font-medium">
-                
                 <span>{(currentProjects.length * 120).toLocaleString()} Members</span>
               </span>
               <span className="text-neutral-700">•</span>
               <span className="flex items-center gap-1 text-cyan-300 font-medium">
-                
                 <span>{totalProjects} Projects</span>
               </span>
             </div>
           </div>
         </div>
-        <button className="bg-cyan-400 hover:bg-cyan-300 text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:scale-105 transition-all">
+        <button 
+          onClick={() => setIsSubmitModalOpen(true)}
+          className="bg-cyan-400 hover:bg-cyan-300 text-black px-5 py-2.5 rounded-xl text-sm font-semibold hover:scale-105 transition-all"
+        >
           Submit Project
         </button>
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 mt-8">
-    
-
         {/* Header Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-
           <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 hover:border-cyan-400/40 transition-colors">
             <div className="flex justify-between items-start mb-2">
               <p className="text-neutral-500 text-sm font-medium">Total Projects</p>
-              <div className="bg-cyan-400/10 p-2 rounded-lg">
-              </div>
+              <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
             </div>
             <p className="text-3xl font-bold text-white">{totalProjects}</p>
             <p className="text-xs text-neutral-500 mt-1">Ranked submissions</p>
@@ -102,8 +201,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
           <div className="bg-neutral-900 p-6 rounded-2xl border border-neutral-800 hover:border-cyan-400/40 transition-colors">
             <div className="flex justify-between items-start mb-2">
               <p className="text-neutral-500 text-sm font-medium">Trending Now</p>
-              <div className="bg-cyan-400/10 p-2 rounded-lg">
-              </div>
+              <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
             </div>
             <p className="text-3xl font-bold text-white">{trendingCount}</p>
             <p className="text-xs text-neutral-500 mt-1">Projects of this week</p>
@@ -138,7 +236,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
               {/* 1st Place */}
               <div className="w-full md:w-80 bg-neutral-900 border-4 border-yellow-500/60 rounded-2xl p-8 text-center shadow-2xl shadow-yellow-500/10 order-1 md:order-2 h-80 flex flex-col justify-center relative overflow-hidden group">
                 <div className="absolute top-0 right-0 bg-yellow-500/20 border-l border-b border-yellow-500/40 text-yellow-400 px-4 py-1.5 font-bold text-[10px] uppercase tracking-wider rounded-bl-xl">
-                   Champion
+                    Champion
                 </div>
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-black w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-lg shadow-yellow-500/30">
                   1
