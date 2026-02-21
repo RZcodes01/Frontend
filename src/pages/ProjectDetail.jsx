@@ -26,14 +26,6 @@ const ProjectDetail = ({ project, onBack }) => {
             <ArrowLeft size={20} />
             Back to Leaderboard
           </button>
-          <div className="flex gap-3">
-             <button className="hidden md:flex items-center gap-2 px-4 py-2 text-neutral-400 hover:bg-neutral-800 hover:text-white rounded-lg transition-all">
-                <Share2 size={18} /> Share
-             </button>
-             <button className="bg-cyan-400 hover:bg-cyan-300 text-black px-6 py-2 rounded-lg font-bold shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2">
-                <ExternalLink size={18} /> Live Demo
-             </button>
-          </div>
         </div>
       </nav>
 
@@ -100,9 +92,7 @@ const ProjectDetail = ({ project, onBack }) => {
                </div>
             </div>
 
-            <button className="w-full flex items-center justify-center gap-2 p-4 bg-neutral-900 border border-neutral-700 hover:border-cyan-400/50 text-white rounded-2xl font-bold hover:bg-neutral-800 transition-all">
-               <Github size={20} /> View Source Code
-            </button>
+           
           </div>
         </div>
       </main>

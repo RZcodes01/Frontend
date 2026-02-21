@@ -187,7 +187,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={20} />
             <input
               type="text"
-              placeholder="Search students or projects..."
+              placeholder="Search students "
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 border border-neutral-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent bg-neutral-900 text-white placeholder-neutral-500"
@@ -200,7 +200,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
           <div className="px-6 py-5 border-b border-neutral-800 bg-neutral-900">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-white text-lg">Community Rankings</h3>
+                <h3 className="font-bold text-white text-lg">Student Rankings</h3>
                 <p className="text-sm text-neutral-500 mt-0.5">
                   Showing {filteredProjects.length} of {totalProjects} projects
                 </p>
