@@ -21,7 +21,7 @@ export default function Navbar() {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
-  // 🔥 CHECK TOKEN + FETCH USER
+  // CHECK TOKEN + FETCH USER
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
@@ -81,6 +81,7 @@ export default function Navbar() {
     { path: '/quickskills', label: 'Quick Skills' },
     { path: '/project', label: 'Projects' },
     { path: '/community', label: 'Community' },
+    { path: '/career', label: 'Career' },
   ];
 
   const handleLogout = () => {
@@ -157,7 +158,6 @@ export default function Navbar() {
                         <User className="w-5 h-5 text-slate-400" />
                       )}
                     </div>
-
                     <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
                   </div>
 
@@ -169,8 +169,7 @@ export default function Navbar() {
                   </div>
 
                   <svg
-                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180 text-cyan-400' : ''
-                      }`}
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180 text-cyan-400' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -209,7 +208,53 @@ export default function Navbar() {
               </div>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors rounded-lg border border-slate-700"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeWidth="2.5" strokeLinecap="round" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden pb-6 space-y-1.5 border-t border-slate-800 pt-4 mt-1">
+            {navLinks.map(({ path, label }) => (
+              <Link
+                key={path}
+                to={path}
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
+                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white border border-transparent'
+                  }`}
+              >
+                <span>{label}</span>
+              </Link>
+            ))}
+
+            {!isLoggedIn ? (
+              <Link
+                to="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="w-full flex items-center justify-center py-3.5 px-4 bg-cyan-400 text-slate-950 rounded-lg text-base font-bold mt-2 hover:bg-cyan-300 transition-colors"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 mt-2 hover:bg-red-500/20 transition-colors"
+              >
+                Log Out
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );
