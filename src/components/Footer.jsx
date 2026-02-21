@@ -40,17 +40,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Learning */}
-          <div>
-            <h4 className="font-semibold text-white mb-4">Learning</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-cyan-400 transition">Self Paced Program</a></li>
-              <li><a href="#" className="hover:text-cyan-400 transition">Mentor-Led Programs</a></li>
-              <li><a href="#" className="hover:text-cyan-400 transition">Certifications</a></li>
-              <li><a href="#" className="hover:text-cyan-400 transition">Community Access</a></li>
-            </ul>
-          </div>
-
         </div>
 
         {/* Bottom Bar */}

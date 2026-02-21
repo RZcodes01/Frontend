@@ -7,7 +7,7 @@ export default function QuickSkillPreview() {
   const videoRef = useRef(null);
   const navigate = useNavigate();
 
-  const previewVideo = "https://www.w3schools.com/html/mov_bbb.mp4";
+  const previewVideo = "https://res.cloudinary.com/dkiuhq7gb/video/upload/q_auto/v1771481879/reelsFolder/fbcdje7v8iadiqfm3ymd.mp4";
 
   const goToSkills = () => navigate("/quickskills");
 

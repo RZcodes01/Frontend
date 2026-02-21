@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { LayoutGrid, Users, Code, Paintbrush, Database, ArrowRight, Search, Trophy, Star, TrendingUp, Award, Smartphone, Zap, ChevronRight, ArrowLeft, Flame } from 'lucide-react';
 import Leaderboard from './Leaderboard'; 
 import ProjectDetail from './ProjectDetail'; 
 
 const Project = () => {
-
+  const navigate = useNavigate(); // Initialize navigate
   const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState("grid");
-
 
   const communities = [
     { 
       id: 1, 
       name: "Full Stack Development",  
       projectCount: 145, 
-      activeMentors: 8,
-      totalMembers: 1247,
+      activeMentors: 1,
+      totalMembers: 10,
       color: "hover:border-cyan-400",
       bgGradient: "from-cyan-950 to-slate-900",
       accentColor: "cyan",
@@ -31,8 +31,8 @@ const Project = () => {
       id: 2, 
       name: "UI/UX Design", 
       projectCount: 89, 
-      activeMentors: 5,
-      totalMembers: 892,
+      activeMentors: 1,
+      totalMembers: 5,
       color: "hover:border-cyan-400",
       bgGradient: "from-cyan-950 to-slate-900",
       accentColor: "cyan",
@@ -46,8 +46,8 @@ const Project = () => {
       id: 3, 
       name: "Data Science", 
       projectCount: 62, 
-      activeMentors: 4,
-      totalMembers: 634,
+      activeMentors: 1,
+      totalMembers: 5,
       color: "hover:border-cyan-400",
       bgGradient: "from-cyan-950 to-slate-900",
       accentColor: "cyan",
@@ -61,8 +61,8 @@ const Project = () => {
       id: 4, 
       name: "Mobile Development", 
       projectCount: 78, 
-      activeMentors: 6,
-      totalMembers: 956,
+      activeMentors: 1,
+      totalMembers: 5,
       color: "hover:border-cyan-400",
       bgGradient: "from-cyan-950 to-slate-900",
       accentColor: "cyan",
@@ -115,12 +115,17 @@ const Project = () => {
   return (
     <div className="min-h-screen bg-neutral-950">
       <div className="bg-neutral-950 border-b border-neutral-800 text-white">
-        <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="max-w-7xl mx-auto px-6 pt-10 pb-16">
+          {/* Back Button to previous page */}
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 font-bold text-lg mb-8 transition-colors group"
+          >
+            <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform duration-200" />
+            Back
+          </button>
+
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/30 px-4 py-2 rounded-full mb-4">
-              <Zap size={16} className="text-cyan-400" />
-              <span className="text-sm font-semibold text-cyan-400">Live Project Showcase</span>
-            </div>
             <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4 text-white">Projects</h1>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
               Join talented creators, compete on leaderboards, and showcase your best work to the world.

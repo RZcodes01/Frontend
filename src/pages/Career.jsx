@@ -55,15 +55,17 @@ export default function Career() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap'); .syne{font-family:'Syne',sans-serif;}`}</style>
 
       {/* Back Button */}
-      <div className="max-w-5xl mx-auto px-6 pt-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-slate-400 hover:text-cyan-400 font-semibold text-sm transition-colors group"
-        >
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform duration-200" />
-          Back
-        </button>
-      </div>
+              <div className="max-w-5xl mx-auto px-6 pt-10"> 
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-3 text-slate-400 hover:text-cyan-400 font-bold text-lg transition-colors group">
+            <ArrowLeft 
+              size={24} 
+              className="group-hover:-translate-x-2 transition-transform duration-200" // Increased movement
+            />
+            <span>Back</span>
+          </button>
+        </div>
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden py-24 px-6">
@@ -71,9 +73,6 @@ export default function Career() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <span className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-cyan-400 text-xs font-bold uppercase tracking-widest mb-6">
-            <Zap size={12} /> We're hiring mentors
-          </span>
 
           <h1 className="text-5xl sm:text-6xl font-black text-white mb-6 leading-tight syne">
             Shape the Future of<br />

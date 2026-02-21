@@ -31,6 +31,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/register/mentor" element={<MentorRegister />} />
       
       <Route path="/" element={<Homepage />} />
       <Route path="/community" element={<Community />} />
@@ -43,11 +44,9 @@ export default function App() {
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/quickskills" element={<QuickSkills />} />
-          {/* <Route path="/upload-skill" element={<ReelUpload />} /> */}
           <Route path="/community/:id/module/:moduleId" element={<ModulePage />} />
         </Route>
       </Route>
-      {/* <Route path="/quickskills" element={<QuickSkills />} /> */}
     </Routes>
   );
 }

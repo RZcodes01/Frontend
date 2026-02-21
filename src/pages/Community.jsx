@@ -50,10 +50,7 @@ export default function Community() {
       <div className="relative container mx-auto px-6">
         {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-bold tracking-widest uppercase rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-400">
-            <Sparkles size={14} /> Ecosystem
-          </div>
-
+  
           <h2 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight">
             Discover Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Tribe</span>
           </h2>

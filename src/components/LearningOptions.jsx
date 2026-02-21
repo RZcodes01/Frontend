@@ -48,11 +48,6 @@ export default function LearningOptions() {
           {/* Mentor Led Card — highlighted */}
           <div className="group relative bg-slate-900 border-2 border-slate-900 p-8 rounded-2xl shadow-xl hover:shadow-2xl hover:border-cyan-500 transition-all duration-300">
 
-            {/* Most Popular badge */}
-            <div className="absolute -top-4 right-6 bg-cyan-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-md">
-              Most Popular
-            </div>
-
             <div className="flex flex-col h-full">
               <h3 className="text-2xl font-semibold text-white mb-4">
                 Mentor-Led Cohort
