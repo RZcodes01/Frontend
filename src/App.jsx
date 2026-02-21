@@ -58,36 +58,45 @@ function StudentDashLayout() {
 export default function App() {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/register/mentor" element={<MentorRegister />} />
-
       <Route path="/" element={<Homepage />} />
-      <Route path="/community" element={<Community />} />
-      <Route path="/community/:communityId" element={<SingleCommunity />} />
+      <Route element={<MainLayout />}>
+        <Route path="/community" element={<Community />} />
+        <Route path="/community/:communityId" element={<SingleCommunity />} />
+      </Route>
+
       <Route path="/career" element={<Career />} />
 
-      <Route element={<ProtectedRoute />}>
+      {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
+      <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin"]} />}>
         <Route element={<MainLayout />}>
           <Route path="/project" element={<Project />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
-          <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/quickskills" element={<QuickSkills />} />
           <Route path="/upload-skill" element={<UploadReel />} />
           <Route path="/community/:id/module/:moduleId" element={<ModulePage />} />
         </Route>
+      </Route>
 
+      {/* --- ADMIN ONLY ROUTES --- */}
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route element={<AdminDash />}>
           <Route path="/admin" element={<AdminDashboard />} />
         </Route>
+      </Route>
 
+      {/* --- STUDENT ONLY ROUTES --- */}
+      <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
         <Route element={<StudentDashLayout />}>
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/projects/:projectId" element={<ProjectDetail />} />
         </Route>
-
       </Route>
+
     </Routes>
   );
 }
