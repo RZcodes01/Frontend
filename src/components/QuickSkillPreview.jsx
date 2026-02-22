@@ -25,12 +25,12 @@ export default function QuickSkillPreview() {
   };
 
   return (
-    <section style={{ padding: "60px 20px", background: "#000", textAlign: "center" }}>
+    <section style={{ padding: "60px 20px", background: "#EFF6FF", textAlign: "center" }}>
       <div style={{ marginBottom: "40px" }}>
-        <h2 style={{ color: "#fff", fontSize: "2.5rem", fontWeight: 800, marginBottom: "10px" }}>
-          Master Skills in <span style={{ color: "#ff2d55" }}>Seconds</span>
+        <h2 style={{ color: "#1e3a5f", fontSize: "2.5rem", fontWeight: 800, marginBottom: "10px" }}>
+          Master Skills in <span style={{ color: "#FBBF24" }}>Seconds</span>
         </h2>
-        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "1.1rem" }}>
+        <p style={{ color: "#3B82F6", fontSize: "1.1rem" }}>
           Watch bite-sized tutorials just like YouTube Shorts.
         </p>
       </div>
@@ -45,14 +45,14 @@ export default function QuickSkillPreview() {
           width: "280px",
           height: "450px",
           borderRadius: "16px",
-          background: "#111",
+          background: "#1e3a5f",
           overflow: "hidden",
           position: "relative",
           cursor: "pointer",
           margin: "0 auto",
           transition: "transform 0.3s ease",
           transform: isHovered ? "scale(1.05)" : "scale(1)",
-          boxShadow: isHovered ? "0 10px 30px rgba(255, 45, 85, 0.2)" : "none"
+          boxShadow: isHovered ? "0 10px 30px rgba(251, 191, 36, 0.3)" : "none"
         }}
       >
         <video 
@@ -78,9 +78,9 @@ export default function QuickSkillPreview() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            background: "rgba(0,0,0,0.2)"
+            background: "rgba(30,58,95,0.2)"
           }}>
-            <Play size={48} color="#fff" fill="#fff" />
+            <Play size={48} color="#FBBF24" fill="#FBBF24" />
           </div>
         )}
 
@@ -90,13 +90,13 @@ export default function QuickSkillPreview() {
           left: 0,
           right: 0,
           padding: "20px 15px",
-          background: "linear-gradient(transparent, rgba(0,0,0,0.9))",
+          background: "linear-gradient(transparent, rgba(30,58,95,0.95))",
           textAlign: "left"
         }}>
-          <h3 style={{ color: "#fff", fontSize: "1rem", fontWeight: 700, margin: 0 }}>
+          <h3 style={{ color: "#EFF6FF", fontSize: "1rem", fontWeight: 700, margin: 0 }}>
             Learn Today
           </h3>
-          <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "5px", color: "rgba(255,255,255,0.7)", fontSize: "0.8rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "5px", marginTop: "5px", color: "#93C5FD", fontSize: "0.8rem" }}>
             <Eye size={14} /> 15K views
           </div>
         </div>
@@ -109,8 +109,8 @@ export default function QuickSkillPreview() {
           padding: "12px 24px",
           borderRadius: "30px",
           border: "none",
-          background: "#ff2d55",
-          color: "#fff",
+          background: "#1e3a5f",
+          color: "#FBBF24",
           fontWeight: 700,
           cursor: "pointer"
         }}
