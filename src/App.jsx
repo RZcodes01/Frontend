@@ -17,6 +17,7 @@ import Career from "./pages/Career";
 import ModulePage from "./pages/ModulePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UploadReel from "./pages/UploadReel";
+import AdminModuleManager from "./pages/AdminModuleManager";
 
 function MainLayout() {
   return (
@@ -86,6 +87,7 @@ export default function App() {
       <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route element={<AdminDash />}>
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/community/:communityId/edit" element={<AdminModuleManager/>}/>
         </Route>
       </Route>
 
