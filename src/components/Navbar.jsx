@@ -21,7 +21,6 @@ export default function Navbar() {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
-  // CHECK TOKEN + FETCH USER
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
@@ -95,20 +94,20 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
-        ? 'bg-slate-950 border-b border-cyan-500 shadow-[0_4px_0_0_#06b6d4]'
-        : 'bg-slate-950 border-b border-slate-800'
+        ? 'bg-blue-950 border-b border-amber-400 shadow-[0_4px_0_0_#FBBF24]'
+        : 'bg-blue-950 border-b border-blue-800'
       }`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-18 sm:h-22" style={{ height: '72px' }}>
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-lg bg-cyan-500 flex items-center justify-center font-black text-slate-950 text-2xl">
+            <div className="w-11 h-11 rounded-lg bg-amber-400 flex items-center justify-center font-black text-blue-950 text-2xl">
               S
             </div>
             <div className="flex flex-col -space-y-1">
-              <h1 className="font-black text-2xl sm:text-3xl text-white tracking-tight leading-none">
-                Skill<span className="text-cyan-400">Connect</span>
+              <h1 className="font-black text-2xl sm:text-3xl text-blue-50 tracking-tight leading-none">
+                Skill<span className="text-amber-400">Connect</span>
               </h1>
             </div>
           </Link>
@@ -120,19 +119,19 @@ export default function Navbar() {
                 key={path}
                 to={path}
                 className={`relative px-5 py-2.5 text-base font-bold transition-all duration-200 rounded-md ${isActive(path)
-                    ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-500/40'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                    ? 'text-amber-400 bg-amber-400/10 border border-amber-400/40'
+                    : 'text-blue-200 hover:text-blue-50 hover:bg-blue-800'
                   }`}
               >
                 {label}
               </Link>
             ))}
 
-            {/* CONDITIONAL LOGIN / PROFILE */}
+             {/* CONDITIONAL LOGIN / PROFILE */}
             {!isLoggedIn ? (
               <Link
                 to="/login"
-                className="px-5 py-2.5 text-base font-bold text-slate-950 bg-cyan-400 hover:bg-cyan-300 transition-colors duration-200 rounded-md ml-2"
+                className="px-5 py-2.5 text-base font-bold text-blue-950 bg-amber-400 hover:bg-amber-300 transition-colors duration-200 rounded-md ml-2"
               >
                 Login
               </Link>
@@ -140,10 +139,10 @@ export default function Navbar() {
               <div className="relative ml-4" ref={profileRef}>
                 <button
                   onClick={handleProfileClick}
-                  className="flex items-center gap-3 pl-6 ml-4 border-l-2 border-slate-700 group"
+                  className="flex items-center gap-3 pl-6 ml-4 border-l-2 border-blue-700 group"
                 >
                   <div className="relative">
-                    <div className="w-11 h-11 rounded-full overflow-hidden bg-slate-800 border-2 border-slate-600 flex items-center justify-center group-hover:border-cyan-500 transition-colors duration-200">
+                    <div className="w-11 h-11 rounded-full overflow-hidden bg-blue-800 border-2 border-blue-600 flex items-center justify-center group-hover:border-amber-400 transition-colors duration-200">
                       {myData?.coverImage ? (
                         <img
                           src={myData.coverImage}
@@ -151,25 +150,25 @@ export default function Navbar() {
                           className="w-full h-full object-cover"
                         />
                       ) : myData?.name ? (
-                        <span className="text-sm font-black text-cyan-400">
+                        <span className="text-sm font-black text-amber-400">
                           {getInitials(myData.name)}
                         </span>
                       ) : (
-                        <User className="w-5 h-5 text-slate-400" />
+                        <User className="w-5 h-5 text-blue-400" />
                       )}
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-blue-950 rounded-full"></div>
                   </div>
 
                   <div className="hidden lg:flex flex-col items-start -space-y-0.5">
-                    <span className="text-sm font-bold text-white">{myData?.name}</span>
-                    <span className="text-xs text-slate-500 font-semibold uppercase tracking-wide">
+                    <span className="text-sm font-bold text-blue-50">{myData?.name}</span>
+                    <span className="text-xs text-blue-400 font-semibold uppercase tracking-wide">
                       {myData?.role}
                     </span>
                   </div>
 
                   <svg
-                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180 text-cyan-400' : ''}`}
+                    className={`w-4 h-4 text-blue-400 transition-transform duration-200 ${isProfileOpen ? 'rotate-180 text-amber-400' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -179,19 +178,19 @@ export default function Navbar() {
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-3 w-56 py-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl shadow-black/60">
-                    <div className="px-4 py-3 border-b border-slate-800 mb-1">
-                      <p className="text-xs text-slate-500 font-semibold uppercase tracking-widest mb-0.5">
+                  <div className="absolute right-0 mt-3 w-56 py-2 bg-blue-900 border border-blue-700 rounded-xl shadow-2xl shadow-black/60">
+                    <div className="px-4 py-3 border-b border-blue-800 mb-1">
+                      <p className="text-xs text-blue-400 font-semibold uppercase tracking-widest mb-0.5">
                         Signed in as
                       </p>
-                      <p className="text-base font-bold text-white truncate">
+                      <p className="text-base font-bold text-blue-50 truncate">
                         {myData?.name}
                       </p>
                     </div>
 
                     <Link
                       to="/dashboard"
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-base text-slate-300 hover:bg-slate-800 hover:text-cyan-400 transition-colors font-semibold"
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Go to Dashboard
@@ -199,7 +198,7 @@ export default function Navbar() {
 
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-base text-red-400 hover:bg-red-500/10 transition-colors mt-1 border-t border-slate-800 font-semibold"
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-base text-red-400 hover:bg-red-500/10 transition-colors mt-1 border-t border-blue-800 font-semibold"
                     >
                       Log Out
                     </button>
@@ -212,7 +211,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2.5 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors rounded-lg border border-slate-700"
+            className="md:hidden p-2.5 text-blue-400 hover:text-blue-50 hover:bg-blue-800 transition-colors rounded-lg border border-blue-700"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeWidth="2.5" strokeLinecap="round" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
@@ -222,15 +221,15 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden pb-6 space-y-1.5 border-t border-slate-800 pt-4 mt-1">
+          <div className="md:hidden pb-6 space-y-1.5 border-t border-blue-800 pt-4 mt-1">
             {navLinks.map(({ path, label }) => (
               <Link
                 key={path}
                 to={path}
                 onClick={() => setIsMenuOpen(false)}
                 className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white border border-transparent'
+                    ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
+                    : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
                   }`}
               >
                 <span>{label}</span>
@@ -241,7 +240,7 @@ export default function Navbar() {
               <Link
                 to="/login"
                 onClick={() => setIsMenuOpen(false)}
-                className="w-full flex items-center justify-center py-3.5 px-4 bg-cyan-400 text-slate-950 rounded-lg text-base font-bold mt-2 hover:bg-cyan-300 transition-colors"
+                className="w-full flex items-center justify-center py-3.5 px-4 bg-amber-400 text-blue-950 rounded-lg text-base font-bold mt-2 hover:bg-amber-300 transition-colors"
               >
                 Login
               </Link>
