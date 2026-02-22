@@ -19,3 +19,13 @@ export const fetchMyEnrollments = () =>
 
 export const enrollCommunity = (communityId) =>
     API.post(`/community/${communityId}/student`);
+
+// adminDashboard.api.js
+
+// Enroll a mentor into a specific community
+export const enrollMentorToCommunity = (communityId, userId) =>
+    API.post(`/community/${communityId}/mentor`, { userId });
+
+// Fetch all members of a community (including the mentor)
+export const fetchCommunityMembers = (communityId) =>
+    API.get(`/community/${communityId}/members`);

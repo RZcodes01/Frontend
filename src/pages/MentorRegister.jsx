@@ -1,136 +1,85 @@
-// src/pages/MentorRegister.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { registerUser } from "../api/auth.api";
+import axios from "axios";
+
 const MentorRegister = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [mentorData, setMentorData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    experience_year: "",
+  const [form, setForm] = useState({
     expertise: "",
-    bio: ""
+    experience_years: "",
+    resume: ""
   });
-  const handleMentorChange = (e) =>
-    setMentorData({ ...mentorData, [e.target.name]: e.target.value });
-  // ---------------- MENTOR REGISTER ----------------
-  const handleMentorSubmit = async (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
     try {
-      const res = await registerUser({
-        name: mentorData.name,
-        email: mentorData.email,
-        password: mentorData.password,
-        phone: mentorData.phone,
-        experience_year: mentorData.experience_year,
-        expertise: mentorData.expertise,
-        bio: mentorData.bio,
-        role: "mentor"
-      });
-      alert(res.data.message);
-      navigate("/login");
-    } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
-    } finally {
-      setLoading(false);
+      await axios.post(
+        "http://localhost:5000/api/mentors/apply",
+        {
+          expertise: form.expertise.split(",").map(e => e.trim()),
+          experience_years: form.experience_years,
+          resume: form.resume
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
+        }
+      );
+
+      alert("Application submitted successfully");
+    } catch (err) {
+      alert("Application failed");
     }
   };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-10 px-4">
-      <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100">
-        {/* Header */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-slate-800">Mentor Registration</h2>
-          <p className="text-slate-500 text-sm mt-1">Apply to become a mentor on SkillConnect</p>
-        </div>
-        {/* MENTOR FORM */}
-        <form onSubmit={handleMentorSubmit} className="space-y-5">
+    <div className="max-w-lg mx-auto bg-white p-8 rounded-2xl shadow">
+      <h2 className="text-2xl font-bold mb-6">Apply As Mentor</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+
+        <div>
+          <label className="block font-semibold mb-1">Expertise (comma separated)</label>
           <input
             type="text"
-            name="name"
-            placeholder="Full Name"
-            value={mentorData.name}
-            onChange={handleMentorChange}
+            className="w-full border p-3 rounded-xl"
+            value={form.expertise}
+            onChange={(e) => setForm({ ...form, expertise: e.target.value })}
             required
-            className="w-full px-4 py-3 border rounded-xl"
           />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={mentorData.email}
-            onChange={handleMentorChange}
-            required
-            className="w-full px-4 py-3 border rounded-xl"
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone"
-            value={mentorData.phone}
-            onChange={handleMentorChange}
-            required
-            className="w-full px-4 py-3 border rounded-xl"
-          />
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Years of Experience</label>
           <input
             type="number"
-            name="experience_year"
-            placeholder="Years of Experience"
-            value={mentorData.experience_year}
-            onChange={handleMentorChange}
+            className="w-full border p-3 rounded-xl"
+            value={form.experience_years}
+            onChange={(e) => setForm({ ...form, experience_years: e.target.value })}
             required
-            min="0"
-            className="w-full px-4 py-3 border rounded-xl"
           />
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1">Resume Link (Drive / PDF)</label>
           <input
             type="text"
-            name="expertise"
-            placeholder="Expertise (e.g. React, Python, UI/UX)"
-            value={mentorData.expertise}
-            onChange={handleMentorChange}
+            className="w-full border p-3 rounded-xl"
+            value={form.resume}
+            onChange={(e) => setForm({ ...form, resume: e.target.value })}
             required
-            className="w-full px-4 py-3 border rounded-xl"
           />
-          <textarea
-            name="bio"
-            placeholder="Short Bio"
-            value={mentorData.bio}
-            onChange={handleMentorChange}
-            required
-            rows={3}
-            className="w-full px-4 py-3 border rounded-xl resize-none"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={mentorData.password}
-            onChange={handleMentorChange}
-            required
-            className="w-full px-4 py-3 border rounded-xl"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold"
-          >
-            {loading ? "Processing..." : "Apply as Mentor"}
-          </button>
-        </form>
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => navigate("/login")}
-            className="text-blue-600 font-bold"
-          >
-            Already have an account? Login
-          </button>
         </div>
-      </div>
+
+        <button
+          type="submit"
+          className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800"
+        >
+          Submit Application
+        </button>
+      </form>
     </div>
   );
 };
+
 export default MentorRegister;
