@@ -8,7 +8,7 @@ const QuickSkills = () => {
   useEffect(() => {
     const loadReels = async () => {
       try {
-        const data = await fetchReels();
+        const data = await fetchReels ();
         setReels(data);
       } catch (err) {
         console.error("Error fetching reels:", err);

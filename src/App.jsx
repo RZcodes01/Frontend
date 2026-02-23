@@ -18,10 +18,13 @@ function MainLayout() {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <main className="pt-16 sm:pt-20">
+        <Outlet />
+      </main>
     </>
   );
 }
+
 
 export default function App() {
   return (
@@ -29,14 +32,12 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* <Route path="/" element={<QuickSkillPreview />} /> */}
-
+      <Route path="/" element={<Homepage />} />
+      <Route path="/community" element={<Community />} />
+      <Route path="/community/:communityId" element={<SingleCommunity />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>
 
-          <Route path="/" element={<Homepage />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/community/:communityId" element={<SingleCommunity />} />
           <Route path="/project" element={<Project />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
@@ -44,10 +45,10 @@ export default function App() {
 
           <Route path="/quickskills" element={<QuickSkills />} />
           <Route path="/upload-skill" element={<ReelUpload />} />
-          
+
         </Route>
       </Route>
-          {/* <Route path="/quickskills" element={<QuickSkills />} /> */}
+      {/* <Route path="/quickskills" element={<QuickSkills />} /> */}
 
     </Routes>
   );
