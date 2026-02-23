@@ -12,14 +12,12 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 const fmt = (date) =>
     date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function PaymentPage({ batch, onBack, onSuccess }) {
     const [form, setForm] = useState({ name: '', email: '', cardNumber: '', expiry: '', cvv: '', upi: '' });
-    const [method, setMethod] = useState('card'); // 'card' | 'upi'
+    const [method, setMethod] = useState('card');
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
     const [errors, setErrors] = useState({});
@@ -54,7 +52,6 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
     const handlePay = async () => {
         if (!validate()) return;
         setLoading(true);
-        // Simulate payment API call
         await new Promise((r) => setTimeout(r, 2000));
         setLoading(false);
         setDone(true);
@@ -62,29 +59,29 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
     };
 
     const inputClass = (key) =>
-        `w-full bg-neutral-950 border ${errors[key] ? 'border-red-500/60 focus:ring-red-500/30' : 'border-neutral-700 focus:border-cyan-400/60 focus:ring-cyan-400/10'} rounded-xl px-4 py-3 text-white placeholder-neutral-600 text-sm outline-none focus:ring-2 transition-all`;
+        `w-full bg-blue-50 border ${errors[key] ? 'border-red-400 focus:ring-red-400/30' : 'border-blue-300 focus:border-amber-400 focus:ring-amber-400/20'} rounded-xl px-4 py-3 text-blue-950 placeholder-blue-300 text-base outline-none focus:ring-2 transition-all font-medium`;
 
     // ── Success Screen ────────────────────────────────────────────────────────
     if (done) {
         return (
-            <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-white px-6">
+            <div className="min-h-screen bg-blue-50 flex items-center justify-center text-blue-950 px-6">
                 <div className="text-center max-w-md">
-                    <div className="w-20 h-20 rounded-full bg-cyan-400/15 border border-cyan-400/30 flex items-center justify-center mx-auto mb-6 animate-pulse">
-                        <CheckCircle2 className="w-10 h-10 text-cyan-400" />
+                    <div className="w-20 h-20 rounded-full bg-amber-400/15 border border-amber-400/30 flex items-center justify-center mx-auto mb-6 animate-pulse">
+                        <CheckCircle2 className="w-10 h-10 text-amber-500" />
                     </div>
-                    <h1 className="text-4xl font-black mb-3">You're In! 🎉</h1>
-                    <p className="text-neutral-400 text-lg mb-2">
-                        Payment successful for <span className="text-white font-semibold">{batch.name}</span>
+                    <h1 className="text-4xl font-black mb-3 text-blue-950">You're In! 🎉</h1>
+                    <p className="text-blue-600 text-xl font-medium mb-2">
+                        Payment successful for <span className="text-blue-950 font-black">{batch.name}</span>
                     </p>
-                    <p className="text-neutral-500 text-sm mb-8">
-                        A confirmation has been sent to <span className="text-cyan-400">{form.email}</span>. Your batch starts on{' '}
-                        <span className="text-white font-medium">{fmt(batch.startDate)}</span>.
+                    <p className="text-blue-500 text-base font-medium mb-8">
+                        A confirmation has been sent to <span className="text-amber-500 font-bold">{form.email}</span>. Your batch starts on{' '}
+                        <span className="text-blue-900 font-black">{fmt(batch.startDate)}</span>.
                     </p>
                     <div className="flex flex-col gap-3">
-                        <button className="bg-cyan-400 hover:bg-cyan-300 text-black px-8 py-3 rounded-xl font-bold transition-all hover:scale-105">
+                        <button className="bg-amber-400 hover:bg-amber-300 text-blue-950 px-8 py-3 rounded-xl font-black text-base transition-all hover:scale-105">
                             Go to Dashboard
                         </button>
-                        <button onClick={onBack} className="text-neutral-500 hover:text-neutral-300 text-sm transition-colors">
+                        <button onClick={onBack} className="text-blue-400 hover:text-blue-600 text-base font-semibold transition-colors">
                             Back to Course
                         </button>
                     </div>
@@ -95,17 +92,18 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
 
     // ── Payment Screen ────────────────────────────────────────────────────────
     return (
-        <div className="min-h-screen bg-neutral-950 text-white">
+        <div className="min-h-screen bg-blue-50 text-blue-950">
+
             {/* Header */}
-            <div className="bg-neutral-900 border-b border-neutral-800 px-6 py-5">
+            <div className="bg-blue-900 border-b border-blue-700 px-6 py-5">
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
-                    <button onClick={onBack} className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium group">
+                    <button onClick={onBack} className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors font-black text-base group">
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                         Change Batch
                     </button>
-                    <div className="flex items-center gap-2 text-cyan-400">
+                    <div className="flex items-center gap-2 text-amber-400">
                         <Crown className="w-5 h-5" />
-                        <span className="font-bold tracking-wide text-sm uppercase">Secure Checkout</span>
+                        <span className="font-black tracking-wide text-sm uppercase">Secure Checkout</span>
                     </div>
                 </div>
             </div>
@@ -115,33 +113,33 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                 {/* ── Left: Payment Form ── */}
                 <div className="lg:col-span-3 space-y-8">
                     <div>
-                        <h1 className="text-3xl font-black mb-1">Complete Payment</h1>
-                        <p className="text-neutral-400 text-sm">Secure, encrypted payment powered by Razorpay</p>
+                        <h1 className="text-3xl font-black mb-1 text-blue-950">Complete Payment</h1>
+                        <p className="text-blue-500 text-base font-medium">Secure, encrypted payment powered by Razorpay</p>
                     </div>
 
                     {/* Personal Info */}
-                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6 space-y-4">
-                        <h3 className="font-semibold text-white flex items-center gap-2">
-                            <Users className="w-4 h-4 text-cyan-400" /> Personal Details
+                    <div className="bg-blue-900 rounded-2xl border border-blue-700 p-6 space-y-4">
+                        <h3 className="font-black text-blue-50 text-lg flex items-center gap-2">
+                            <Users className="w-5 h-5 text-amber-400" /> Personal Details
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="text-xs text-neutral-500 mb-1 block">Full Name</label>
+                                <label className="text-sm text-blue-300 font-semibold mb-1 block">Full Name</label>
                                 <input value={form.name} onChange={set('name')} placeholder="Aditya Sharma" className={inputClass('name')} />
-                                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
+                                {errors.name && <p className="text-red-400 text-sm mt-1 font-medium">{errors.name}</p>}
                             </div>
                             <div>
-                                <label className="text-xs text-neutral-500 mb-1 block">Email Address</label>
+                                <label className="text-sm text-blue-300 font-semibold mb-1 block">Email Address</label>
                                 <input value={form.email} onChange={set('email')} placeholder="aditya@email.com" className={inputClass('email')} type="email" />
-                                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+                                {errors.email && <p className="text-red-400 text-sm mt-1 font-medium">{errors.email}</p>}
                             </div>
                         </div>
                     </div>
 
                     {/* Payment Method Toggle */}
-                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6 space-y-5">
-                        <h3 className="font-semibold text-white flex items-center gap-2">
-                            <CreditCard className="w-4 h-4 text-cyan-400" /> Payment Method
+                    <div className="bg-blue-900 rounded-2xl border border-blue-700 p-6 space-y-5">
+                        <h3 className="font-black text-blue-50 text-lg flex items-center gap-2">
+                            <CreditCard className="w-5 h-5 text-amber-400" /> Payment Method
                         </h3>
 
                         <div className="grid grid-cols-2 gap-3">
@@ -149,7 +147,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                                 <button
                                     key={m}
                                     onClick={() => setMethod(m)}
-                                    className={`py-2.5 rounded-xl border text-sm font-semibold transition-all ${method === m ? 'bg-cyan-400/10 border-cyan-400/50 text-cyan-400' : 'border-neutral-700 text-neutral-400 hover:border-neutral-600'}`}
+                                    className={`py-2.5 rounded-xl border text-base font-black transition-all ${method === m ? 'bg-amber-400/10 border-amber-400/50 text-amber-400' : 'border-blue-700 text-blue-300 hover:border-blue-500'}`}
                                 >
                                     {m === 'card' ? '💳 Card' : '⚡ UPI'}
                                 </button>
@@ -159,28 +157,28 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         {method === 'card' ? (
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-xs text-neutral-500 mb-1 block">Card Number</label>
+                                    <label className="text-sm text-blue-300 font-semibold mb-1 block">Card Number</label>
                                     <input value={form.cardNumber} onChange={set('cardNumber')} placeholder="4242 4242 4242 4242" className={inputClass('cardNumber')} />
-                                    {errors.cardNumber && <p className="text-red-400 text-xs mt-1">{errors.cardNumber}</p>}
+                                    {errors.cardNumber && <p className="text-red-400 text-sm mt-1 font-medium">{errors.cardNumber}</p>}
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-xs text-neutral-500 mb-1 block">Expiry</label>
+                                        <label className="text-sm text-blue-300 font-semibold mb-1 block">Expiry</label>
                                         <input value={form.expiry} onChange={set('expiry')} placeholder="MM/YY" className={inputClass('expiry')} />
-                                        {errors.expiry && <p className="text-red-400 text-xs mt-1">{errors.expiry}</p>}
+                                        {errors.expiry && <p className="text-red-400 text-sm mt-1 font-medium">{errors.expiry}</p>}
                                     </div>
                                     <div>
-                                        <label className="text-xs text-neutral-500 mb-1 block">CVV</label>
+                                        <label className="text-sm text-blue-300 font-semibold mb-1 block">CVV</label>
                                         <input value={form.cvv} onChange={set('cvv')} placeholder="•••" className={inputClass('cvv')} type="password" />
-                                        {errors.cvv && <p className="text-red-400 text-xs mt-1">{errors.cvv}</p>}
+                                        {errors.cvv && <p className="text-red-400 text-sm mt-1 font-medium">{errors.cvv}</p>}
                                     </div>
                                 </div>
                             </div>
                         ) : (
                             <div>
-                                <label className="text-xs text-neutral-500 mb-1 block">UPI ID</label>
+                                <label className="text-sm text-blue-300 font-semibold mb-1 block">UPI ID</label>
                                 <input value={form.upi} onChange={set('upi')} placeholder="yourname@upi" className={inputClass('upi')} />
-                                {errors.upi && <p className="text-red-400 text-xs mt-1">{errors.upi}</p>}
+                                {errors.upi && <p className="text-red-400 text-sm mt-1 font-medium">{errors.upi}</p>}
                             </div>
                         )}
                     </div>
@@ -189,11 +187,11 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                     <button
                         onClick={handlePay}
                         disabled={loading}
-                        className="w-full bg-cyan-400 hover:bg-cyan-300 disabled:opacity-60 disabled:cursor-not-allowed text-black py-4 rounded-xl font-black text-lg transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-3"
+                        className="w-full bg-amber-400 hover:bg-amber-300 disabled:opacity-60 disabled:cursor-not-allowed text-blue-950 py-4 rounded-xl font-black text-lg transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-amber-400/20 flex items-center justify-center gap-3"
                     >
                         {loading ? (
                             <>
-                                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-blue-950/30 border-t-blue-950 rounded-full animate-spin" />
                                 Processing…
                             </>
                         ) : (
@@ -204,63 +202,62 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         )}
                     </button>
 
-                    <p className="text-center text-neutral-600 text-xs flex items-center justify-center gap-1.5">
-                        <ShieldCheck className="w-4 h-4 text-neutral-600" />
+                    <p className="text-center text-blue-400 text-sm font-medium flex items-center justify-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 text-blue-400" />
                         256-bit SSL encrypted · Your data is never stored
                     </p>
                 </div>
 
                 {/* ── Right: Order Summary ── */}
                 <div className="lg:col-span-2 space-y-5">
-                    <div className="bg-neutral-900 rounded-2xl border border-neutral-800 p-6 sticky top-8">
-                        <h3 className="font-bold text-white text-lg mb-5 flex items-center gap-2">
-                            <Crown className="w-5 h-5 text-cyan-400" /> Order Summary
+                    <div className="bg-blue-900 rounded-2xl border border-blue-700 p-6 sticky top-8">
+                        <h3 className="font-black text-blue-50 text-xl mb-5 flex items-center gap-2">
+                            <Crown className="w-5 h-5 text-amber-400" /> Order Summary
                         </h3>
 
                         {/* Batch Card */}
-                        <div className="bg-neutral-950 rounded-xl border border-neutral-800 p-4 mb-5">
-                            <p className="text-cyan-400 text-xs font-semibold uppercase tracking-widest mb-1">Selected Batch</p>
-                            <p className="text-white font-bold text-lg">{batch.name}</p>
-                            <div className="mt-3 space-y-1.5 text-sm text-neutral-400">
+                        <div className="bg-blue-950 rounded-xl border border-blue-700 p-4 mb-5">
+                            <p className="text-amber-400 text-xs font-black uppercase tracking-widest mb-1">Selected Batch</p>
+                            <p className="text-blue-50 font-black text-xl">{batch.name}</p>
+                            <div className="mt-3 space-y-1.5 text-base text-blue-300 font-medium">
                                 <div className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4 text-cyan-400/60" />
+                                    <Calendar className="w-4 h-4 text-amber-400/60" />
                                     {fmt(batch.startDate)} → {fmt(batch.endDate)}
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Users className="w-4 h-4 text-cyan-400/60" />
+                                    <Users className="w-4 h-4 text-amber-400/60" />
                                     {batch.seatsLeft} seats remaining
                                 </div>
                             </div>
                         </div>
 
                         {/* Pricing Breakdown */}
-                        <div className="space-y-3 text-sm">
-                            <div className="flex justify-between text-neutral-400">
+                        <div className="space-y-3 text-base">
+                            <div className="flex justify-between text-blue-300 font-medium">
                                 <span>Course Fee</span>
                                 <span>₹{batch.price.toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="flex justify-between text-neutral-400">
+                            <div className="flex justify-between text-blue-300 font-medium">
                                 <span>GST (18%)</span>
                                 <span>₹{gst.toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="h-px bg-neutral-800 my-2" />
-                            <div className="flex justify-between text-white font-bold text-base">
+                            <div className="h-px bg-blue-700 my-2" />
+                            <div className="flex justify-between text-blue-50 font-black text-lg">
                                 <span>Total</span>
-                                <span className="text-cyan-400">₹{total.toLocaleString('en-IN')}</span>
+                                <span className="text-amber-400">₹{total.toLocaleString('en-IN')}</span>
                             </div>
                         </div>
 
                         {/* Perks */}
                         <div className="mt-6 space-y-2">
-                            <p className="text-xs text-neutral-500 uppercase tracking-widest font-semibold mb-3">What's included</p>
+                            <p className="text-sm text-blue-400 uppercase tracking-widest font-black mb-3">What's included</p>
                             {[
                                 'Lifetime access to batch recordings',
                                 'Certificate of completion',
                                 'Private community access',
-                                '30-day money back guarantee',
                             ].map((perk, i) => (
-                                <div key={i} className="flex items-center gap-2 text-sm text-neutral-300">
-                                    <CheckCircle2 className="w-4 h-4 text-cyan-500 flex-shrink-0" />
+                                <div key={i} className="flex items-center gap-2 text-base text-blue-200 font-medium">
+                                    <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
                                     {perk}
                                 </div>
                             ))}

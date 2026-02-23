@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { LayoutGrid, Users, Code, Paintbrush, Database, ArrowRight, Search, Trophy, Star, TrendingUp, Award, Smartphone, Zap, ChevronRight, ArrowLeft, Flame } from 'lucide-react';
 import Leaderboard from './Leaderboard'; 
 import ProjectDetail from './ProjectDetail'; 
 
 const Project = () => {
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,9 +18,9 @@ const Project = () => {
       projectCount: 145, 
       activeMentors: 1,
       totalMembers: 10,
-      color: "hover:border-cyan-400",
-      bgGradient: "from-cyan-950 to-slate-900",
-      accentColor: "cyan",
+      color: "hover:border-amber-400",
+      bgGradient: "from-blue-950 to-blue-900",
+      accentColor: "amber",
       description: "Build end-to-end web applications with MERN stack, Next.js, and modern API architecture.",
       tags: ["React", "Node.js", "Next.js", "MongoDB"],
       topProject: "SaaS Dashboard Platform",
@@ -33,9 +33,9 @@ const Project = () => {
       projectCount: 89, 
       activeMentors: 1,
       totalMembers: 5,
-      color: "hover:border-cyan-400",
-      bgGradient: "from-cyan-950 to-slate-900",
-      accentColor: "cyan",
+      color: "hover:border-amber-400",
+      bgGradient: "from-blue-950 to-blue-900",
+      accentColor: "amber",
       description: "Create stunning user experiences with modern design principles and prototyping tools.",
       tags: ["Figma", "Adobe XD", "Prototyping", "Mobile"],
       topProject: "Banking App Redesign",
@@ -48,9 +48,9 @@ const Project = () => {
       projectCount: 62, 
       activeMentors: 1,
       totalMembers: 5,
-      color: "hover:border-cyan-400",
-      bgGradient: "from-cyan-950 to-slate-900",
-      accentColor: "cyan",
+      color: "hover:border-amber-400",
+      bgGradient: "from-blue-950 to-blue-900",
+      accentColor: "amber",
       description: "Dive into machine learning, data analysis, and predictive modeling with Python.",
       tags: ["Python", "TensorFlow", "ML", "Analytics"],
       topProject: "Predictive Analytics Engine",
@@ -63,9 +63,9 @@ const Project = () => {
       projectCount: 78, 
       activeMentors: 1,
       totalMembers: 5,
-      color: "hover:border-cyan-400",
-      bgGradient: "from-cyan-950 to-slate-900",
-      accentColor: "cyan",
+      color: "hover:border-amber-400",
+      bgGradient: "from-blue-950 to-blue-900",
+      accentColor: "amber",
       description: "Develop cross-platform mobile apps with React Native, Flutter, and native technologies.",
       tags: ["React Native", "Flutter", "iOS", "Android"],
       topProject: "Fitness Tracking App",
@@ -95,10 +95,10 @@ const Project = () => {
 
   if (selectedCommunity) {
     return (
-      <div className="relative min-h-screen bg-neutral-950">
+      <div className="relative min-h-screen bg-blue-950">
         <button 
           onClick={() => setSelectedCommunity(null)}
-          className="fixed bottom-8 right-8 z-[100] bg-cyan-400 text-black px-6 py-3 rounded-full font-bold shadow-2xl shadow-cyan-500/20 flex items-center gap-2 hover:scale-105 hover:bg-cyan-300 transition-all"
+          className="fixed bottom-8 right-8 z-[100] bg-amber-400 text-blue-950 px-6 py-3 rounded-full font-bold shadow-2xl shadow-amber-400/20 flex items-center gap-2 hover:scale-105 hover:bg-amber-300 transition-all"
         >
           <ArrowLeft size={18} /> 
           Back to Communities
@@ -113,50 +113,50 @@ const Project = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950">
-      <div className="bg-neutral-950 border-b border-neutral-800 text-white">
+    <div className="min-h-screen bg-blue-50">
+      <div className="bg-blue-50 border-b border-blue-200 text-blue-900">
         <div className="max-w-7xl mx-auto px-6 pt-10 pb-16">
-          {/* Back Button to previous page */}
+
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 font-bold text-lg mb-8 transition-colors group"
+            className="flex items-center gap-2 text-blue-700 hover:text-amber-500 font-bold text-lg mb-8 transition-colors group"
           >
             <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform duration-200" />
             Back
           </button>
 
           <div className="text-center mb-8">
-            <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4 text-white">Projects</h1>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed">
+            <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4 text-blue-950">Projects</h1>
+            <p className="text-xl text-blue-700 max-w-2xl mx-auto leading-relaxed">
               Join talented creators, compete on leaderboards, and showcase your best work to the world.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
-            <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 hover:border-cyan-400/50 transition-colors">
+            <div className="bg-blue-100 rounded-2xl p-6 border border-blue-300 hover:border-amber-400/50 transition-colors shadow-sm">
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
+                <div className="bg-amber-400/20 p-2 rounded-lg"></div>
                 <div>
-                  <p className="text-neutral-400 text-sm font-medium">Total Projects</p>
-                  <p className="text-3xl font-bold text-white">{totalProjects}</p>
+                  <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Total Projects</p>
+                  <p className="text-4xl font-black text-blue-950">{totalProjects}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 hover:border-cyan-400/50 transition-colors">
+            <div className="bg-blue-100 rounded-2xl p-6 border border-blue-300 hover:border-amber-400/50 transition-colors shadow-sm">
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
+                <div className="bg-amber-400/20 p-2 rounded-lg"></div>
                 <div>
-                  <p className="text-neutral-400 text-sm font-medium">Active Members</p>
-                  <p className="text-3xl font-bold text-white">{totalMembers.toLocaleString()}</p>
+                  <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Active Members</p>
+                  <p className="text-4xl font-black text-blue-950">{totalMembers.toLocaleString()}</p>
                 </div>
               </div>
             </div>
-            <div className="bg-neutral-900 rounded-2xl p-6 border border-neutral-800 hover:border-cyan-400/50 transition-colors">
+            <div className="bg-blue-100 rounded-2xl p-6 border border-blue-300 hover:border-amber-400/50 transition-colors shadow-sm">
               <div className="flex items-center gap-3 mb-2">
-                <div className="bg-cyan-400/10 p-2 rounded-lg"></div>
+                <div className="bg-amber-400/20 p-2 rounded-lg"></div>
                 <div>
-                  <p className="text-neutral-400 text-sm font-medium">Expert Mentors</p>
-                  <p className="text-3xl font-bold text-white">{totalMentors}</p>
+                  <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Expert Mentors</p>
+                  <p className="text-4xl font-black text-blue-950">{totalMentors}</p>
                 </div>
               </div>
             </div>
@@ -167,28 +167,28 @@ const Project = () => {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={20} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" size={20} />
             <input 
               type="text"
               placeholder="Search communities..."
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-neutral-700 outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent bg-neutral-900 text-white placeholder-neutral-500"
+              className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-blue-300 outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-blue-100 text-blue-950 placeholder-blue-400 text-base font-medium"
               onChange={(e) => setSearchQuery(e.target.value)}
               value={searchQuery}
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-neutral-400 font-medium">View:</span>
-            <div className="bg-neutral-900 border border-neutral-700 rounded-lg p-1 flex gap-1">
+            <span className="text-sm text-blue-700 font-semibold">View:</span>
+            <div className="bg-blue-100 border border-blue-300 rounded-lg p-1 flex gap-1">
               <button 
                 onClick={() => setViewMode("grid")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === "grid" ? 'bg-cyan-400 text-black' : 'text-neutral-400 hover:text-white'}`}
+                className={`px-3 py-1.5 rounded-md text-sm font-bold transition-all ${viewMode === "grid" ? 'bg-amber-400 text-blue-950' : 'text-blue-700 hover:text-blue-950'}`}
               >
                 <LayoutGrid size={16} className="inline mr-1" /> Grid
               </button>
               <button 
                 onClick={() => setViewMode("list")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === "list" ? 'bg-cyan-400 text-black' : 'text-neutral-400 hover:text-white'}`}
+                className={`px-3 py-1.5 rounded-md text-sm font-bold transition-all ${viewMode === "list" ? 'bg-amber-400 text-blue-950' : 'text-blue-700 hover:text-blue-950'}`}
               >
                 List
               </button>
@@ -202,25 +202,25 @@ const Project = () => {
               <div 
                 key={community.id}
                 onClick={() => setSelectedCommunity(community.name)}
-                className={`group bg-neutral-900 rounded-2xl border-2 border-neutral-800 cursor-pointer hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300 hover:-translate-y-2 overflow-hidden ${community.color}`}
+                className={`group bg-blue-900 rounded-2xl border-2 border-blue-700 cursor-pointer hover:shadow-2xl hover:shadow-amber-400/10 transition-all duration-300 hover:-translate-y-2 overflow-hidden ${community.color}`}
               >
-                <div className={`bg-gradient-to-r ${community.bgGradient} p-6 border-b border-neutral-800`}>
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-neutral-900 rounded-xl shadow-md border border-neutral-700">{community.icon}</div>
-                      <div>
-                        <h3 className="text-xl font-bold text-white">{community.name}</h3>
-                        <p className="text-xs text-neutral-400">{community.totalMembers.toLocaleString()} members</p>
-                      </div>
+                <div className={`bg-gradient-to-r ${community.bgGradient} p-6 border-b border-blue-700`}>
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-blue-950 rounded-xl shadow-md border border-blue-600">{community.icon}</div>
+                    <div>
+                      <h3 className="text-2xl font-black text-blue-50">{community.name}</h3>
+                      <p className="text-sm text-blue-300 font-semibold">{community.totalMembers.toLocaleString()} members</p>
                     </div>
+                  </div>
                 </div>
                 <div className="p-6">
-                  <p className="text-neutral-400 text-sm mb-4">{community.description}</p>
+                  <p className="text-blue-200 text-base font-medium mb-4 leading-relaxed">{community.description}</p>
                   <div className="flex flex-wrap gap-2 mb-5">
                     {community.tags.map((tag, i) => (
-                      <span key={i} className="px-3 py-1 rounded-lg text-xs font-semibold bg-neutral-800 text-neutral-300 border border-neutral-700">{tag}</span>
+                      <span key={i} className="px-3 py-1 rounded-lg text-sm font-bold bg-blue-800 text-blue-100 border border-blue-600">{tag}</span>
                     ))}
                   </div>
-                  <button className="w-full bg-cyan-400 hover:bg-cyan-300 text-black py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
+                  <button className="w-full bg-amber-400 hover:bg-amber-300 text-blue-950 py-3 rounded-xl font-black text-base flex items-center justify-center gap-2 transition-colors">
                     View Leaderboard <ChevronRight size={20} />
                   </button>
                 </div>
@@ -233,17 +233,17 @@ const Project = () => {
               <div 
                 key={community.id}
                 onClick={() => setSelectedCommunity(community.name)}
-                className="group bg-neutral-900 rounded-xl border border-neutral-800 p-6 cursor-pointer hover:border-cyan-400/60 transition-all"
+                className="group bg-blue-900 rounded-xl border border-blue-700 p-6 cursor-pointer hover:border-amber-400/60 transition-all"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex items-center gap-4">
-                    <div className={`p-3 bg-gradient-to-r ${community.bgGradient} rounded-xl shadow-md border border-neutral-700`}>{community.icon}</div>
+                    <div className={`p-3 bg-gradient-to-r ${community.bgGradient} rounded-xl shadow-md border border-blue-600`}>{community.icon}</div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">{community.name}</h3>
-                      <p className="text-xs text-neutral-400">{community.totalMembers.toLocaleString()} members</p>
+                      <h3 className="text-xl font-black text-blue-50">{community.name}</h3>
+                      <p className="text-sm text-blue-300 font-semibold">{community.totalMembers.toLocaleString()} members</p>
                     </div>
                   </div>
-                  <ChevronRight size={24} className="text-neutral-600 group-hover:text-cyan-400 transition-all" />
+                  <ChevronRight size={24} className="text-blue-500 group-hover:text-amber-400 transition-all" />
                 </div>
               </div>
             ))}

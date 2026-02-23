@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-// ─── Mock batch data (replace with API call) ────────────────────────────────
 const ALL_BATCHES = [
     {
         id: 'batch-jan-2025',
@@ -82,75 +81,70 @@ const ALL_BATCHES = [
     },
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 const fmt = (date) =>
     date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
 const tagStyle = (tag) => {
     switch (tag) {
-        case 'Full': return 'bg-neutral-800 text-neutral-500 border-neutral-700';
+        case 'Full': return 'bg-blue-800 text-blue-400 border-blue-700';
         case 'Almost Full': return 'bg-orange-500/15 text-orange-400 border-orange-500/30';
-        case 'Open': return 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30';
-        case 'Early Bird': return 'bg-yellow-500/15 text-yellow-400 border-yellow-500/30';
+        case 'Open': return 'bg-amber-400/15 text-amber-500 border-amber-400/30';
+        case 'Early Bird': return 'bg-yellow-500/15 text-yellow-500 border-yellow-500/30';
         case 'Coming Soon': return 'bg-purple-500/15 text-purple-400 border-purple-500/30';
-        default: return 'bg-neutral-800 text-neutral-400';
+        default: return 'bg-blue-800 text-blue-400';
     }
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export default function BatchSelectionPage({ onBack, onSelectBatch }) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Only show batches that haven't ended yet
     const availableBatches = ALL_BATCHES.filter((b) => b.endDate >= today);
     const pastBatches = ALL_BATCHES.filter((b) => b.endDate < today);
 
     const [hovered, setHovered] = useState(null);
 
     const handleSelect = (batch) => {
-        if (batch.seatsLeft === 0) return; // full batches are blocked
+        if (batch.seatsLeft === 0) return;
         onSelectBatch?.(batch);
     };
 
     return (
-        <div className="min-h-screen bg-neutral-950 text-white">
+        <div className="min-h-screen bg-blue-50 text-blue-950">
+
             {/* Header strip */}
-            <div className="bg-neutral-900 border-b border-neutral-800 px-6 py-5">
+            <div className="bg-blue-900 border-b border-blue-700 px-6 py-5">
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <button
                         onClick={onBack}
-                        className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors font-medium group"
+                        className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors font-bold text-base group"
                     >
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                         Back to Course
                     </button>
-                    <div className="flex items-center gap-2 text-cyan-400">
+                    <div className="flex items-center gap-2 text-amber-400">
                         <Crown className="w-5 h-5" />
-                        <span className="font-bold tracking-wide text-sm uppercase">Pro Upgrade</span>
+                        <span className="font-black tracking-wide text-sm uppercase">Pro Upgrade</span>
                     </div>
                 </div>
             </div>
 
             <div className="max-w-5xl mx-auto px-6 py-14">
+
                 {/* Title */}
                 <div className="text-center mb-14">
-                    <div className="inline-flex items-center gap-2 bg-cyan-400/10 border border-cyan-400/20 px-4 py-1.5 rounded-full text-cyan-400 text-sm font-semibold mb-5">
-                        <Zap className="w-4 h-4" />
-                        Select Your Batch
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
+                    <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight text-blue-950">
                         Choose When You <br />
-                        <span className="text-cyan-400">Start Learning</span>
+                        <span className="text-amber-500">Start Learning</span>
                     </h1>
-                    <p className="text-neutral-400 text-lg max-w-xl mx-auto">
+                    <p className="text-blue-600 text-xl font-medium max-w-xl mx-auto">
                         Only batches you can join from today are shown. Past batches are hidden automatically.
                     </p>
                 </div>
 
                 {/* Available Batches */}
                 {availableBatches.length === 0 ? (
-                    <div className="text-center text-neutral-500 py-20 text-lg">
+                    <div className="text-center text-blue-400 py-20 text-xl font-semibold">
                         No upcoming batches right now. Check back soon!
                     </div>
                 ) : (
@@ -167,52 +161,53 @@ export default function BatchSelectionPage({ onBack, onSelectBatch }) {
                                     onMouseLeave={() => setHovered(null)}
                                     onClick={() => handleSelect(batch)}
                                     className={`
-                                        relative bg-neutral-900 rounded-2xl border transition-all duration-300 overflow-hidden
+                                        relative bg-blue-900 rounded-2xl border transition-all duration-300 overflow-hidden
                                         ${isFull
-                                            ? 'border-neutral-800 opacity-50 cursor-not-allowed'
+                                            ? 'border-blue-800 opacity-50 cursor-not-allowed'
                                             : isActive
-                                                ? 'border-cyan-400/50 shadow-xl shadow-cyan-500/10 cursor-pointer scale-[1.01]'
-                                                : 'border-neutral-800 hover:border-cyan-400/30 cursor-pointer'
+                                                ? 'border-amber-400/60 shadow-xl shadow-amber-400/10 cursor-pointer scale-[1.01]'
+                                                : 'border-blue-700 hover:border-amber-400/30 cursor-pointer'
                                         }
                                     `}
                                 >
                                     {/* Glowing left accent */}
                                     {!isFull && isActive && (
-                                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-cyan-400 rounded-l-2xl" />
+                                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-l-2xl" />
                                     )}
 
                                     <div className="p-6 md:p-8">
                                         <div className="flex flex-col md:flex-row md:items-center gap-6">
+
                                             {/* Left: info */}
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-3 flex-wrap">
-                                                    <h2 className="text-xl font-bold text-white">{batch.name}</h2>
-                                                    <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${tagStyle(batch.tag)}`}>
+                                                    <h2 className="text-2xl font-black text-blue-50">{batch.name}</h2>
+                                                    <span className={`text-sm font-bold px-3 py-1 rounded-full border ${tagStyle(batch.tag)}`}>
                                                         {batch.tag}
                                                     </span>
                                                     {batch.tag === 'Almost Full' && (
-                                                        <span className="flex items-center gap-1 text-orange-400 text-xs font-bold">
+                                                        <span className="flex items-center gap-1 text-orange-400 text-sm font-black">
                                                             <Flame className="w-3.5 h-3.5" /> Filling fast!
                                                         </span>
                                                     )}
                                                 </div>
 
                                                 {/* Dates */}
-                                                <div className="flex flex-wrap gap-4 text-sm text-neutral-400 mb-4">
+                                                <div className="flex flex-wrap gap-4 text-base text-blue-300 font-medium mb-4">
                                                     <span className="flex items-center gap-1.5">
-                                                        <Calendar className="w-4 h-4 text-cyan-400/70" />
+                                                        <Calendar className="w-4 h-4 text-amber-400/70" />
                                                         {fmt(batch.startDate)} → {fmt(batch.endDate)}
                                                     </span>
                                                     <span className="flex items-center gap-1.5">
-                                                        <Users className="w-4 h-4 text-cyan-400/70" />
+                                                        <Users className="w-4 h-4 text-amber-400/70" />
                                                         {isFull ? 'No seats left' : `${batch.seatsLeft} of ${batch.seats} seats left`}
                                                     </span>
                                                 </div>
 
                                                 {/* Seat bar */}
-                                                <div className="w-full h-1.5 bg-neutral-800 rounded-full mb-5 overflow-hidden">
+                                                <div className="w-full h-1.5 bg-blue-800 rounded-full mb-5 overflow-hidden">
                                                     <div
-                                                        className={`h-full rounded-full transition-all duration-700 ${fillPct >= 90 ? 'bg-orange-400' : fillPct >= 60 ? 'bg-yellow-400' : 'bg-cyan-400'}`}
+                                                        className={`h-full rounded-full transition-all duration-700 ${fillPct >= 90 ? 'bg-orange-400' : fillPct >= 60 ? 'bg-yellow-400' : 'bg-amber-400'}`}
                                                         style={{ width: `${fillPct}%` }}
                                                     />
                                                 </div>
@@ -220,8 +215,8 @@ export default function BatchSelectionPage({ onBack, onSelectBatch }) {
                                                 {/* Highlights */}
                                                 <ul className="flex flex-wrap gap-x-5 gap-y-1">
                                                     {batch.highlights.map((h, i) => (
-                                                        <li key={i} className="flex items-center gap-1.5 text-sm text-neutral-400">
-                                                            <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 flex-shrink-0" />
+                                                        <li key={i} className="flex items-center gap-1.5 text-base text-blue-300 font-medium">
+                                                            <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
                                                             {h}
                                                         </li>
                                                     ))}
@@ -231,17 +226,17 @@ export default function BatchSelectionPage({ onBack, onSelectBatch }) {
                                             {/* Right: price + CTA */}
                                             <div className="flex flex-col items-center md:items-end gap-3 md:min-w-[160px]">
                                                 <div className="text-right">
-                                                    <p className="text-3xl font-black text-white">₹{batch.price.toLocaleString('en-IN')}</p>
-                                                    <p className="text-neutral-500 text-xs mt-0.5">one-time payment</p>
+                                                    <p className="text-3xl font-black text-blue-50">₹{batch.price.toLocaleString('en-IN')}</p>
+                                                    <p className="text-blue-400 text-sm font-medium mt-0.5">one-time payment</p>
                                                 </div>
 
                                                 {isFull ? (
-                                                    <div className="flex items-center gap-1.5 text-neutral-600 text-sm font-semibold">
+                                                    <div className="flex items-center gap-1.5 text-blue-500 text-base font-bold">
                                                         <Lock className="w-4 h-4" /> Batch Closed
                                                     </div>
                                                 ) : (
                                                     <button
-                                                        className="flex items-center gap-2 bg-cyan-400 hover:bg-cyan-300 text-black px-6 py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-lg shadow-cyan-500/20"
+                                                        className="flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-blue-950 px-6 py-2.5 rounded-xl font-black text-base transition-all hover:scale-105 active:scale-95 shadow-lg shadow-amber-400/20"
                                                         onClick={(e) => { e.stopPropagation(); handleSelect(batch); }}
                                                     >
                                                         Enroll Now <ArrowRight className="w-4 h-4" />
@@ -258,9 +253,9 @@ export default function BatchSelectionPage({ onBack, onSelectBatch }) {
 
                 {/* Past batches notice */}
                 {pastBatches.length > 0 && (
-                    <div className="mt-12 p-5 rounded-xl border border-dashed border-neutral-800 bg-neutral-900/40 text-center">
-                        <p className="text-neutral-500 text-sm">
-                            <span className="font-semibold text-neutral-400">{pastBatches.length} past batch{pastBatches.length > 1 ? 'es' : ''}</span>
+                    <div className="mt-12 p-5 rounded-xl border border-dashed border-blue-300 bg-blue-100 text-center">
+                        <p className="text-blue-600 text-base font-medium">
+                            <span className="font-black text-blue-700">{pastBatches.length} past batch{pastBatches.length > 1 ? 'es' : ''}</span>
                             {' '}hidden — enrollment is only available for upcoming batches.
                         </p>
                     </div>
