@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   Users, Video, Clock, CheckCircle, ChevronRight, BookOpen, Star, 
   Calendar, Play, Award, FileText, Eye, X, Send, GraduationCap,
@@ -40,11 +40,130 @@ const StatCard = ({ label, value, icon: Icon, colorClass }) => (
   </div>
 );
 
+// Load jsPDF from CDN once and cache it
+let jsPDFPromise = null;
+const loadJsPDF = () => {
+  if (jsPDFPromise) return jsPDFPromise;
+  jsPDFPromise = new Promise((resolve, reject) => {
+    if (window.jspdf) { resolve(window.jspdf.jsPDF); return; }
+    const script = document.createElement("script");
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    script.onload = () => resolve(window.jspdf.jsPDF);
+    script.onerror = () => reject(new Error("Failed to load jsPDF"));
+    document.head.appendChild(script);
+  });
+  return jsPDFPromise;
+};
+
+const buildCertificatePDF = (jsPDF, cert, mentor) => {
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const W = 297, H = 210;
+
+  // White background
+  doc.setFillColor(255, 255, 255);
+  doc.rect(0, 0, W, H, "F");
+
+  // Thick outer border
+  doc.setDrawColor(15, 23, 42);
+  doc.setLineWidth(8);
+  doc.rect(8, 8, W - 16, H - 16);
+
+  // Thin inner border
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.5);
+  doc.rect(14, 14, W - 28, H - 28);
+
+  // Orange corner accent
+  doc.setFillColor(249, 115, 22);
+  doc.triangle(W - 8, 8, W - 8, 55, W - 55, 8, "F");
+
+  // Orange icon circle
+  doc.setFillColor(249, 115, 22);
+  doc.circle(W / 2, 38, 9, "F");
+
+  // Title
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  doc.setTextColor(15, 23, 42);
+  doc.text("CERTIFICATE OF COMPLETION", W / 2, 62, { align: "center" });
+
+  // Subtitle
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text("SKILLCONNECT PROFESSIONAL MENTORSHIP", W / 2, 70, { align: "center" });
+
+  // Orange divider
+  doc.setDrawColor(249, 115, 22);
+  doc.setLineWidth(0.8);
+  doc.line(W / 2 - 45, 75, W / 2 + 45, 75);
+
+  // "This certifies that"
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(100, 116, 139);
+  doc.text("This certifies that", W / 2, 87, { align: "center" });
+
+  // Student name
+  doc.setFontSize(30);
+  doc.setFont("helvetica", "bolditalic");
+  doc.setTextColor(15, 23, 42);
+  doc.text(cert.student, W / 2, 104, { align: "center" });
+
+  // Description line 1
+  doc.setFontSize(9.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(71, 85, 105);
+  doc.text("Has successfully demonstrated mastery in Advanced Development Patterns by delivering the project", W / 2, 118, { align: "center" });
+
+  // Project title in orange italic
+  doc.setFont("helvetica", "italic");
+  doc.setTextColor(249, 115, 22);
+  doc.text(`"${cert.title}"`, W / 2, 126, { align: "center" });
+
+  // Grade line
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(71, 85, 105);
+  doc.text("with an exceptional grade of", W / 2, 134, { align: "center" });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(20);
+  doc.setTextColor(15, 23, 42);
+  doc.text(cert.grade, W / 2, 145, { align: "center" });
+
+  // Divider
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.4);
+  doc.line(30, 160, W - 30, 160);
+
+  // Mentor info (left)
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(mentor.name, 40, 172);
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text(mentor.title.toUpperCase(), 40, 179);
+
+  // Credential ID (right)
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("VERIFIED CREDENTIAL", W - 40, 172, { align: "right" });
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text(`ID: SC-REF-${cert.id}X99`, W - 40, 179, { align: "right" });
+
+  doc.save(`certificate-${cert.student.replace(/\s+/g, "-").toLowerCase()}.pdf`);
+};
+
 export default function MentorDashboard() {
   const [activeTab, setActiveTab] = useState("communities");
   const [allCommunities, setAllCommunities] = useState(INITIAL_COMMUNITIES);
   const [evaluating, setEvaluating] = useState(null);
   const [selectedForCert, setSelectedForCert] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const stats = useMemo(() => {
     const projects = allCommunities.flatMap(c => c.projects);
@@ -59,6 +178,20 @@ export default function MentorDashboard() {
       ...c, projects: c.projects.map(p => p.id === projectId ? { ...p, status: "reviewed", grade } : p)
     })));
     setEvaluating(null);
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!selectedForCert) return;
+    setIsDownloading(true);
+    try {
+      const jsPDF = await loadJsPDF();
+      buildCertificatePDF(jsPDF, selectedForCert, mentor);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      alert("PDF download failed. Please check your internet connection and try again.");
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -245,8 +378,24 @@ export default function MentorDashboard() {
                    </div>
 
                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black syne hover:bg-slate-800 transition-all flex items-center justify-center gap-2 group">
-                         <Download size={18} className="group-hover:-translate-y-1 transition-transform" /> DOWNLOAD PDF
+                      <button
+                        onClick={handleDownloadPDF}
+                        disabled={isDownloading}
+                        className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black syne hover:bg-slate-800 transition-all flex items-center justify-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {isDownloading ? (
+                          <>
+                            <svg className="animate-spin h-[18px] w-[18px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            GENERATING...
+                          </>
+                        ) : (
+                          <>
+                            <Download size={18} className="group-hover:-translate-y-1 transition-transform" /> DOWNLOAD PDF
+                          </>
+                        )}
                       </button>
                       <button className="flex-1 bg-orange-500 text-white py-4 rounded-2xl font-black syne hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
                          <Send size={18} /> ISSUE TO STUDENT
