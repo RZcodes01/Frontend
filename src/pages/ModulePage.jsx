@@ -69,15 +69,15 @@ export default function ModulePage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-800 border border-blue-600">
-              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs font-black uppercase tracking-tighter text-blue-200">Class in session</span>
-            </div>
-            <button className="p-2 text-blue-300 hover:text-blue-50 transition-colors hidden sm:block">
-              <Share2 size={18} />
-            </button>
-          </div>
+          {/* <div className="flex items-center gap-4"> */}
+            {/* <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-800 border border-blue-600"> */}
+              {/* <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /> */}
+              {/* <span className="text-xs font-black uppercase tracking-tighter text-blue-200">Class in session</span> */}
+            {/* </div> */}
+            {/* <button className="p-2 text-blue-300 hover:text-blue-50 transition-colors hidden sm:block"> */}
+              {/* <Share2 size={18} /> */}
+            {/* </button> */}
+          {/* </div> */}
         </div>
       </nav>
 

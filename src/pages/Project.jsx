@@ -206,7 +206,7 @@ const Project = () => {
               >
                 <div className={`bg-gradient-to-r ${community.bgGradient} p-6 border-b border-blue-700`}>
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-950 rounded-xl shadow-md border border-blue-600">{community.icon}</div>
+                    {/* <div className="p-3 bg-blue-950 rounded-xl shadow-md border border-blue-600">{community.icon}</div> */}
                     <div>
                       <h3 className="text-2xl font-black text-blue-50">{community.name}</h3>
                       <p className="text-sm text-blue-300 font-semibold">{community.totalMembers.toLocaleString()} members</p>

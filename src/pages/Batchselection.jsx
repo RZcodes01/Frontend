@@ -77,7 +77,7 @@ const ALL_BATCHES = [
         seatsLeft: 100,
         price: 5999,
         tag: 'Coming Soon',
-        highlights: ['Revamped curriculum v3', 'AI-assisted project reviews', 'New certification track'],
+        highlights: ['Revamped curriculum v3', 'Mentor led project reviews', 'New certification track'],
     },
 ];
 
@@ -95,7 +95,8 @@ const tagStyle = (tag) => {
     }
 };
 
-export default function BatchSelectionPage({ onBack, onSelectBatch }) {
+// Updated to accept communityName as a prop
+export default function BatchSelectionPage({ onBack, onSelectBatch, communityName }) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -106,7 +107,8 @@ export default function BatchSelectionPage({ onBack, onSelectBatch }) {
 
     const handleSelect = (batch) => {
         if (batch.seatsLeft === 0) return;
-        onSelectBatch?.(batch);
+        // Injects the communityName into the batch object before passing it up
+        onSelectBatch?.({ ...batch, communityName: communityName || "Community" });
     };
 
     return (
@@ -137,8 +139,9 @@ export default function BatchSelectionPage({ onBack, onSelectBatch }) {
                         Choose When You <br />
                         <span className="text-amber-500">Start Learning</span>
                     </h1>
+                    {/* Added visual confirmation of the community being joined */}
                     <p className="text-blue-600 text-xl font-medium max-w-xl mx-auto">
-                        Only batches you can join from today are shown. Past batches are hidden automatically.
+                        Enrolling in: <span className="text-blue-900 font-black">{communityName || "Selected Community"}</span>
                     </p>
                 </div>
 

@@ -9,7 +9,8 @@ import {
     ArrowRight,
     Check,
     Star,
-    CheckCircle2
+    CheckCircle2,
+    ArrowLeft // Added for the back button icon
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchCommunityById } from "../api/community.api";
@@ -100,7 +101,15 @@ export default function SingleCommunity() {
         <div className="min-h-screen bg-blue-50 text-blue-950 selection:bg-amber-400/30">
 
             {/* --- HERO HEADER SECTION --- */}
-            <div className="relative">
+                <div className="relative">
+                    {/* Back Button - Adjusted: larger size and more padding from left */}
+                    <button 
+                        onClick={() => navigate(-1)}
+                        className="absolute top-8 left-12 z-30 flex items-center gap-3 px-6 py-3 bg-blue-950/60 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-blue-950 hover:scale-105 transition-all font-black text-lg shadow-2xl"
+                    >
+                        <ArrowLeft size={22} /> Back
+                    </button>
+
                 {/* Immersive Banner */}
                 <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden">
                     {course?.bannerImage ? (

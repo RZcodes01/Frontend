@@ -18,6 +18,7 @@ import ModulePage from "./pages/ModulePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UploadReel from "./pages/UploadReel";
 import AdminModuleManager from "./pages/AdminModuleManager";
+import CompanyRegister from './pages/CompanyRegister';
 
 function MainLayout() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/register/mentor" element={<MentorRegister />} />
+      <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
       <Route path="/" element={<Homepage />} />
       <Route element={<MainLayout />}>
         <Route path="/community" element={<Community />} />
