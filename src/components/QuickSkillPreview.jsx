@@ -25,25 +25,40 @@ export default function QuickSkillPreview() {
   };
 
   return (
-    <section style={{ padding: "60px 20px", background: "#EFF6FF", textAlign: "center" }}>
+    <section style={{ padding: "60px 5%", background: "#EFF6FF", textAlign: "center" }}>
+      {/* Responsive Typography Style Tag */}
+      <style>{`
+        .skill-title { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+        .skill-card { 
+            width: 280px; 
+            height: 450px; 
+        }
+        @media (max-width: 480px) {
+            .skill-card { 
+                width: 100%; 
+                max-width: 260px; 
+                height: 400px; 
+            }
+        }
+      `}</style>
+
       <div style={{ marginBottom: "40px" }}>
-        <h2 style={{ color: "#1e3a5f", fontSize: "2.5rem", fontWeight: 800, marginBottom: "10px" }}>
+        <h2 className="skill-title" style={{ color: "#1e3a5f", fontWeight: 800, marginBottom: "10px" }}>
           Master Skills in <span style={{ color: "#FBBF24" }}>Seconds</span>
         </h2>
-        <p style={{ color: "#3B82F6", fontSize: "1.1rem" }}>
+        <p style={{ color: "#3B82F6", fontSize: "1.1rem", padding: "0 10px" }}>
           Watch bite-sized tutorials just like YouTube Shorts.
         </p>
       </div>
 
       <div 
+        className="skill-card"
         onClick={goToSkills} 
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         role="button"
         aria-label="View Skill Preview"
         style={{
-          width: "280px",
-          height: "450px",
           borderRadius: "16px",
           background: "#1e3a5f",
           overflow: "hidden",
@@ -112,7 +127,9 @@ export default function QuickSkillPreview() {
           background: "#1e3a5f",
           color: "#FBBF24",
           fontWeight: 700,
-          cursor: "pointer"
+          cursor: "pointer",
+          width: "auto",
+          maxWidth: "90%"
         }}
       >
         View All QuickSkills

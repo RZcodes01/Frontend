@@ -222,7 +222,7 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2.5 text-blue-400 hover:text-blue-50 hover:bg-blue-800 transition-colors rounded-lg border border-blue-700"
+            className="md:hidden p-2.5 text-blue-400 hover:text-blue-50 hover:bg-blue-800 transition-colors rounded-lg border border-blue-700 relative z-[60]"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeWidth="2.5" strokeLinecap="round" d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
@@ -230,62 +230,81 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Sidebar Overlay */}
         {isMenuOpen && (
-          <div className="md:hidden pb-6 space-y-1.5 border-t border-blue-800 pt-4 mt-1">
-            {navLinks.map(({ path, label }) => (
-              <Link
-                key={path}
-                to={path}
-                onClick={() => setIsMenuOpen(false)}
-                className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
-                  ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
-                  : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
-                  }`}
-              >
-                <span>{label}</span>
-              </Link>
-            ))}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] md:hidden transition-opacity"
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
 
-            {!isLoggedIn ? (
-              <Link
-                to="/login"
-                onClick={() => setIsMenuOpen(false)}
-                className="w-full flex items-center justify-center py-3.5 px-4 bg-amber-400 text-blue-950 rounded-lg text-base font-bold mt-2 hover:bg-amber-300 transition-colors"
-              >
-                Login
-              </Link>
-            ) : (
-              <div className="px-4 py-2">
-                {/* Mobile Role Based Link */}
-                {myData?.role?.toLowerCase() === 'admin' ? (
+        {/* Mobile Sidebar Menu */}
+        <div className={`fixed top-0 left-0 h-full w-[280px] bg-blue-950 border-r border-blue-800 z-[58] transform transition-transform duration-300 ease-in-out md:hidden shadow-2xl ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+            <div className="flex flex-col h-full pt-20 px-4 space-y-1.5 overflow-y-auto">
+              {navLinks.map(({ path, label }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
+                    ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
+                    : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
+                    }`}
+                >
+                  <span>{label}</span>
+                </Link>
+              ))}
+
+              <div className="pt-6 mt-6 border-t border-blue-800">
+                {!isLoggedIn ? (
                   <Link
-                    to="/admin"
+                    to="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-amber-400 rounded-lg text-base font-bold border border-amber-400/30 mb-2"
+                    className="w-full flex items-center justify-center py-3.5 px-4 bg-amber-400 text-blue-950 rounded-lg text-base font-bold hover:bg-amber-300 transition-colors"
                   >
-                    ADMIN DASHBOARD
+                    Login
                   </Link>
                 ) : (
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700 mb-2"
-                  >
-                    Student Dashboard
-                  </Link>
-                )}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3 px-4 py-3 bg-blue-900/50 rounded-lg border border-blue-800 mb-4">
+                        <div className="w-10 h-10 rounded-full bg-blue-800 border-2 border-blue-600 flex items-center justify-center">
+                            {myData?.name ? <span className="text-xs font-black text-amber-400">{getInitials(myData.name)}</span> : <User size={18}/>}
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-sm font-bold text-blue-50 truncate w-32">{myData?.name}</span>
+                            <span className="text-[10px] text-blue-400 font-bold uppercase">{myData?.role}</span>
+                        </div>
+                    </div>
 
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 hover:bg-red-500/20 transition-colors"
-                >
-                  Log Out
-                </button>
+                    {myData?.role?.toLowerCase() === 'admin' ? (
+                      <Link
+                        to="/admin"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-amber-400 rounded-lg text-base font-bold border border-amber-400/30"
+                      >
+                        ADMIN DASHBOARD
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700"
+                      >
+                        STUDENT DASHBOARD
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 hover:bg-red-500/20 transition-colors"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+        </div>
       </div>
     </nav>
   );

@@ -62,7 +62,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
       {/* Project Submission Overlay */}
       {isSubmitModalOpen && (
         <div className="fixed inset-0 z-[100] bg-blue-50 overflow-y-auto">
-          <div className="max-w-3xl mx-auto px-6 py-12">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
             <button 
               onClick={() => setIsSubmitModalOpen(false)}
               className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition-colors mb-8 group text-base font-semibold"
@@ -71,13 +71,13 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
               <span>Back to Leaderboard</span>
             </button>
 
-            <div className="bg-blue-900 border border-blue-700 rounded-3xl p-8 shadow-2xl">
+            <div className="bg-blue-900 border border-blue-700 rounded-3xl p-6 sm:p-8 shadow-2xl">
               <div className="mb-10">
-                <h2 className="text-4xl font-black text-blue-50 mb-3">Submit Your Project</h2>
-                <p className="text-blue-300 text-lg font-medium">Complete the form below to submit your weekly task for mentor review.</p>
+                <h2 className="text-3xl sm:text-4xl font-black text-blue-50 mb-3">Submit Your Project</h2>
+                <p className="text-blue-300 text-base sm:text-lg font-medium">Complete the form below to submit your weekly task for mentor review.</p>
               </div>
 
-              <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); setIsSubmitModalOpen(false); }}>
+              <form className="space-y-6 sm:space-y-8" onSubmit={(e) => { e.preventDefault(); setIsSubmitModalOpen(false); }}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-base font-bold text-blue-200">Project Title</label>
@@ -132,14 +132,14 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
 
                 <div className="space-y-2">
                   <label className="text-base font-bold text-blue-200">Project Screenshot</label>
-                  <div className="border-2 border-dashed border-blue-700 rounded-2xl p-10 text-center hover:border-amber-400/50 transition-colors cursor-pointer group">
+                  <div className="border-2 border-dashed border-blue-700 rounded-2xl p-6 sm:p-10 text-center hover:border-amber-400/50 transition-colors cursor-pointer group">
                     <Upload className="mx-auto text-blue-500 group-hover:text-amber-400 transition-colors mb-4" size={32} />
                     <p className="text-blue-300 text-base font-medium">Click to upload or drag and drop</p>
                     <p className="text-blue-500 text-sm mt-1">PNG, JPG up to 5MB</p>
                   </div>
                 </div>
 
-                <div className="pt-4 flex gap-4">
+                <div className="pt-4 flex flex-col sm:flex-row gap-4">
                   <button 
                     type="submit"
                     className="flex-1 bg-amber-400 hover:bg-amber-300 text-blue-950 font-black text-lg py-4 rounded-xl shadow-lg shadow-amber-400/10 transition-all hover:scale-[1.02]"
@@ -149,7 +149,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
                   <button 
                     type="button"
                     onClick={() => setIsSubmitModalOpen(false)}
-                    className="px-8 border border-blue-700 text-blue-300 text-base font-semibold hover:bg-blue-800 rounded-xl transition-all"
+                    className="px-8 py-4 sm:py-0 border border-blue-700 text-blue-300 text-base font-semibold hover:bg-blue-800 rounded-xl transition-all"
                   >
                     Cancel
                   </button>
@@ -161,19 +161,19 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
       )}
 
       {/* Top Navigation Bar */}
-      <nav className="bg-blue-900 border-b border-blue-700 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
+      <nav className="bg-blue-900 border-b border-blue-700 px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between sticky top-0 z-50 gap-4 sm:gap-0">
+        <div className="flex items-center gap-4 w-full sm:w-auto">
           <button className="p-2 hover:bg-blue-800 rounded-full transition-colors">
             <ArrowLeft size={20} className="text-blue-200" />
           </button>
           <div>
-            <h2 className="font-black text-blue-50 text-xl">{selectedCommunity}</h2>
+            <h2 className="font-black text-blue-50 text-xl truncate max-w-[200px] sm:max-w-none">{selectedCommunity}</h2>
             <div className="flex items-center gap-3 text-sm">
-              <span className="flex items-center gap-1 text-amber-400 font-bold">
+              <span className="flex items-center gap-1 text-amber-400 font-bold whitespace-nowrap">
                 <span>{(currentProjects.length * 120).toLocaleString()} Members</span>
               </span>
               <span className="text-blue-500">•</span>
-              <span className="flex items-center gap-1 text-blue-200 font-semibold">
+              <span className="flex items-center gap-1 text-blue-200 font-semibold whitespace-nowrap">
                 <span>{totalProjects} Projects</span>
               </span>
             </div>
@@ -181,7 +181,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
         </div>
         <button 
           onClick={() => setIsSubmitModalOpen(true)}
-          className="bg-amber-400 hover:bg-amber-300 text-blue-950 px-5 py-2.5 rounded-xl text-base font-black hover:scale-105 transition-all"
+          className="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-blue-950 px-5 py-2.5 rounded-xl text-base font-black hover:scale-105 transition-all"
         >
           Submit Project
         </button>
@@ -190,11 +190,10 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
       <div className="max-w-7xl mx-auto px-4 mt-8">
 
         {/* Header Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-blue-100 p-6 rounded-2xl border border-blue-300 hover:border-amber-400/60 transition-colors shadow-sm">
             <div className="flex justify-between items-start mb-2">
               <p className="text-blue-600 text-base font-semibold uppercase tracking-wide">Total Projects</p>
-              <div className="bg-amber-400/20 p-2 rounded-lg"></div>
             </div>
             <p className="text-4xl font-black text-blue-950">{totalProjects}</p>
             <p className="text-sm text-blue-500 font-medium mt-1">Ranked submissions</p>
@@ -203,7 +202,6 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
           <div className="bg-blue-100 p-6 rounded-2xl border border-blue-300 hover:border-amber-400/60 transition-colors shadow-sm">
             <div className="flex justify-between items-start mb-2">
               <p className="text-blue-600 text-base font-semibold uppercase tracking-wide">Trending Now</p>
-              <div className="bg-amber-400/20 p-2 rounded-lg"></div>
             </div>
             <p className="text-4xl font-black text-blue-950">{trendingCount}</p>
             <p className="text-sm text-blue-500 font-medium mt-1">Projects of this week</p>
@@ -214,10 +212,10 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
         {currentProjects.length >= 3 && (
           <div className="mb-12">
             <h3 className="text-3xl font-black text-blue-900 mb-6 text-center">Top Performers</h3>
-            <div className="flex flex-col md:flex-row items-end justify-center gap-4">
+            <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-8 md:gap-4">
 
               {/* 2nd Place */}
-              <div className="w-full md:w-72 bg-blue-900 border-2 border-blue-600 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl hover:border-blue-400 transition-all order-2 md:order-1 h-72 flex flex-col justify-center relative group">
+              <div className="w-full sm:w-72 bg-blue-900 border-2 border-blue-600 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl hover:border-blue-400 transition-all order-2 md:order-1 h-auto sm:h-72 flex flex-col justify-center relative group">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-blue-50 w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-md">
                   2
                 </div>
@@ -237,8 +235,8 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
               </div>
 
               {/* 1st Place */}
-              <div className="w-full md:w-80 bg-blue-900 border-4 border-yellow-500/60 rounded-2xl p-8 text-center shadow-2xl shadow-yellow-500/10 order-1 md:order-2 h-80 flex flex-col justify-center relative overflow-hidden group">
-                <div className="absolute top-0 right-0 bg-yellow-500/20 border-l border-b border-yellow-500/40 text-yellow-400 px-4 py-1.5 font-black text-xs uppercase tracking-wider rounded-bl-xl">
+              <div className="w-full sm:w-80 bg-blue-900 border-4 border-yellow-500/60 rounded-2xl p-8 text-center shadow-2xl shadow-yellow-500/10 order-1 md:order-2 h-auto sm:h-80 flex flex-col justify-center relative overflow-hidden group">
+                <div className="absolute top-0 right-0 bg-yellow-500/20 border-l border-b border-yellow-500/40 text-yellow-400 px-4 py-1.5 font-black text-xs uppercase tracking-wider rounded-bl-xl hidden sm:block">
                   Champion
                 </div>
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-500 text-blue-950 w-12 h-12 rounded-full flex items-center justify-center font-black text-xl shadow-lg shadow-yellow-500/30">
@@ -260,7 +258,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
               </div>
 
               {/* 3rd Place */}
-              <div className="w-full md:w-72 bg-blue-900 border-2 border-orange-500/30 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl hover:border-orange-500/50 transition-all order-3 h-64 flex flex-col justify-center relative group">
+              <div className="w-full sm:w-72 bg-blue-900 border-2 border-orange-500/30 rounded-2xl p-6 text-center shadow-lg hover:shadow-xl hover:border-orange-500/50 transition-all order-3 h-auto sm:h-64 flex flex-col justify-center relative group">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-blue-50 w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-md">
                   3
                 </div>
@@ -299,7 +297,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
         {/* Complete Rankings Table */}
         <div className="bg-blue-900 rounded-2xl border border-blue-700 shadow-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-blue-700 bg-blue-900">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h3 className="font-black text-blue-50 text-xl">Student Rankings</h3>
                 <p className="text-base text-blue-300 font-medium mt-0.5">
@@ -313,7 +311,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[700px]">
               <thead>
                 <tr className="text-left text-sm font-black text-blue-300 uppercase tracking-wider border-b border-blue-700 bg-blue-950">
                   <th className="px-6 py-4">Rank</th>
