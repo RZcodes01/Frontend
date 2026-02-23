@@ -32,10 +32,20 @@ const Login = () => {
 
       const { accessToken, user } = res.data;
 
+      // 1. Store data
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/");
+      // 2. Role-Based Redirection
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else if (user.role === "student") {
+        navigate("/dashboard");
+      } else {
+        // Fallback for roles like mentor/company if they log in now
+        navigate("/");
+      }
+
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed");
     } finally {
@@ -108,17 +118,6 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-
-        {/* OR Divider */}
-        <div className="text-center text-gray-400 my-4">
-          OR
-        </div>
-
-        {/* Optional Google Button */}
-        <button className="w-full flex items-center justify-center gap-2 border py-2 rounded-lg hover:bg-gray-100 transition">
-          <FaGoogle />
-          Continue with Google
-        </button>
 
         {/* SIGN UP LINK */}
         <p className="text-sm text-center mt-4 text-gray-500">

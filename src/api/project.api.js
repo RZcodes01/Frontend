@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/community",
+    baseURL: "https://skillconnect-backend-7ftb.onrender.com/projects",
 });
 
 API.interceptors.request.use((config) => {
@@ -14,8 +14,4 @@ API.interceptors.request.use((config) => {
     return config
 })
 
-export const fetchAllCommunities = () => API.get(`/`)
-
-export const fetchCommunityById = (id) => API.get(`/${id}`)
-
-export const createCommunity = (formData) => API.post("/", formData);
+export const fetchProjectById = (id) => API.get(`/${id}`)
