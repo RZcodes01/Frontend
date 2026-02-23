@@ -15,127 +15,88 @@ import {
   Building2,
   UserCircle,
   CreditCard,
-  Award
+  Award,
+  Menu, // Added for mobile
+  X     // Added for mobile
 } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('communities');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile sidebar state
+
+  const navItems = [
+    { id: 'communities', label: 'Community', icon: <BookOpen size={20} /> },
+    { id: 'mentors', label: 'Mentors', icon: <Users size={20} /> },
+    { id: 'enrollments', label: 'Enrollment', icon: <Users size={20} /> },
+    { id: 'batch', label: 'Batch', icon: <Users size={20} /> },
+    { id: 'company', label: 'Company', icon: <Building2 size={20} /> },
+    { id: 'users', label: 'Users', icon: <UserCircle size={20} /> },
+    { id: 'payments', label: 'Payments', icon: <CreditCard size={20} /> },
+    { id: 'certificates', label: 'Certificates', icon: <Award size={20} /> },
+  ];
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 relative">
+      
+      {/* Mobile Header */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-slate-900 text-white p-4 flex justify-between items-center z-50">
+        <div className="flex items-center gap-2 text-blue-400 font-bold text-lg">
+          <ShieldCheck size={24} /> ADMIN
+        </div>
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1">
+          {isSidebarOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+      </div>
 
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white p-6 sticky top-0 h-screen">
-
+      <aside className={`
+        fixed lg:sticky top-0 h-screen w-64 bg-slate-900 text-white p-6 z-40 transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
         <div className="flex items-center gap-2 mb-10 text-blue-400 font-bold text-xl">
           <ShieldCheck /> ADMIN
         </div>
 
-        <nav className="space-y-4">
-
-          <button
-            onClick={() => setActiveTab('communities')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'communities'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <BookOpen size={20} /> Community
-          </button>
-
-          <button
-            onClick={() => setActiveTab('mentors')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'mentors'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <Users size={20} /> Mentors
-          </button>
-
-          <button
-            onClick={() => setActiveTab('enrollments')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'enrollments'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <Users size={20} /> Enrollment
-          </button>
-
-          <button
-            onClick={() => setActiveTab('batch')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'batch'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <Users size={20} /> Batch
-          </button>
-
-          <button
-            onClick={() => setActiveTab('company')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'company'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <Building2 size={20} /> Company
-          </button>
-
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'users'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <UserCircle size={20} /> Users
-          </button>
-
-          <button
-            onClick={() => setActiveTab('payments')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'payments'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <CreditCard size={20} /> Payments
-          </button>
-
-          <button
-            onClick={() => setActiveTab('certificates')}
-            className={`w-full flex gap-3 p-3 rounded-xl transition ${
-              activeTab === 'certificates'
-                ? 'bg-blue-600'
-                : 'text-gray-400 hover:bg-slate-800'
-            }`}
-          >
-            <Award size={20} /> Certificates
-          </button>
-
+        <nav className="space-y-4 overflow-y-auto max-h-[calc(100vh-120px)] scrollbar-hide">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.id);
+                setIsSidebarOpen(false); // Close sidebar on mobile after selection
+              }}
+              className={`w-full flex gap-3 p-3 rounded-xl transition ${
+                activeTab === item.id
+                  ? 'bg-blue-600'
+                  : 'text-gray-400 hover:bg-slate-800'
+              }`}
+            >
+              {item.icon} {item.label}
+            </button>
+          ))}
         </nav>
       </aside>
 
+      {/* Overlay for mobile when sidebar is open */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden" 
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Main Content */}
-      <main className="flex-1 p-10">
-
-        {activeTab === 'communities' && <CommunityAdmin />}
-        {activeTab === 'mentors' && <MentorManager />}
-        {activeTab === 'enrollments' && <MentorEnrollments />}
-        {activeTab === 'batch' && <AdminBatchManager />}
-        {activeTab === 'company' && <CompanyManager />}
-        {activeTab === 'users' && <UserManager />}
-        {activeTab === 'payments' && <PaymentManager />}
-        {activeTab === 'certificates' && <CertificateManager />}
-
+      <main className="flex-1 p-4 md:p-10 mt-16 lg:mt-0 overflow-x-hidden">
+        <div className="max-w-full h-full">
+          {activeTab === 'communities' && <CommunityAdmin />}
+          {activeTab === 'mentors' && <MentorManager />}
+          {activeTab === 'enrollments' && <MentorEnrollments />}
+          {activeTab === 'batch' && <AdminBatchManager />}
+          {activeTab === 'company' && <CompanyManager />}
+          {activeTab === 'users' && <UserManager />}
+          {activeTab === 'payments' && <PaymentManager />}
+          {activeTab === 'certificates' && <CertificateManager />}
+        </div>
       </main>
 
     </div>
