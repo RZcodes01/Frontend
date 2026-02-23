@@ -219,6 +219,79 @@ export default function Career() {
           </div>
         </div>
       </section>
+
+      {/* ── FOR COMPANIES/PARTNERS ───────────────────────────────────── */}
+      <section id="partner" className="py-24 px-6 bg-slate-900/20 border-t border-slate-800">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <span className="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-3 block">For Employers</span>
+            <h2 className="text-4xl font-black text-white syne mb-4">Hire Top Technical Talent</h2>
+            <p className="text-slate-400 max-w-xl mx-auto">
+              Connect with pre-vetted students who have been mentored by industry experts. 
+              Find your next intern or full-time developer today.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-10 items-stretch">
+            {/* CTA Card for Companies */}
+            <div className="relative bg-gradient-to-br from-indigo-500/10 to-blue-600/10 border border-indigo-500/20 rounded-2xl p-8 overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="relative z-10 flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center">
+                    <BarChart size={22} className="text-slate-950" />
+                  </div>
+                  <div>
+                    <p className="text-white font-black text-lg syne">Partner Program</p>
+                    <p className="text-slate-400 text-xs">Direct access to job-ready candidates</p>
+                  </div>
+                </div>
+
+                <p className="text-slate-300 text-sm leading-relaxed mb-8">
+                  Register your company profile to post opportunities and browse our 
+                  graduating cohorts. No recruitment fees, just pure talent.
+                </p>
+
+                <div className="mt-auto space-y-3">
+                  {/* LINKING TO YOUR COMPANY REGISTER PAGE */}
+                  <button
+                    onClick={() => navigate('/register/company')}
+                    className="w-full flex items-center justify-center gap-2 py-4 bg-indigo-500 text-slate-950 font-black rounded-2xl hover:bg-indigo-400 transition-colors text-base"
+                  >
+                    Register Company <ArrowRight size={18} />
+                  </button>
+                  <p className="text-center text-slate-500 text-xs">
+                    Already a partner?{' '}
+                    <button onClick={() => navigate('/login')} className="text-indigo-400 font-bold hover:underline">
+                      Log in
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Why Companies Choose Us List */}
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8">
+              <h3 className="text-white font-black text-lg mb-6 syne">The SkillConnect Edge</h3>
+              <ul className="space-y-4">
+                {[
+                  'Access to pre-vetted, project-ready candidates',
+                  'Direct communication with student mentors',
+                  'Verified portfolio of real-world applications',
+                  'Streamlined internship-to-hire pipeline',
+                  'Zero commission or placement fees',
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3">
+                    <CheckCircle size={16} className="text-indigo-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-300 text-sm">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
