@@ -94,8 +94,8 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled
-        ? 'bg-blue-950 border-b border-amber-400 shadow-[0_4px_0_0_#FBBF24]'
-        : 'bg-blue-950 border-b border-blue-800'
+      ? 'bg-blue-950 border-b border-amber-400 shadow-[0_4px_0_0_#FBBF24]'
+      : 'bg-blue-950 border-b border-blue-800'
       }`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-18 sm:h-22" style={{ height: '72px' }}>
@@ -119,15 +119,15 @@ export default function Navbar() {
                 key={path}
                 to={path}
                 className={`relative px-5 py-2.5 text-base font-bold transition-all duration-200 rounded-md ${isActive(path)
-                    ? 'text-amber-400 bg-amber-400/10 border border-amber-400/40'
-                    : 'text-blue-200 hover:text-blue-50 hover:bg-blue-800'
+                  ? 'text-amber-400 bg-amber-400/10 border border-amber-400/40'
+                  : 'text-blue-200 hover:text-blue-50 hover:bg-blue-800'
                   }`}
               >
                 {label}
               </Link>
             ))}
 
-             {/* CONDITIONAL LOGIN / PROFILE */}
+            {/* CONDITIONAL LOGIN / PROFILE */}
             {!isLoggedIn ? (
               <Link
                 to="/login"
@@ -188,13 +188,24 @@ export default function Navbar() {
                       </p>
                     </div>
 
-                    <Link
-                      to="/dashboard"
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      Go to Dashboard
-                    </Link>
+                    {/* ROLE BASED DASHBOARD LINK */}
+                    {myData?.role?.toLowerCase() === 'admin' ? (
+                      <Link
+                        to="/admin"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-bold uppercase tracking-wider"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Admin Dashboard
+                      </Link>
+                    ) : (
+                      <Link
+                        to="/dashboard"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Student Dashboard
+                      </Link>
+                    )}
 
                     <button
                       onClick={handleLogout}
@@ -228,8 +239,8 @@ export default function Navbar() {
                 to={path}
                 onClick={() => setIsMenuOpen(false)}
                 className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
-                    ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
-                    : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
+                  ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
+                  : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
                   }`}
               >
                 <span>{label}</span>
@@ -245,12 +256,33 @@ export default function Navbar() {
                 Login
               </Link>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 mt-2 hover:bg-red-500/20 transition-colors"
-              >
-                Log Out
-              </button>
+              <div className="px-4 py-2">
+                {/* Mobile Role Based Link */}
+                {myData?.role?.toLowerCase() === 'admin' ? (
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-amber-400 rounded-lg text-base font-bold border border-amber-400/30 mb-2"
+                  >
+                    ADMIN DASHBOARD
+                  </Link>
+                ) : (
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700 mb-2"
+                  >
+                    Student Dashboard
+                  </Link>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 hover:bg-red-500/20 transition-colors"
+                >
+                  Log Out
+                </button>
+              </div>
             )}
           </div>
         )}
