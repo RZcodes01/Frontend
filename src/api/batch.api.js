@@ -28,3 +28,5 @@ export const createBatch = (communityId, data) => API.post(`/${communityId}`, da
 export const updateBatch = (batchId, data) => API.put(`/${batchId}`, data);
 
 export const deleteBatch = (batchId) => API.delete(`/${batchId}`);
+
+export const fetchMentorAssignedBatches = () => API.get("/mentor-batches")

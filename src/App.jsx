@@ -21,6 +21,7 @@ import AdminModuleManager from "./pages/AdminModuleManager";
 import CompanyRegister from './pages/CompanyRegister';
 import MentorDashboard from "./pages/MentorDashboard";
 import ProjectSubmission from "./pages/ProjectSubmission";
+import ProjectSubmissions from "./pages/ProjectSubmissions";
 
 function MainLayout() {
   return (
@@ -118,6 +119,7 @@ export default function App() {
       <Route element={<ProtectedRoute allowedRoles={["mentor"]} />}>
         <Route element={<MentorDash />}>
           <Route path="/mentor" element={<MentorDashboard />} />
+          <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
         </Route>
       </Route>
 
