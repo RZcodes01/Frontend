@@ -41,8 +41,14 @@ const Login = () => {
         navigate("/admin");
       } else if (user.role === "student") {
         navigate("/dashboard");
-      } else {
-        // Fallback for roles like mentor/company if they log in now
+      }
+      else if (user.role === "mentor") {
+        navigate("/mentor")
+      }
+      else if (user.role === "company") {
+        navigate("/company")
+      }
+      else {
         navigate("/");
       }
 

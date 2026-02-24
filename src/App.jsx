@@ -19,6 +19,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import UploadReel from "./pages/UploadReel";
 import AdminModuleManager from "./pages/AdminModuleManager";
 import CompanyRegister from './pages/CompanyRegister';
+import MentorDashboard from "./pages/MentorDashboard";
+import ProjectSubmission from "./pages/ProjectSubmission";
 
 function MainLayout() {
   return (
@@ -57,6 +59,17 @@ function StudentDashLayout() {
   );
 }
 
+function MentorDash() {
+  return (
+    <div className="h-screen flex flex-col bg-neutral-950">
+      <Navbar />
+      <main className="flex-1 pt-[72px] overflow-hidden">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <Routes>
@@ -89,7 +102,7 @@ export default function App() {
       <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route element={<AdminDash />}>
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/community/:communityId/edit" element={<AdminModuleManager/>}/>
+          <Route path="/community/:communityId/edit" element={<AdminModuleManager />} />
         </Route>
       </Route>
 
@@ -98,6 +111,13 @@ export default function App() {
         <Route element={<StudentDashLayout />}>
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/projects/:projectId" element={<ProjectDetail />} />
+          <Route path="/submission" element={<ProjectSubmission />} />
+        </Route>
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["mentor"]} />}>
+        <Route element={<MentorDash />}>
+          <Route path="/mentor" element={<MentorDashboard />} />
         </Route>
       </Route>
 
