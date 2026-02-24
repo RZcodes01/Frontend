@@ -100,17 +100,61 @@ export default function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-18 sm:h-22" style={{ height: '72px' }}>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-lg bg-amber-400 flex items-center justify-center font-black text-blue-950 text-2xl">
-              S
-            </div>
-            <div className="flex flex-col -space-y-1">
-              <h1 className="font-black text-2xl sm:text-3xl text-blue-50 tracking-tight leading-none">
-                Skill<span className="text-amber-400">Connect</span>
-              </h1>
-            </div>
-          </Link>
+      
+      {/* Icon Container */}
+      <div className="w-14 h-14 rounded-xl bg-blue-950 flex items-center justify-center shadow-md group-hover:scale-105 transition">
+        <svg
+          viewBox="0 0 100 100"
+          className="w-10 h-10"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Graduation Cap Top */}
+          <polygon
+            points="50,15 85,35 50,55 15,35"
+            fill="#fbbf24"
+          />
+
+          {/* Cap Base */}
+          <rect
+            x="35"
+            y="55"
+            width="30"
+            height="8"
+            rx="4"
+            fill="#fbbf24"
+          />
+
+          {/* Tassel Line */}
+          <line
+            x1="70"
+            y1="35"
+            x2="78"
+            y2="60"
+            stroke="#fbbf24"
+            strokeWidth="3"
+            strokeLinecap="round"
+          />
+
+          {/* Chain Link (Tassel End) */}
+          <ellipse
+            cx="78"
+            cy="68"
+            rx="8"
+            ry="6"
+            stroke="#fbbf24"
+            strokeWidth="3"
+          />
+        </svg>
+      </div>
+
+      {/* Text */}
+      <h1 className="font-black text-2xl sm:text-3xl tracking-tight">
+        <span className="text-blue-50">Skill</span>
+        <span className="text-amber-400">Connect</span>
+      </h1>
+    </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1 lg:gap-2">
