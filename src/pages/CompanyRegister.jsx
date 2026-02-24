@@ -41,9 +41,65 @@ const CompanyRegister = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-10 px-4">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center py-10 px-4"
+      style={{
+        background: `
+          radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+          radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 55%),
+          radial-gradient(ellipse at 60% 85%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+          linear-gradient(135deg, #f1f5ff 0%, #eef2ff 40%, #f5f3ff 100%)
+        `
+      }}
+    >
+      {/* Decorative floating blobs */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: "-80px",
+          left: "-80px",
+          width: "340px",
+          height: "340px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+          zIndex: 0
+        }}
+      />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          bottom: "-60px",
+          right: "-60px",
+          width: "280px",
+          height: "280px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%)",
+          filter: "blur(35px)",
+          pointerEvents: "none",
+          zIndex: 0
+        }}
+      />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: "50%",
+          right: "5%",
+          width: "200px",
+          height: "200px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%)",
+          filter: "blur(30px)",
+          pointerEvents: "none",
+          zIndex: 0
+        }}
+      />
 
-      <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100">
+      <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100" style={{ position: "relative", zIndex: 1 }}>
 
         {/* Header */}
         <div className="mb-8">
@@ -146,4 +202,4 @@ const CompanyRegister = () => {
   );
 };
 
-export default CompanyRegister; 
+export default CompanyRegister;
