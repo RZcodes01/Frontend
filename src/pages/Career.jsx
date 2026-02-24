@@ -123,7 +123,11 @@ export default function Career() {
                 Our platform connects students directly with working professionals who guide them through communities, live sessions, and hands-on project evaluations.
               </p>
             </div>
-            <div className="hidden lg:block bg-blue-100 rounded-[2.5rem] h-80 border-2 border-dashed border-blue-200"></div>
+            <img
+              src="https://res.cloudinary.com/dkiuhq7gb/image/upload/v1771922665/group_image_nxvkd9.webp"  // replace with your image path
+              alt="SkillConnect team collaborating"
+              className="hidden lg:block rounded-[2.5rem] h-80 w-full object-cover border-2 border-blue-200"
+            />
           </div>
         </div>
       </section>

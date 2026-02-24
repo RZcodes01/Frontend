@@ -11,6 +11,7 @@ import {
     IndianRupee
 } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const fmt = (date) =>
     date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -21,6 +22,8 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
     const [errors, setErrors] = useState({});
+    const [showPopup, setShowPopup] = useState(false);
+    const navigate = useNavigate();
 
     const gst = Math.round(batch.price * 0.18);
     const total = batch.price + gst;
@@ -54,8 +57,12 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
         setLoading(true);
         await new Promise((r) => setTimeout(r, 2000));
         setLoading(false);
-        setDone(true);
-        onSuccess?.();
+        setShowPopup(true);
+        setTimeout(() => {
+            setShowPopup(false);
+            setDone(true);
+            onSuccess?.();
+        }, 2500);
     };
 
     const inputClass = (key) =>
@@ -78,7 +85,11 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         <span className="text-blue-900 font-black">{fmt(batch.startDate)}</span>.
                     </p>
                     <div className="flex flex-col gap-3">
-                        <button className="bg-amber-400 hover:bg-amber-300 text-blue-950 px-8 py-3 rounded-xl font-black text-base transition-all hover:scale-105">
+
+                        <button
+                            onClick={() => navigate('/dashboard')} // This matches the Route path above
+                            className="bg-amber-400 hover:bg-amber-300 text-blue-950 px-8 py-3 rounded-xl font-black text-base transition-all hover:scale-105"
+                        >
                             Go to Dashboard
                         </button>
                         <button onClick={onBack} className="text-blue-400 hover:text-blue-600 text-base font-semibold transition-colors">
@@ -93,6 +104,19 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
     // ── Payment Screen ────────────────────────────────────────────────────────
     return (
         <div className="min-h-screen bg-blue-50 text-blue-950">
+
+            {/* Success Popup */}
+            {showPopup && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/60 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 flex flex-col items-center gap-4 animate-bounce-once max-w-sm mx-4 text-center">
+                        <div className="w-16 h-16 rounded-full bg-amber-400/15 border border-amber-400/40 flex items-center justify-center">
+                            <CheckCircle2 className="w-9 h-9 text-amber-500" />
+                        </div>
+                        <h2 className="text-2xl font-black text-blue-950">Payment Done Successfully!</h2>
+                        <p className="text-blue-500 font-medium text-base">Your enrollment is confirmed. Redirecting…</p>
+                    </div>
+                </div>
+            )}
 
             {/* Header */}
             <div className="bg-blue-900 border-b border-blue-700 px-6 py-5">

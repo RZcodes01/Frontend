@@ -1,254 +1,182 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LayoutGrid, Users, Code, Paintbrush, Database, ArrowRight, Search, Trophy, Star, TrendingUp, Award, Smartphone, Zap, ChevronRight, ArrowLeft, Flame } from 'lucide-react';
-import Leaderboard from './Leaderboard'; 
-import ProjectDetail from './ProjectDetail'; 
+import React, { useState } from "react";
+import {
+  ArrowLeft,
+  Eye,
+  Trophy,
+  Users,
+  Star,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Project = () => {
   const navigate = useNavigate();
-  const [selectedCommunity, setSelectedCommunity] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState("grid");
 
   const communities = [
-    { 
-      id: 1, 
-      name: "Full Stack Development",  
-      projectCount: 145, 
-      activeMentors: 1,
-      totalMembers: 10,
-      color: "hover:border-amber-400",
-      bgGradient: "from-blue-950 to-blue-900",
-      accentColor: "amber",
-      description: "Build end-to-end web applications with MERN stack, Next.js, and modern API architecture.",
-      tags: ["React", "Node.js", "Next.js", "MongoDB"],
-      topProject: "SaaS Dashboard Platform",
-      trending: true,
-      weeklyGrowth: "+12%"
+    {
+      id: 1,
+      name: "Full Stack Development",
+      projects: [
+        { studentName: "Aarav Sharma", projectName: "E-Commerce MERN Platform", points: 100 },
+        { studentName: "Diya Patel", projectName: "Job Portal with Admin Dashboard", points: 95 },
+        { studentName: "Rohan Verma", projectName: "Online Learning Management System", points: 92 },
+        { studentName: "Meera Iyer", projectName: "Hospital Management Web App", points: 88 },
+        { studentName: "Kabir Singh", projectName: "Real Estate Listing Platform", points: 85 },
+        { studentName: "Ananya Reddy", projectName: "Event Booking System", points: 82 },
+        { studentName: "Vihaan Nair", projectName: "Food Delivery Web App", points: 80 },
+        { studentName: "Sneha Kulkarni", projectName: "Crowdfunding Platform", points: 78 },
+        { studentName: "Arjun Mehta", projectName: "Portfolio Builder SaaS", points: 75 },
+        { studentName: "Ishita Das", projectName: "Inventory Management System", points: 72 },
+      ],
     },
-    { 
-      id: 2, 
-      name: "UI/UX Design", 
-      projectCount: 89, 
-      activeMentors: 1,
-      totalMembers: 5,
-      color: "hover:border-amber-400",
-      bgGradient: "from-blue-950 to-blue-900",
-      accentColor: "amber",
-      description: "Create stunning user experiences with modern design principles and prototyping tools.",
-      tags: ["Figma", "Adobe XD", "Prototyping", "Mobile"],
-      topProject: "Banking App Redesign",
-      trending: true,
-      weeklyGrowth: "+8%"
+    {
+      id: 2,
+      name: "UI/UX Design",
+      projects: [
+        { studentName: "Priya Menon", projectName: "Banking App Redesign", points: 97 },
+        { studentName: "Yash Gupta", projectName: "Travel App UX Case Study", points: 93 },
+        { studentName: "Tanvi Rao", projectName: "E-Learning App UI Kit", points: 90 },
+        { studentName: "Rahul Joshi", projectName: "Fitness Tracking App Design", points: 86 },
+        { studentName: "Neha Kapoor", projectName: "Healthcare App Interface", points: 83 },
+        { studentName: "Kunal Shah", projectName: "Food Ordering UX Prototype", points: 80 },
+        { studentName: "Aditi Deshmukh", projectName: "Crypto Wallet App UI", points: 77 },
+        { studentName: "Siddharth Jain", projectName: "Finance Dashboard Design", points: 75 },
+        { studentName: "Pooja Nair", projectName: "Social Media App Redesign", points: 72 },
+        { studentName: "Manav Bansal", projectName: "OTT Platform UI Concept", points: 70 },
+      ],
     },
-    { 
-      id: 3, 
-      name: "Data Science", 
-      projectCount: 62, 
-      activeMentors: 1,
-      totalMembers: 5,
-      color: "hover:border-amber-400",
-      bgGradient: "from-blue-950 to-blue-900",
-      accentColor: "amber",
-      description: "Dive into machine learning, data analysis, and predictive modeling with Python.",
-      tags: ["Python", "TensorFlow", "ML", "Analytics"],
-      topProject: "Predictive Analytics Engine",
-      trending: false,
-      weeklyGrowth: "+5%"
-    },
-    { 
-      id: 4, 
-      name: "Mobile Development", 
-      projectCount: 78, 
-      activeMentors: 1,
-      totalMembers: 5,
-      color: "hover:border-amber-400",
-      bgGradient: "from-blue-950 to-blue-900",
-      accentColor: "amber",
-      description: "Develop cross-platform mobile apps with React Native, Flutter, and native technologies.",
-      tags: ["React Native", "Flutter", "iOS", "Android"],
-      topProject: "Fitness Tracking App",
-      trending: true,
-      weeklyGrowth: "+15%"
+    {
+      id: 3,
+      name: "Data Science",
+      projects: [
+        { studentName: "Aditya Kumar", projectName: "Stock Price Prediction Model", points: 99 },
+        { studentName: "Shreya Bose", projectName: "Customer Churn Analysis", points: 94 },
+        { studentName: "Ritika Singh", projectName: "Sentiment Analysis on Twitter Data", points: 91 },
+        { studentName: "Harsh Agarwal", projectName: "Fraud Detection System", points: 88 },
+        { studentName: "Nikhil Soni", projectName: "Movie Recommendation Engine", points: 85 },
+        { studentName: "Simran Kaur", projectName: "Sales Forecasting Model", points: 82 },
+        { studentName: "Om Prakash", projectName: "Resume Screening using NLP", points: 79 },
+        { studentName: "Krishna Yadav", projectName: "Image Classification using CNN", points: 76 },
+        { studentName: "Divya Mishra", projectName: "Credit Risk Prediction", points: 73 },
+        { studentName: "Tushar Malhotra", projectName: "Traffic Flow Prediction System", points: 70 },
+      ],
     },
   ];
 
-  const filteredCommunities = communities.filter(c => 
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  const defaultCommunity = communities[0];
+
+  const [selectedCommunity, setSelectedCommunity] = useState(defaultCommunity.name);
+  const [projectData, setProjectData] = useState(
+    [...defaultCommunity.projects].sort((a, b) => b.points - a.points)
   );
 
-  const totalProjects = communities.reduce((sum, c) => sum + c.projectCount, 0);
-  const totalMembers = communities.reduce((sum, c) => sum + c.totalMembers, 0);
-  const totalMentors = communities.reduce((sum, c) => sum + c.activeMentors, 0);
+  const handleCommunityChange = (communityName) => {
+    const found = communities.find((c) => c.name === communityName);
+    if (found) {
+      setSelectedCommunity(communityName);
+      setProjectData([...found.projects].sort((a, b) => b.points - a.points));
+    }
+  };
 
-  if (selectedProject) {
-    return (
-      <ProjectDetail 
-        project={selectedProject} 
-        onBack={() => setSelectedProject(null)} 
-      />
-    );
-  }
-
-  if (selectedCommunity) {
-    return (
-      <div className="relative min-h-screen bg-blue-950">
-        <button 
-          onClick={() => setSelectedCommunity(null)}
-          className="fixed bottom-8 right-8 z-[100] bg-amber-400 text-blue-950 px-6 py-3 rounded-full font-bold shadow-2xl shadow-amber-400/20 flex items-center gap-2 hover:scale-105 hover:bg-amber-300 transition-all"
-        >
-          <ArrowLeft size={18} /> 
-          Back to Communities
-        </button>
-        
-        <Leaderboard 
-          communityName={selectedCommunity} 
-          onViewProject={(project) => setSelectedProject(project)} 
-        />
-      </div>
-    );
-  }
+  const getMedal = (index) => {
+    if (index === 0) return "🥇";
+    if (index === 1) return "🥈";
+    if (index === 2) return "🥉";
+    return `#${index + 1}`;
+  };
 
   return (
-    <div className="min-h-screen bg-blue-50">
-      <div className="bg-blue-50 border-b border-blue-200 text-blue-900">
-        <div className="max-w-7xl mx-auto px-6 pt-10 pb-16">
+    <div className="min-h-screen bg-blue-50 px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto py-8 sm:py-12">
 
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-blue-700 hover:text-amber-500 font-bold text-lg mb-8 transition-colors group"
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-blue-700 hover:text-amber-500 font-bold mb-6"
+        >
+          <ArrowLeft size={20} />
+          Back
+        </button>
+
+        <h1 className="text-3xl sm:text-5xl font-black text-blue-950 mb-6">
+          Project Leaderboard
+        </h1>
+
+        {/* Responsive Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white p-4 rounded-xl shadow border flex items-center gap-3">
+            <Users className="text-amber-500" />
+            <div>
+              <p className="text-sm text-blue-600">Total Students</p>
+              <p className="text-2xl font-bold">{projectData.length}</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-xl shadow border flex items-center gap-3">
+            <Star className="text-amber-500" />
+            <div>
+              <p className="text-sm text-blue-600">Top Score</p>
+              <p className="text-2xl font-bold">
+                {Math.max(...projectData.map((p) => p.points))}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-xl shadow border flex items-center gap-3">
+            <Trophy className="text-amber-500" />
+            <div>
+              <p className="text-sm text-blue-600">Active Community</p>
+              <p className="font-semibold">{selectedCommunity}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Dropdown */}
+        <div className="mb-6">
+          <select
+            value={selectedCommunity}
+            onChange={(e) => handleCommunityChange(e.target.value)}
+            className="w-full sm:w-80 px-4 py-2 rounded-lg border border-blue-300"
           >
-            <ArrowLeft size={24} className="group-hover:-translate-x-2 transition-transform duration-200" />
-            Back
-          </button>
-
-          <div className="text-center mb-8">
-            <h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4 text-blue-950">Projects</h1>
-            <p className="text-xl text-blue-700 max-w-2xl mx-auto leading-relaxed">
-              Join talented creators, compete on leaderboards, and showcase your best work to the world.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-12">
-            <div className="bg-blue-100 rounded-2xl p-6 border border-blue-300 hover:border-amber-400/50 transition-colors shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-amber-400/20 p-2 rounded-lg"></div>
-                <div>
-                  <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Total Projects</p>
-                  <p className="text-4xl font-black text-blue-950">{totalProjects}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-blue-100 rounded-2xl p-6 border border-blue-300 hover:border-amber-400/50 transition-colors shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-amber-400/20 p-2 rounded-lg"></div>
-                <div>
-                  <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Active Members</p>
-                  <p className="text-4xl font-black text-blue-950">{totalMembers.toLocaleString()}</p>
-                </div>
-              </div>
-            </div>
-            <div className="bg-blue-100 rounded-2xl p-6 border border-blue-300 hover:border-amber-400/50 transition-colors shadow-sm">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-amber-400/20 p-2 rounded-lg"></div>
-                <div>
-                  <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Expert Mentors</p>
-                  <p className="text-4xl font-black text-blue-950">{totalMentors}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" size={20} />
-            <input 
-              type="text"
-              placeholder="Search communities..."
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-blue-300 outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-blue-100 text-blue-950 placeholder-blue-400 text-base font-medium"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              value={searchQuery}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-blue-700 font-semibold">View:</span>
-            <div className="bg-blue-100 border border-blue-300 rounded-lg p-1 flex gap-1">
-              <button 
-                onClick={() => setViewMode("grid")}
-                className={`px-3 py-1.5 rounded-md text-sm font-bold transition-all ${viewMode === "grid" ? 'bg-amber-400 text-blue-950' : 'text-blue-700 hover:text-blue-950'}`}
-              >
-                <LayoutGrid size={16} className="inline mr-1" /> Grid
-              </button>
-              <button 
-                onClick={() => setViewMode("list")}
-                className={`px-3 py-1.5 rounded-md text-sm font-bold transition-all ${viewMode === "list" ? 'bg-amber-400 text-blue-950' : 'text-blue-700 hover:text-blue-950'}`}
-              >
-                List
-              </button>
-            </div>
-          </div>
+            {communities.map((community) => (
+              <option key={community.id} value={community.name}>
+                {community.name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {viewMode === "grid" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {filteredCommunities.map((community) => (
-              <div 
-                key={community.id}
-                onClick={() => setSelectedCommunity(community.name)}
-                className={`group bg-blue-900 rounded-2xl border-2 border-blue-700 cursor-pointer hover:shadow-2xl hover:shadow-amber-400/10 transition-all duration-300 hover:-translate-y-2 overflow-hidden ${community.color}`}
-              >
-                <div className={`bg-gradient-to-r ${community.bgGradient} p-6 border-b border-blue-700`}>
-                  <div className="flex items-center gap-4">
-                    {/* <div className="p-3 bg-blue-950 rounded-xl shadow-md border border-blue-600">{community.icon}</div> */}
-                    <div>
-                      <h3 className="text-2xl font-black text-blue-50">{community.name}</h3>
-                      <p className="text-sm text-blue-300 font-semibold">{community.totalMembers.toLocaleString()} members</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-blue-200 text-base font-medium mb-4 leading-relaxed">{community.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-5">
-                    {community.tags.map((tag, i) => (
-                      <span key={i} className="px-3 py-1 rounded-lg text-sm font-bold bg-blue-800 text-blue-100 border border-blue-600">{tag}</span>
-                    ))}
-                  </div>
-                  <button className="w-full bg-amber-400 hover:bg-amber-300 text-blue-950 py-3 rounded-xl font-black text-base flex items-center justify-center gap-2 transition-colors">
-                    View Leaderboard <ChevronRight size={20} />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredCommunities.map((community) => (
-              <div 
-                key={community.id}
-                onClick={() => setSelectedCommunity(community.name)}
-                className="group bg-blue-900 rounded-xl border border-blue-700 p-6 cursor-pointer hover:border-amber-400/60 transition-all"
-              >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="flex items-center gap-4">
-                    <div className={`p-3 bg-gradient-to-r ${community.bgGradient} rounded-xl shadow-md border border-blue-600`}>{community.icon}</div>
-                    <div>
-                      <h3 className="text-xl font-black text-blue-50">{community.name}</h3>
-                      <p className="text-sm text-blue-300 font-semibold">{community.totalMembers.toLocaleString()} members</p>
-                    </div>
-                  </div>
-                  <ChevronRight size={24} className="text-blue-500 group-hover:text-amber-400 transition-all" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Responsive Table */}
+        <div className="overflow-x-auto bg-white rounded-xl shadow border">
+          <table className="min-w-full text-sm sm:text-base">
+            <thead className="bg-blue-900 text-white">
+              <tr>
+                <th className="px-4 py-3 text-left">Rank</th>
+                <th className="px-4 py-3 text-left">Student</th>
+                <th className="px-4 py-3 text-left">Project</th>
+                <th className="px-4 py-3 text-left">Points</th>
+                <th className="px-4 py-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projectData.map((item, index) => (
+                <tr key={index} className="border-b hover:bg-blue-50">
+                  <td className="px-4 py-3 font-bold text-amber-500">
+                    {getMedal(index)}
+                  </td>
+                  <td className="px-4 py-3 font-semibold">{item.studentName}</td>
+                  <td className="px-4 py-3">{item.projectName}</td>
+                  <td className="px-4 py-3 font-bold">{item.points}</td>
+                  <td className="px-4 py-3 text-center">
+                    <button className="bg-amber-400 hover:bg-amber-300 px-3 py-1 rounded-md flex items-center gap-1 mx-auto">
+                      <Eye size={16} />
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   );
