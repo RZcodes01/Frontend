@@ -12,6 +12,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
 
   const navigate = useNavigate();
 
@@ -36,21 +37,26 @@ const Login = () => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("user", JSON.stringify(user));
 
-      // 2. Role-Based Redirection
-      if (user.role === "admin") {
-        navigate("/admin");
-      } else if (user.role === "student") {
-        navigate("/dashboard");
-      }
-      else if (user.role === "mentor") {
-        navigate("/mentor")
-      }
-      else if (user.role === "company") {
-        navigate("/company")
-      }
-      else {
-        navigate("/");
-      }
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+
+        // 2. Role-Based Redirection
+        if (user.role === "admin") {
+          navigate("/admin");
+        } else if (user.role === "student") {
+          navigate("/dashboard");
+        }
+        else if (user.role === "mentor") {
+          navigate("/mentor")
+        }
+        else if (user.role === "company") {
+          navigate("/company")
+        }
+        else {
+          navigate("/");
+        }
+      }, 1500);
 
     } catch (err) {
       setError(err?.response?.data?.message || "Login failed");
@@ -64,6 +70,22 @@ const Login = () => {
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
+
+      {/* Success Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
+          <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 flex flex-col items-center gap-3 animate-bounce-in">
+            <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
+              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800">Login Successful!</h3>
+            <p className="text-sm text-gray-500">Redirecting you now...</p>
+          </div>
+        </div>
+      )}
+
       <div className="relative bg-white w-[380px] rounded-2xl shadow-xl p-8">
 
         {/* Logo */}
@@ -127,7 +149,7 @@ const Login = () => {
 
         {/* SIGN UP LINK */}
         <p className="text-sm text-center mt-4 text-gray-500">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link
             to="/register"
             className="text-blue-600 font-semibold hover:underline"

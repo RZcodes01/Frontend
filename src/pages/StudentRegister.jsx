@@ -7,6 +7,7 @@ import { registerUser } from "../api/auth.api";
 const StudentRegister = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const [studentData, setStudentData] = useState({
     name: "",
@@ -29,8 +30,12 @@ const StudentRegister = () => {
         role: "student"
       });
 
-      alert(res.data.message);
-      navigate("/login");
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+        alert(res.data.message);
+        navigate("/login");
+      }, 1500);
 
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
@@ -41,6 +46,21 @@ const StudentRegister = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-10 px-4">
+
+      {/* Success Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
+          <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 flex flex-col items-center gap-3">
+            <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
+              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800">Registration Successful!</h3>
+            <p className="text-sm text-gray-500">Your student account has been created.</p>
+          </div>
+        </div>
+      )}
 
       <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100">
 
