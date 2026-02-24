@@ -170,7 +170,7 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
             <h2 className="font-black text-blue-50 text-xl truncate max-w-[200px] sm:max-w-none">{selectedCommunity}</h2>
             <div className="flex items-center gap-3 text-sm">
               <span className="flex items-center gap-1 text-amber-400 font-bold whitespace-nowrap">
-                <span>{(currentProjects.length * 120).toLocaleString()} Members</span>
+                <span>{(currentProjects.length * 3 ).toLocaleString()} Members</span>
               </span>
               <span className="text-blue-500">•</span>
               <span className="flex items-center gap-1 text-blue-200 font-semibold whitespace-nowrap">
@@ -179,12 +179,6 @@ const Leaderboard = ({ communityName = "Full Stack Development", onViewProject, 
             </div>
           </div>
         </div>
-        <button 
-          onClick={() => setIsSubmitModalOpen(true)}
-          className="w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-blue-950 px-5 py-2.5 rounded-xl text-base font-black hover:scale-105 transition-all"
-        >
-          Submit Project
-        </button>
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 mt-8">
