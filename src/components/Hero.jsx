@@ -306,7 +306,14 @@ export default function Hero() {
                 }}
               />
 
-             
+              {/* Dark gradient overlay for readability */}
+              <div style={{
+                position: "absolute", inset: 0,
+                borderRadius: "20px",
+                background: "linear-gradient(160deg, rgba(12,28,53,0.18) 0%, rgba(12,28,53,0.72) 100%)",
+                pointerEvents: "none",
+              }} />
+
               {/* Gold left accent on image */}
               <div style={{
                 position: "absolute", top: "16px", left: 0,
