@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 const Badge = ({ children, color = "blue" }) => {
-  const colors = {  
+  const colors = {
     blue: "bg-blue-100 text-blue-800",
     amber: "bg-amber-100 text-amber-800",
     green: "bg-green-100 text-green-800",
@@ -45,16 +45,16 @@ const InfoRow = ({ icon: Icon, label, value }) => (
   </div>
 );
 
+// ✅ FIX: wrapped svg + number div inside a single relative container
 const ScoreRing = ({ score }) => {
-  const pct = score;
   const radius = 36;
   const circ = 2 * Math.PI * radius;
-  const offset = circ - (pct / 100) * circ;
+  const offset = circ - (score / 100) * circ;
   const color = score >= 90 ? "#f59e0b" : score >= 75 ? "#3b82f6" : "#6366f1";
 
   return (
-    <div className="flex flex-col items-center gap-1">
-      <svg width="96" height="96" className="-rotate-90">
+    <div className="relative flex items-center justify-center w-24 h-24">
+      <svg width="96" height="96" className="-rotate-90 absolute">
         <circle cx="48" cy="48" r={radius} strokeWidth="8" fill="none" stroke="#e2e8f0" />
         <circle
           cx="48"
@@ -69,9 +69,10 @@ const ScoreRing = ({ score }) => {
           style={{ transition: "stroke-dashoffset 1s ease" }}
         />
       </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-2xl font-black text-gray-800">{score}</span>
-        <span className="text-[10px] text-gray-400 font-medium">/ 100</span>
+      {/* ✅ relative (not absolute) so it sits inside the flex container */}
+      <div className="relative flex flex-col items-center">
+        <span className="text-2xl font-black text-white">{score}</span>
+        <span className="text-[10px] text-blue-300 font-medium">/ 100</span>
       </div>
     </div>
   );
@@ -139,27 +140,8 @@ const ProjectView = () => {
               </p>
             </div>
 
-            {/* Score Ring */}
-            <div className="relative flex items-center justify-center w-24 h-24 flex-shrink-0">
-              <svg width="96" height="96" className="-rotate-90 absolute">
-                <circle cx="48" cy="48" r="36" strokeWidth="8" fill="none" stroke="rgba(255,255,255,0.15)" />
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="36"
-                  strokeWidth="8"
-                  fill="none"
-                  stroke={project.points >= 90 ? "#f59e0b" : "#60a5fa"}
-                  strokeDasharray={2 * Math.PI * 36}
-                  strokeDashoffset={2 * Math.PI * 36 - (project.points / 100) * 2 * Math.PI * 36}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="relative text-center">
-                <p className={`text-3xl font-black ${scoreColor}`}>{project.points}</p>
-                <p className="text-[10px] text-blue-300 font-medium">pts</p>
-              </div>
-            </div>
+            {/* ✅ Using fixed ScoreRing component */}
+            <ScoreRing score={project.points} />
           </div>
         </div>
 
@@ -254,7 +236,6 @@ const ProjectView = () => {
                 <h2 className="text-lg font-black text-blue-900">Student Details</h2>
               </div>
 
-              {/* Avatar */}
               <div className="flex flex-col items-center mb-5">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white text-xl font-black mb-2 shadow-lg">
                   {project.studentName.split(" ").map((n) => n[0]).join("")}
@@ -264,11 +245,11 @@ const ProjectView = () => {
               </div>
 
               <div className="flex flex-col gap-3.5">
-                <InfoRow icon={Mail} label="Email" value={project.email} />
-                <InfoRow icon={BookOpen} label="Batch" value={project.batch} />
-                <InfoRow icon={Building2} label="College" value={project.college} />
-                <InfoRow icon={Layers} label="Community" value={community} />
-                <InfoRow icon={Clock} label="Project Duration" value={project.duration} />
+                <InfoRow icon={Mail}      label="Email"            value={project.email} />
+                <InfoRow icon={BookOpen}  label="Batch"            value={project.batch} />
+                <InfoRow icon={Building2} label="College"          value={project.college} />
+                <InfoRow icon={Layers}    label="Community"        value={community} />
+                <InfoRow icon={Clock}     label="Project Duration" value={project.duration} />
               </div>
             </div>
 
@@ -279,7 +260,6 @@ const ProjectView = () => {
                 <h2 className="text-lg font-black text-blue-900">Mentor Details</h2>
               </div>
 
-              {/* Mentor Avatar */}
               <div className="flex flex-col items-center mb-5">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-400 flex items-center justify-center text-white text-xl font-black mb-2 shadow-lg">
                   {mentor.avatar}
@@ -292,9 +272,9 @@ const ProjectView = () => {
               </div>
 
               <div className="flex flex-col gap-3.5">
-                <InfoRow icon={Star} label="Expertise" value={mentor.expertise} />
-                <InfoRow icon={Award} label="Experience" value={mentor.experience} />
-                <InfoRow icon={CalendarCheck} label="Evaluation Date" value={project.evaluationDate} />
+                <InfoRow icon={Star}          label="Expertise"        value={mentor.expertise} />
+                <InfoRow icon={Award}         label="Experience"       value={mentor.experience} />
+                <InfoRow icon={CalendarCheck} label="Evaluation Date"  value={project.evaluationDate} />
               </div>
             </div>
 
