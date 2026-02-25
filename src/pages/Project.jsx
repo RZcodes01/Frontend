@@ -158,7 +158,7 @@ const Project = () => {
             </thead>
             <tbody>
               {projectData.map((item, index) => (
-                <tr key={index} className="border-b hover:bg-blue-50">
+                <tr onClick={()=> navigate("/project-view")} key={index} className="border-b hover:bg-blue-50">
                   <td className="px-4 py-3 font-bold text-amber-500">
                     {getMedal(index)}
                   </td>

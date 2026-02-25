@@ -23,6 +23,7 @@ import MentorDashboard from "./pages/MentorDashboard";
 import ProjectSubmission from "./pages/ProjectSubmission";
 import ProjectSubmissions from "./pages/ProjectSubmissions";
 import CompanyManager from "./pages/CompanyManager";
+import ProjectView from "./pages/ProjectView";
 
 function MainLayout() {
   return (
@@ -102,8 +103,9 @@ export default function App() {
       {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
       <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin"]} />}>
         <Route element={<MainLayout />}>
-          <Route path="/project" element={<Project />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/leaderboard" element={<Project />} />
+          {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
+          <Route path="/project-view" element={<ProjectView/>}/>
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/quickskills" element={<QuickSkills />} />
           <Route path="/upload-skill" element={<UploadReel />} />
@@ -139,7 +141,7 @@ export default function App() {
         <Route element={<CompanyDash />}>
           <Route path="/company" element={<CompanyManager />} />
           <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
-        </Route>add
+        </Route>
       </Route>
 
     </Routes>
