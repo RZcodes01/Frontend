@@ -21,6 +21,8 @@ import AdminModuleManager from "./pages/AdminModuleManager";
 import CompanyRegister from './pages/CompanyRegister';
 import MentorDashboard from "./pages/MentorDashboard";
 import ProjectSubmission from "./pages/ProjectSubmission";
+import ProjectSubmissions from "./pages/ProjectSubmissions";
+import CompanyManager from "./pages/CompanyManager";
 
 function MainLayout() {
   return (
@@ -60,6 +62,17 @@ function StudentDashLayout() {
 }
 
 function MentorDash() {
+  return (
+    <div className="h-screen flex flex-col bg-neutral-950">
+      <Navbar />
+      <main className="flex-1 pt-[72px] overflow-hidden">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+function CompanyDash() {
   return (
     <div className="h-screen flex flex-col bg-neutral-950">
       <Navbar />
@@ -118,7 +131,15 @@ export default function App() {
       <Route element={<ProtectedRoute allowedRoles={["mentor"]} />}>
         <Route element={<MentorDash />}>
           <Route path="/mentor" element={<MentorDashboard />} />
+          <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
         </Route>
+      </Route>
+
+      <Route element={<ProtectedRoute allowedRoles={["company"]} />}>
+        <Route element={<CompanyDash />}>
+          <Route path="/company" element={<CompanyManager />} />
+          <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
+        </Route>add
       </Route>
 
     </Routes>

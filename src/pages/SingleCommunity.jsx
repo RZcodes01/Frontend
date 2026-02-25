@@ -10,7 +10,8 @@ import {
     Check,
     Star,
     CheckCircle2,
-    ArrowLeft // Added for the back button icon
+    ArrowLeft,
+    Lock
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchCommunityById } from "../api/community.api";
@@ -102,7 +103,6 @@ export default function SingleCommunity() {
 
             {/* --- HERO HEADER SECTION --- */}
             <div className="relative">
-                {/* Back Button - Responsive sizing and positioning */}
                 <button 
                     onClick={() => navigate(-1)}
                     className="absolute top-4 left-4 md:top-8 md:left-12 z-30 flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 bg-blue-950/60 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-blue-950 hover:scale-105 transition-all font-black text-sm md:text-lg shadow-2xl"
@@ -110,7 +110,6 @@ export default function SingleCommunity() {
                     <ArrowLeft size={18} className="md:w-[22px]" /> Back
                 </button>
 
-                {/* Immersive Banner */}
                 <div className="relative h-[300px] md:h-[500px] w-full overflow-hidden">
                     {course?.bannerImage ? (
                         <>
@@ -119,7 +118,6 @@ export default function SingleCommunity() {
                                 alt="Banner"
                                 className="w-full h-full object-cover opacity-70 transition-all duration-1000"
                             />
-                            {/* Cinematic Vignette Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/20 to-blue-950" />
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-950/80 via-transparent to-blue-950/80" />
                         </>
@@ -128,7 +126,6 @@ export default function SingleCommunity() {
                     )}
                 </div>
 
-                {/* Overlapping Glass Card */}
                 <div className="max-w-6xl mx-auto px-4 md:px-6 -mt-32 md:-mt-48 relative z-20">
                     <div className="bg-blue-900/80 backdrop-blur-xl border border-blue-700 rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-2xl">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
@@ -146,7 +143,6 @@ export default function SingleCommunity() {
                                     {course?.description || "Master new skills with industry experts and a supportive peer network."}
                                 </p>
 
-                                {/* Stats Strip */}
                                 <div className="flex items-center gap-4 md:gap-6 pt-2 overflow-x-auto no-scrollbar">
                                     <div className="flex flex-col flex-shrink-0">
                                         <span className="text-[10px] md:text-xs font-bold text-blue-400 uppercase tracking-widest">Enrolled</span>
@@ -165,7 +161,6 @@ export default function SingleCommunity() {
                                 </div>
                             </div>
 
-                            {/* Main CTA */}
                             <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                                 {!isEnrolled ? (
                                     <button
@@ -221,7 +216,6 @@ export default function SingleCommunity() {
                                             {module.description}
                                         </p>
 
-                                        {/* Topics List */}
                                         <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-2 mb-2">
                                             {module.topics?.map((topic, i) => (
                                                 <div key={i} className="flex items-center gap-2 text-blue-300">
@@ -253,6 +247,19 @@ export default function SingleCommunity() {
                                     <SidebarFeature icon={<Code />} title="Project Files" desc="Premium assets & code." />
                                     <SidebarFeature icon={<Trophy />} title="Certificates" desc="Industry recognition." />
                                 </div>
+
+                                {/* Lock banner — only visible when not enrolled */}
+                                {!isEnrolled && (
+                                    <div className="flex items-center gap-3 bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3 mb-6">
+                                        <div className="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
+                                            <Lock size={14} className="text-amber-400" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Locked</p>
+                                            <p className="text-[10px] text-blue-300 font-medium">Upgrade to Pro to access these features</p>
+                                        </div>
+                                    </div>
+                                )}
 
                                 <button
                                     onClick={() => setPage("batches")}

@@ -15,3 +15,15 @@ API.interceptors.request.use((config) => {
 })
 
 export const fetchProjectById = (id) => API.get(`/${id}`)
+
+// Create project
+export const createProject = (communityId, data) =>
+    API.post(`/${communityId}`, data);
+
+// Update project
+export const updateProject = (projectId, data) =>
+    API.put(`/${projectId}`, data);
+
+// Delete project
+export const deleteProject = (projectId) =>
+    API.delete(`/${projectId}`);
