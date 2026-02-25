@@ -5,7 +5,6 @@ import Community from "./pages/Community";
 import Register from "./pages/StudentRegister";
 import MentorRegister from "./pages/MentorRegister";
 import Login from "./pages/Login";
-import Project from "./pages/Project";
 import Leaderboard from "./pages/Leaderboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,6 +23,7 @@ import ProjectSubmission from "./pages/ProjectSubmission";
 import ProjectSubmissions from "./pages/ProjectSubmissions";
 import CompanyManager from "./pages/CompanyManager";
 import ProjectView from "./pages/ProjectView";
+import Project from "./pages/Project";
 
 function MainLayout() {
   return (
@@ -105,7 +105,7 @@ export default function App() {
         <Route element={<MainLayout />}>
           <Route path="/leaderboard" element={<Project />} />
           {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
-          <Route path="/project-view" element={<ProjectView/>}/>
+          <Route path="/project-view" element={<ProjectView />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/quickskills" element={<QuickSkills />} />
           <Route path="/upload-skill" element={<UploadReel />} />

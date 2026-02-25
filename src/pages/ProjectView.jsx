@@ -1,256 +1,129 @@
-// ProjectView.js
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeft, Trophy, Github, ExternalLink } from "lucide-react";
 
-const ProjectView = [
-    {
-        community: "Web Development Community",
-        project: {
-            projectName: "Smart Task Manager",
-            studentName: "Aarav Sharma",
-            studentId: "WD-2024-001",
-            email: "aarav1@example.com",
-            batch: "Batch 2024",
-            college: "PICT Pune",
-            duration: "8 Weeks",
-            points: 88,
-            description: "A productivity web app for managing daily tasks with reminders and analytics dashboard.",
-            techStack: ["React", "Tailwind", "Node.js", "MongoDB"],
-            githubUrl: "https://github.com/user/project1",
-            liveUrl: "https://project1.vercel.app",
-            feedback: "Well structured project with clean UI.",
-            evaluationDate: "10 Feb 2026",
-            mentor: {
-                name: "Priya Mehta",
-                avatar: "PM",
-                expertise: "Full Stack Development",
-                experience: "6+ Years"
-            }
-        }
-    },
-    {
-        community: "AI/ML Community",
-        project: {
-            projectName: "Student Performance Predictor",
-            studentName: "Ishita Verma",
-            studentId: "AI-2024-002",
-            email: "ishita@example.com",
-            batch: "Batch 2024",
-            college: "MIT WPU",
-            duration: "10 Weeks",
-            points: 92,
-            description: "ML model predicting student performance using regression and classification techniques.",
-            techStack: ["Python", "Scikit-learn", "Pandas", "Flask"],
-            githubUrl: "https://github.com/user/project2",
-            liveUrl: "https://project2-demo.com",
-            feedback: "Excellent model accuracy and documentation.",
-            evaluationDate: "12 Feb 2026",
-            mentor: {
-                name: "Rahul Desai",
-                avatar: "RD",
-                expertise: "Machine Learning",
-                experience: "8+ Years"
-            }
-        }
-    },
-    {
-        community: "App Development Community",
-        project: {
-            projectName: "FitTrack Mobile App",
-            studentName: "Rohan Patil",
-            studentId: "AD-2024-003",
-            email: "rohan@example.com",
-            batch: "Batch 2024",
-            college: "VIT Pune",
-            duration: "9 Weeks",
-            points: 85,
-            description: "Fitness tracking mobile app with workout plans and calorie counter.",
-            techStack: ["React Native", "Firebase"],
-            githubUrl: "https://github.com/user/project3",
-            liveUrl: "https://project3-demo.com",
-            feedback: "Good UI, could improve performance optimization.",
-            evaluationDate: "15 Feb 2026",
-            mentor: {
-                name: "Sneha Kulkarni",
-                avatar: "SK",
-                expertise: "Mobile Development",
-                experience: "5+ Years"
-            }
-        }
-    },
-    {
-        community: "Cyber Security Community",
-        project: {
-            projectName: "SecureAuth System",
-            studentName: "Aditya Joshi",
-            studentId: "CS-2024-004",
-            email: "aditya@example.com",
-            batch: "Batch 2024",
-            college: "COEP",
-            duration: "7 Weeks",
-            points: 90,
-            description: "Authentication system with JWT, encryption, and role-based access control.",
-            techStack: ["Node.js", "JWT", "bcrypt", "MySQL"],
-            githubUrl: "https://github.com/user/project4",
-            liveUrl: "https://project4-demo.com",
-            feedback: "Strong security practices implemented.",
-            evaluationDate: "18 Feb 2026",
-            mentor: {
-                name: "Kunal Shah",
-                avatar: "KS",
-                expertise: "Cyber Security",
-                experience: "10+ Years"
-            }
-        }
-    },
-    {
-        community: "Web Development Community",
-        project: {
-            projectName: "E-Commerce Platform",
-            studentName: "Meera Nair",
-            studentId: "WD-2024-005",
-            email: "meera@example.com",
-            batch: "Batch 2024",
-            college: "DY Patil University",
-            duration: "12 Weeks",
-            points: 94,
-            description: "Full-stack e-commerce website with payment integration and admin dashboard.",
-            techStack: ["React", "Node.js", "Stripe", "MongoDB"],
-            githubUrl: "https://github.com/user/project5",
-            liveUrl: "https://project5-demo.com",
-            feedback: "Outstanding full-stack implementation.",
-            evaluationDate: "20 Feb 2026",
-            mentor: {
-                name: "Priya Mehta",
-                avatar: "PM",
-                expertise: "Full Stack Development",
-                experience: "6+ Years"
-            }
-        }
-    },
-    {
-        community: "Data Science Community",
-        project: {
-            projectName: "COVID Data Dashboard",
-            studentName: "Siddharth Rao",
-            studentId: "DS-2024-006",
-            email: "sid@example.com",
-            batch: "Batch 2024",
-            college: "Symbiosis Institute",
-            duration: "6 Weeks",
-            points: 82,
-            description: "Interactive dashboard visualizing COVID trends using real-time datasets.",
-            techStack: ["Python", "Plotly", "Dash"],
-            githubUrl: "https://github.com/user/project6",
-            liveUrl: "https://project6-demo.com",
-            feedback: "Good visualization techniques used.",
-            evaluationDate: "21 Feb 2026",
-            mentor: {
-                name: "Anita Roy",
-                avatar: "AR",
-                expertise: "Data Science",
-                experience: "7+ Years"
-            }
-        }
-    },
-    {
-        community: "Blockchain Community",
-        project: {
-            projectName: "Crypto Wallet DApp",
-            studentName: "Dev Malhotra",
-            studentId: "BC-2024-007",
-            email: "dev@example.com",
-            batch: "Batch 2024",
-            college: "IIIT Pune",
-            duration: "11 Weeks",
-            points: 89,
-            description: "Decentralized crypto wallet with MetaMask integration.",
-            techStack: ["Solidity", "React", "Web3.js"],
-            githubUrl: "https://github.com/user/project7",
-            liveUrl: "https://project7-demo.com",
-            feedback: "Solid blockchain fundamentals demonstrated.",
-            evaluationDate: "22 Feb 2026",
-            mentor: {
-                name: "Arjun Khanna",
-                avatar: "AK",
-                expertise: "Blockchain",
-                experience: "5+ Years"
-            }
-        }
-    },
-    {
-        community: "UI/UX Community",
-        project: {
-            projectName: "Travel Booking UI",
-            studentName: "Ananya Singh",
-            studentId: "UX-2024-008",
-            email: "ananya@example.com",
-            batch: "Batch 2024",
-            college: "MIT ADT University",
-            duration: "5 Weeks",
-            points: 86,
-            description: "Modern travel booking UI prototype with responsive layouts.",
-            techStack: ["Figma", "HTML", "CSS"],
-            githubUrl: "https://github.com/user/project8",
-            liveUrl: "https://project8-demo.com",
-            feedback: "Great visual consistency and usability.",
-            evaluationDate: "23 Feb 2026",
-            mentor: {
-                name: "Neha Kapoor",
-                avatar: "NK",
-                expertise: "UI/UX Design",
-                experience: "9+ Years"
-            }
-        }
-    },
-    {
-        community: "Cloud Computing Community",
-        project: {
-            projectName: "Cloud File Storage",
-            studentName: "Yash Thakur",
-            studentId: "CC-2024-009",
-            email: "yash@example.com",
-            batch: "Batch 2024",
-            college: "Sinhgad Institute",
-            duration: "8 Weeks",
-            points: 91,
-            description: "Secure cloud file storage system using AWS S3 and authentication.",
-            techStack: ["AWS", "Node.js", "React"],
-            githubUrl: "https://github.com/user/project9",
-            liveUrl: "https://project9-demo.com",
-            feedback: "Strong cloud architecture understanding.",
-            evaluationDate: "24 Feb 2026",
-            mentor: {
-                name: "Ritika Sen",
-                avatar: "RS",
-                expertise: "Cloud Computing",
-                experience: "8+ Years"
-            }
-        }
-    },
-    {
-        community: "Game Development Community",
-        project: {
-            projectName: "2D Adventure Game",
-            studentName: "Kabir Khan",
-            studentId: "GD-2024-010",
-            email: "kabir@example.com",
-            batch: "Batch 2024",
-            college: "PCCOE Pune",
-            duration: "10 Weeks",
-            points: 87,
-            description: "2D adventure game with levels, enemies, and scoring system.",
-            techStack: ["Unity", "C#"],
-            githubUrl: "https://github.com/user/project10",
-            liveUrl: "https://project10-demo.com",
-            feedback: "Engaging gameplay mechanics.",
-            evaluationDate: "25 Feb 2026",
-            mentor: {
-                name: "Vikram Rao",
-                avatar: "VR",
-                expertise: "Game Development",
-                experience: "12+ Years"
-            }
-        }
-    }
-];
+export default function ProjectView() {
+  const { state } = useLocation();
+  const navigate = useNavigate();
+  const project = state?.project;
 
-export default ProjectView;
+  if (!project) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-blue-50">
+        <div className="bg-white p-8 rounded-2xl shadow text-center">
+          <p className="text-gray-500 font-semibold">No project data found.</p>
+          <button
+            onClick={() => navigate("/leaderboard")}
+            className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg"
+          >
+            Back to Leaderboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-blue-50 px-4 sm:px-6 py-8">
+      <div className="max-w-4xl mx-auto">
+
+        {/* Header */}
+        <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 rounded-2xl p-8 mb-8 text-white shadow-lg">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-blue-300 hover:text-white mb-4 text-sm"
+          >
+            <ArrowLeft size={16} /> Back
+          </button>
+
+          <div className="flex items-center gap-3 mb-3">
+            <Trophy size={26} className="text-amber-400" />
+            <h1 className="text-3xl font-black">{project.projectName}</h1>
+          </div>
+
+          <p className="text-blue-300 text-sm">
+            {project.studentName} · {project.community} · {project.batch}
+          </p>
+
+          <div className="mt-4 inline-block bg-amber-100 text-amber-700 px-4 py-2 rounded-xl font-bold text-sm">
+            {project.points} Points
+          </div>
+        </div>
+
+        {/* Details Card */}
+        <div className="bg-white rounded-2xl shadow-sm border p-6 space-y-6">
+
+          {/* Description */}
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Description</h2>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              {project.description}
+            </p>
+          </div>
+
+          {/* Student Info */}
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Student Details</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600">
+              <p><strong>Email:</strong> {project.email}</p>
+              <p><strong>College:</strong> {project.college}</p>
+              <p><strong>Duration:</strong> {project.duration}</p>
+              <p><strong>Evaluation Date:</strong> {project.evaluationDate}</p>
+            </div>
+          </div>
+
+          {/* Tech Stack */}
+          <div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">Tech Stack</h2>
+            <div className="flex flex-wrap gap-2">
+              {project.techStack?.map((tech, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Links */}
+          <div className="flex flex-wrap gap-4">
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 bg-gray-900 hover:bg-black text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+              >
+                <Github size={16} /> GitHub
+              </a>
+            )}
+
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+              >
+                <ExternalLink size={16} /> Live Demo
+              </a>
+            )}
+          </div>
+
+          {/* Feedback */}
+          {project.feedback && (
+            <div>
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Mentor Feedback</h2>
+              <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl text-sm text-gray-700">
+                {project.feedback}
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </div>
+  );
+}

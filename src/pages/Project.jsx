@@ -1,325 +1,362 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  ArrowLeft,
-  User,
-  Mail,
-  BookOpen,
-  Building2,
-  Code2,
-  Globe,
-  Github,
-  Clock,
-  Star,
-  Award,
-  MessageSquareQuote,
-  CalendarCheck,
-  Layers,
-  GraduationCap,
-  BadgeCheck,
-} from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, Trophy, Medal, Award, Filter, ChevronRight } from "lucide-react";
 
-const Badge = ({ children, color = "blue" }) => {
-  const colors = {  
-    blue: "bg-blue-100 text-blue-800",
-    amber: "bg-amber-100 text-amber-800",
-    green: "bg-green-100 text-green-800",
-    purple: "bg-purple-100 text-purple-800",
-  };
-  return (
-    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${colors[color]}`}>
-      {children}
-    </span>
-  );
+const DUMMY_PROJECTS = [
+  {
+    projectName: "EduTrack AI",
+    studentName: "Aarav Mehta",
+    studentId: "STU001",
+    email: "aarav@example.com",
+    batch: "Batch 3",
+    college: "IIT Bombay",
+    duration: "3 months",
+    description: "An AI-powered student performance tracking system with real-time analytics.",
+    techStack: ["React", "Python", "TensorFlow", "MongoDB"],
+    githubUrl: "https://github.com/example/edutrack",
+    liveUrl: "https://edutrack.vercel.app",
+    feedback: "Exceptional ML model and clean UI.",
+    evaluationDate: "2024-12-15",
+    points: 95,
+    community: "AI & ML",
+  },
+  {
+    projectName: "GreenCart",
+    studentName: "Sneha Iyer",
+    studentId: "STU002",
+    email: "sneha@example.com",
+    batch: "Batch 3",
+    college: "NIT Trichy",
+    duration: "2 months",
+    description: "Sustainable e-commerce platform tracking carbon footprint.",
+    techStack: ["Next.js", "Node.js", "PostgreSQL"],
+    githubUrl: "https://github.com/example/greencart",
+    liveUrl: "https://greencart.vercel.app",
+    feedback: "Great sustainability concept.",
+    evaluationDate: "2024-12-10",
+    points: 91,
+    community: "Web Dev",
+  },
+  {
+    projectName: "MediScan",
+    studentName: "Rohan Das",
+    studentId: "STU003",
+    email: "rohan@example.com",
+    batch: "Batch 2",
+    college: "BITS Pilani",
+    duration: "4 months",
+    description: "Medical image analysis tool using deep learning.",
+    techStack: ["Python", "PyTorch", "React"],
+    githubUrl: "https://github.com/example/mediscan",
+    liveUrl: "https://mediscan.vercel.app",
+    feedback: "Impressive accuracy.",
+    evaluationDate: "2024-11-28",
+    points: 88,
+    community: "AI & ML",
+  },
+  {
+    projectName: "CampusConnect",
+    studentName: "Anjali Nair",
+    studentId: "STU004",
+    email: "anjali@example.com",
+    batch: "Batch 2",
+    college: "VIT Vellore",
+    duration: "2 months",
+    description: "Campus networking app.",
+    techStack: ["React Native", "Firebase"],
+    githubUrl: "https://github.com/example/campusconnect",
+    liveUrl: "https://campusconnect.app",
+    feedback: "Strong real-time features.",
+    evaluationDate: "2024-11-20",
+    points: 84,
+    community: "Mobile Dev",
+  },
+  {
+    projectName: "DevFlow",
+    studentName: "Vikram Singh",
+    studentId: "STU005",
+    email: "vikram@example.com",
+    batch: "Batch 3",
+    college: "DTU Delhi",
+    duration: "3 months",
+    description: "Developer productivity tool.",
+    techStack: ["Vue.js", "Go", "Docker"],
+    githubUrl: "https://github.com/example/devflow",
+    liveUrl: "https://devflow.io",
+    feedback: "Smart architecture.",
+    evaluationDate: "2024-12-01",
+    points: 82,
+    community: "Web Dev",
+  },
+  {
+    projectName: "StockSense",
+    studentName: "Pooja Kulkarni",
+    studentId: "STU006",
+    email: "pooja@example.com",
+    batch: "Batch 2",
+    college: "SRM University",
+    duration: "2 months",
+    description: "Stock prediction dashboard.",
+    techStack: ["Python", "React"],
+    githubUrl: "https://github.com/example/stocksense",
+    liveUrl: "https://stocksense.vercel.app",
+    feedback: "Good NLP usage.",
+    evaluationDate: "2024-11-15",
+    points: 78,
+    community: "AI & ML",
+  },
+  {
+    projectName: "RideEase",
+    studentName: "Arjun Pillai",
+    studentId: "STU007",
+    email: "arjun@example.com",
+    batch: "Batch 3",
+    college: "Amrita University",
+    duration: "3 months",
+    description: "Carpooling app with route optimization.",
+    techStack: ["React Native", "Node.js"],
+    githubUrl: "https://github.com/example/rideease",
+    liveUrl: "https://rideease.app",
+    feedback: "Efficient routing.",
+    evaluationDate: "2024-12-05",
+    points: 75,
+    community: "Mobile Dev",
+  },
+  {
+    projectName: "BudgetBuddy",
+    studentName: "Meera Joshi",
+    studentId: "STU008",
+    email: "meera@example.com",
+    batch: "Batch 2",
+    college: "Pune University",
+    duration: "2 months",
+    description: "Personal finance tracker.",
+    techStack: ["React", "Express"],
+    githubUrl: "https://github.com/example/budgetbuddy",
+    liveUrl: "https://budgetbuddy.vercel.app",
+    feedback: "Clean and practical.",
+    evaluationDate: "2024-11-10",
+    points: 72,
+    community: "Web Dev",
+  },
+  {
+    projectName: "FitTrack Pro",
+    studentName: "Neha Kapoor",
+    studentId: "STU009",
+    email: "neha@example.com",
+    batch: "Batch 3",
+    college: "Manipal University",
+    duration: "3 months",
+    description: "AI fitness tracking app.",
+    techStack: ["Flutter", "Firebase"],
+    githubUrl: "https://github.com/example/fittrack",
+    liveUrl: "https://fittrack.app",
+    feedback: "Strong health insights.",
+    evaluationDate: "2024-12-12",
+    points: 89,
+    community: "Mobile Dev",
+  },
+  {
+    projectName: "CodeCollab",
+    studentName: "Harsh Agarwal",
+    studentId: "STU010",
+    email: "harsh@example.com",
+    batch: "Batch 3",
+    college: "IIIT Hyderabad",
+    duration: "3 months",
+    description: "Real-time collaborative coding platform.",
+    techStack: ["React", "Socket.io", "Node.js"],
+    githubUrl: "https://github.com/example/codecollab",
+    liveUrl: "https://codecollab.app",
+    feedback: "Smooth collaboration.",
+    evaluationDate: "2024-12-08",
+    points: 86,
+    community: "Web Dev",
+  },
+  {
+    projectName: "AgroSmart",
+    studentName: "Tanmay Rao",
+    studentId: "STU011",
+    email: "tanmay@example.com",
+    batch: "Batch 2",
+    college: "Anna University",
+    duration: "4 months",
+    description: "Smart farming solution using IoT.",
+    techStack: ["IoT", "Python", "Django"],
+    githubUrl: "https://github.com/example/agrosmart",
+    liveUrl: "https://agrosmart.app",
+    feedback: "Innovative IoT integration.",
+    evaluationDate: "2024-11-18",
+    points: 83,
+    community: "AI & ML",
+  },
+  {
+    projectName: "TravelMate",
+    studentName: "Isha Malhotra",
+    studentId: "STU012",
+    email: "isha@example.com",
+    batch: "Batch 3",
+    college: "Delhi University",
+    duration: "2 months",
+    description: "AI travel planner with itinerary optimization.",
+    techStack: ["Next.js", "OpenAI API"],
+    githubUrl: "https://github.com/example/travelmate",
+    liveUrl: "https://travelmate.app",
+    feedback: "Creative AI usage.",
+    evaluationDate: "2024-12-03",
+    points: 80,
+    community: "Web Dev",
+  },
+];
+
+const COMMUNITIES = ["All", "AI & ML", "Web Dev", "Mobile Dev"];
+const BATCHES = ["All", "Batch 2", "Batch 3"];
+
+const RankIcon = ({ rank }) => {
+  if (rank === 1) return <Trophy size={20} className="text-amber-400" />;
+  if (rank === 2) return <Medal size={20} className="text-slate-400" />;
+  if (rank === 3) return <Award size={20} className="text-orange-400" />;
+  return <span className="text-gray-400 font-bold text-sm w-5 text-center">#{rank}</span>;
 };
 
-const InfoRow = ({ icon: Icon, label, value }) => (
-  <div className="flex items-start gap-3">
-    <div className="mt-0.5 p-1.5 bg-blue-50 rounded-lg">
-      <Icon size={15} className="text-blue-600" />
-    </div>
-    <div>
-      <p className="text-xs text-gray-400 uppercase tracking-wider font-medium">{label}</p>
-      <p className="text-sm font-semibold text-gray-800">{value}</p>
-    </div>
-  </div>
-);
-
-const ScoreRing = ({ score }) => {
-  const pct = score;
-  const radius = 36;
-  const circ = 2 * Math.PI * radius;
-  const offset = circ - (pct / 100) * circ;
-  const color = score >= 90 ? "#f59e0b" : score >= 75 ? "#3b82f6" : "#6366f1";
-
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <svg width="96" height="96" className="-rotate-90">
-        <circle cx="48" cy="48" r={radius} strokeWidth="8" fill="none" stroke="#e2e8f0" />
-        <circle
-          cx="48"
-          cy="48"
-          r={radius}
-          strokeWidth="8"
-          fill="none"
-          stroke={color}
-          strokeDasharray={circ}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          style={{ transition: "stroke-dashoffset 1s ease" }}
-        />
-      </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-2xl font-black text-gray-800">{score}</span>
-        <span className="text-[10px] text-gray-400 font-medium">/ 100</span>
-      </div>
-    </div>
-  );
+const getRankBg = (rank) => {
+  if (rank === 1) return "bg-amber-50 border-amber-200 hover:bg-amber-100";
+  if (rank === 2) return "bg-slate-50 border-slate-200 hover:bg-slate-100";
+  if (rank === 3) return "bg-orange-50 border-orange-200 hover:bg-orange-100";
+  return "bg-white border-gray-100 hover:bg-blue-50";
 };
 
-const ProjectView = () => {
-  const { state } = useLocation();
+const getScoreBg = (points) => {
+  if (points >= 90) return "bg-amber-100 text-amber-700";
+  if (points >= 75) return "bg-blue-100 text-blue-700";
+  return "bg-indigo-100 text-indigo-700";
+};
+
+export default function Project() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [community, setCommunity] = useState("All");
+  const [batch, setBatch] = useState("All");
 
-  if (!state?.project) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-50">
-        <div className="text-center">
-          <p className="text-blue-900 font-bold text-xl mb-4">No project data found.</p>
-          <button
-            onClick={() => navigate(-1)}
-            className="bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800"
-          >
-            Go Back
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const filtered = useMemo(() => {
+    return [...DUMMY_PROJECTS]
+      .filter((p) => {
+        const matchSearch =
+          p.projectName.toLowerCase().includes(search.toLowerCase()) ||
+          p.studentName.toLowerCase().includes(search.toLowerCase());
+        const matchCommunity = community === "All" || p.community === community;
+        const matchBatch = batch === "All" || p.batch === batch;
+        return matchSearch && matchCommunity && matchBatch;
+      })
+      .sort((a, b) => b.points - a.points);
+  }, [search, community, batch]);
 
-  const { project, community } = state;
-  const { mentor } = project;
-
-  const scoreColor =
-    project.points >= 90
-      ? "text-amber-500"
-      : project.points >= 75
-      ? "text-blue-600"
-      : "text-indigo-500";
+  const handleViewClick = (project) => {
+    navigate("/project-view", {
+      state: { project },
+    });
+  };
 
   return (
     <div className="min-h-screen bg-blue-50 px-4 sm:px-6 py-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
 
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-blue-700 hover:text-amber-500 font-bold mb-6 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          Back to Leaderboard
-        </button>
+        {/* Header */}
+        <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 rounded-2xl p-6 sm:p-10 mb-8 text-white">
+          <div className="flex items-center gap-3 mb-2">
+            <Trophy size={28} className="text-amber-400" />
+            <h1 className="text-3xl sm:text-4xl font-black">Leaderboard</h1>
+          </div>
+          <p className="text-blue-300 text-sm sm:text-base">
+            Top student projects ranked by mentor evaluation scores
+          </p>
+        </div>
 
-        {/* Hero Banner */}
-        <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 rounded-2xl p-6 sm:p-10 mb-6 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400 opacity-5 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-400 opacity-10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        {/* Filters */}
+        <div className="bg-white rounded-2xl shadow-sm border p-4 mb-6 flex flex-col sm:flex-row gap-3">
 
-          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div className="flex-1">
-              <div className="flex flex-wrap gap-2 mb-3">
-                <Badge color="amber">{community}</Badge>
-                <Badge color="blue">{project.batch}</Badge>
-              </div>
-              <h1 className="text-2xl sm:text-4xl font-black mb-2 leading-tight">
-                {project.projectName}
-              </h1>
-              <p className="text-blue-200 text-sm sm:text-base font-medium">
-                by {project.studentName} · {project.studentId}
-              </p>
-            </div>
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by project or student name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-            {/* Score Ring */}
-            <div className="relative flex items-center justify-center w-24 h-24 flex-shrink-0">
-              <svg width="96" height="96" className="-rotate-90 absolute">
-                <circle cx="48" cy="48" r="36" strokeWidth="8" fill="none" stroke="rgba(255,255,255,0.15)" />
-                <circle
-                  cx="48"
-                  cy="48"
-                  r="36"
-                  strokeWidth="8"
-                  fill="none"
-                  stroke={project.points >= 90 ? "#f59e0b" : "#60a5fa"}
-                  strokeDasharray={2 * Math.PI * 36}
-                  strokeDashoffset={2 * Math.PI * 36 - (project.points / 100) * 2 * Math.PI * 36}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="relative text-center">
-                <p className={`text-3xl font-black ${scoreColor}`}>{project.points}</p>
-                <p className="text-[10px] text-blue-300 font-medium">pts</p>
-              </div>
-            </div>
+          <div className="relative">
+            <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <select
+              value={community}
+              onChange={(e) => setCommunity(e.target.value)}
+              className="pl-8 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white"
+            >
+              {COMMUNITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c === "All" ? "All Communities" : c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="relative">
+            <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <select
+              value={batch}
+              onChange={(e) => setBatch(e.target.value)}
+              className="pl-8 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white"
+            >
+              {BATCHES.map((b) => (
+                <option key={b} value={b}>
+                  {b === "All" ? "All Batches" : b}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Project List */}
+        <div className="flex flex-col gap-3">
+          {filtered.map((project, index) => {
+            const rank = index + 1;
 
-          {/* LEFT — Project Info (spans 2 cols) */}
-          <div className="lg:col-span-2 flex flex-col gap-6">
+            return (
+              <div
+                key={project.studentId}
+                className={`w-full border rounded-2xl px-5 py-4 flex items-center gap-4 shadow-sm ${getRankBg(rank)}`}
+              >
+                <div className="w-8 flex items-center justify-center">
+                  <RankIcon rank={rank} />
+                </div>
 
-            {/* Project Description */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Layers size={18} className="text-amber-500" />
-                <h2 className="text-lg font-black text-blue-900">Project Overview</h2>
-              </div>
-              <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                {project.description}
-              </p>
-            </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-black text-gray-900 text-sm sm:text-base truncate">
+                    {project.projectName}
+                  </p>
+                  <p className="text-xs text-gray-400 font-medium truncate">
+                    {project.studentName} · {project.community} · {project.batch}
+                  </p>
+                </div>
 
-            {/* Tech Stack */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Code2 size={18} className="text-amber-500" />
-                <h2 className="text-lg font-black text-blue-900">Tech Stack</h2>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {project.techStack.map((tech, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1.5 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg text-xs font-bold tracking-wide"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
+                <div className={`px-3 py-1.5 rounded-xl text-sm font-black ${getScoreBg(project.points)}`}>
+                  {project.points} pts
+                </div>
 
-            {/* Links */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Globe size={18} className="text-amber-500" />
-                <h2 className="text-lg font-black text-blue-900">Project Links</h2>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-gray-700 transition-colors"
+                {/* ✅ View Button */}
+                <button
+                  onClick={() => handleViewClick(project)}
+                  className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition"
                 >
-                  <Github size={16} />
-                  View on GitHub
-                </a>
-                <a
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 bg-amber-400 text-gray-900 rounded-xl text-sm font-semibold hover:bg-amber-300 transition-colors"
-                >
-                  <Globe size={16} />
-                  Live Demo
-                </a>
+                  View
+                  <ChevronRight size={16} />
+                </button>
               </div>
-            </div>
-
-            {/* Mentor Feedback */}
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <MessageSquareQuote size={18} className="text-amber-600" />
-                <h2 className="text-lg font-black text-amber-900">Mentor Feedback</h2>
-              </div>
-              <blockquote className="text-gray-700 italic leading-relaxed text-sm sm:text-base border-l-4 border-amber-400 pl-4">
-                "{project.feedback}"
-              </blockquote>
-              <div className="mt-3 flex items-center gap-2">
-                <CalendarCheck size={14} className="text-amber-600" />
-                <span className="text-xs text-amber-700 font-semibold">
-                  Evaluated on {project.evaluationDate}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT — Student & Mentor Cards */}
-          <div className="flex flex-col gap-6">
-
-            {/* Student Card */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <User size={18} className="text-amber-500" />
-                <h2 className="text-lg font-black text-blue-900">Student Details</h2>
-              </div>
-
-              {/* Avatar */}
-              <div className="flex flex-col items-center mb-5">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white text-xl font-black mb-2 shadow-lg">
-                  {project.studentName.split(" ").map((n) => n[0]).join("")}
-                </div>
-                <p className="font-black text-blue-900 text-base">{project.studentName}</p>
-                <p className="text-xs text-gray-400 font-medium">{project.studentId}</p>
-              </div>
-
-              <div className="flex flex-col gap-3.5">
-                <InfoRow icon={Mail} label="Email" value={project.email} />
-                <InfoRow icon={BookOpen} label="Batch" value={project.batch} />
-                <InfoRow icon={Building2} label="College" value={project.college} />
-                <InfoRow icon={Layers} label="Community" value={community} />
-                <InfoRow icon={Clock} label="Project Duration" value={project.duration} />
-              </div>
-            </div>
-
-            {/* Mentor Card */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <div className="flex items-center gap-2 mb-5">
-                <GraduationCap size={18} className="text-amber-500" />
-                <h2 className="text-lg font-black text-blue-900">Mentor Details</h2>
-              </div>
-
-              {/* Mentor Avatar */}
-              <div className="flex flex-col items-center mb-5">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-400 flex items-center justify-center text-white text-xl font-black mb-2 shadow-lg">
-                  {mentor.avatar}
-                </div>
-                <p className="font-black text-blue-900 text-base">{mentor.name}</p>
-                <div className="flex items-center gap-1 mt-1">
-                  <BadgeCheck size={13} className="text-green-500" />
-                  <span className="text-xs text-green-600 font-semibold">Verified Mentor</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3.5">
-                <InfoRow icon={Star} label="Expertise" value={mentor.expertise} />
-                <InfoRow icon={Award} label="Experience" value={mentor.experience} />
-                <InfoRow icon={CalendarCheck} label="Evaluation Date" value={project.evaluationDate} />
-              </div>
-            </div>
-
-            {/* Score Summary */}
-            <div className="bg-gradient-to-br from-blue-900 to-blue-950 rounded-2xl p-6 text-white text-center">
-              <p className="text-blue-300 text-xs uppercase tracking-widest font-bold mb-2">
-                Final Score
-              </p>
-              <p className={`text-6xl font-black mb-1 ${project.points >= 90 ? "text-amber-400" : "text-white"}`}>
-                {project.points}
-              </p>
-              <p className="text-blue-400 text-sm">out of 100</p>
-              <div className="mt-4 w-full bg-blue-800 rounded-full h-2">
-                <div
-                  className="h-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-300"
-                  style={{ width: `${project.points}%`, transition: "width 1s ease" }}
-                />
-              </div>
-            </div>
-
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
-};
-
-export default ProjectView;
+}

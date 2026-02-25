@@ -1,9 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+// ─── Fake live data ───────────────────────────────────────────────────────────
+const SKILLS = [
+  "React", "Python", "System Design", "DSA", "Node.js",
+  "TypeScript", "Machine Learning", "SQL", "Docker", "GraphQL",
+  "Rust", "Kubernetes", "AWS", "Next.js", "Golang",
+];
+
+const ACTIVITY_TEMPLATES = [
+  { icon: "🎓", tpl: (u, s) => `${u} just enrolled in ${s}` },
+  { icon: "✅", tpl: (u, s) => `${u} completed a ${s} challenge` },
+  { icon: "💬", tpl: (u, s) => `${u} got a mentor review on ${s}` },
+  { icon: "🏆", tpl: (u, s) => `${u} earned a ${s} badge` },
+  { icon: "🔴", tpl: (u, s) => `Live ${s} session just started` },
+];
+
+const NAMES = [
+  "Arjun K.", "Priya S.", "Rohan M.", "Sneha P.", "Dev T.",
+  "Aisha B.", "Ravi L.", "Meera N.", "Kiran J.", "Tanvi R.",
+];
+
+function randItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function genActivity() {
+  const t = randItem(ACTIVITY_TEMPLATES);
+  return { icon: t.icon, text: t.tpl(randItem(NAMES), randItem(SKILLS)), id: Math.random() };
+}
+
+const INITIAL_ACTIVITIES = Array.from({ length: 5 }, genActivity);
+
+// ─── Stat counter component ───────────────────────────────────────────────────
+function AnimatedCounter({ target, suffix = "", prefix = "" }) {
+  const [val, setVal] = useState(0);
+  const started = useRef(false);
+  useEffect(() => {
+    if (started.current) return;
+    started.current = true;
+    const duration = 1800;
+    const steps = 60;
+    const step = target / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { setVal(target); clearInterval(timer); }
+      else setVal(Math.floor(current));
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [target]);
+  return <span>{prefix}{val.toLocaleString()}{suffix}</span>;
+}
 
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
+  // Activity feed state
+  const [activities, setActivities] = useState(INITIAL_ACTIVITIES);
+  const [activeSkill, setActiveSkill] = useState(null);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -14,6 +67,14 @@ export default function Hero() {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") handleSearch();
   };
+
+  // Push a new activity every 2.8 s
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActivities(prev => [genActivity(), ...prev.slice(0, 5)]);
+    }, 2800);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <>
@@ -70,12 +131,81 @@ export default function Hero() {
         .hero-ping-1        { animation: dot-ping 1.8s ease-out infinite; transform-origin: 60px 268px; }
         .hero-ping-2        { animation: dot-ping 1.8s ease-out 0.6s infinite; transform-origin: 220px 268px; }
 
+        /* ── Interactive panel styles ── */
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-10px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes panel-in {
+          from { opacity: 0; transform: translateX(40px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes live-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
+          50%       { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+        }
+
+        .interactive-panel {
+          animation: panel-in 0.95s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+        }
+        .activity-item {
+          animation: slideDown 0.4s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        .skill-chip {
+          cursor: pointer;
+          transition: all 0.18s ease;
+          border: 1.5px solid transparent;
+        }
+        .skill-chip:hover {
+          border-color: #f59e0b;
+          background: rgba(245,158,11,0.12) !important;
+          color: #92400e !important;
+          transform: translateY(-2px);
+        }
+        .skill-chip.active-chip {
+          border-color: #f59e0b;
+          background: rgba(245,158,11,0.18) !important;
+          color: #78350f !important;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 14px rgba(245,158,11,0.25);
+        }
+        .live-dot {
+          animation: live-pulse 1.8s ease-in-out infinite;
+          border-radius: 50%;
+          width: 8px; height: 8px;
+          background: #22c55e;
+          display: inline-block;
+        }
+        .stat-card {
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 30px rgba(30,58,95,0.15);
+        }
+        .search-btn-pulse:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(245,158,11,0.4);
+        }
+
         @media (max-width: 900px) {
           .hero-illus-wrap  { display: none !important; }
         }
       `}</style>
 
       <section className="relative min-h-screen flex items-center justify-center bg-blue-50 text-navy-900 border-b border-blue-100 overflow-hidden">
+
+        {/* Background image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1800&q=80')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            opacity: 0.13,
+          }}
+        />
 
         {/* Subtle dot pattern */}
         <div
@@ -95,7 +225,7 @@ export default function Hero() {
           <div style={{ display: "flex", alignItems: "center", gap: "3.5rem" }}>
 
             {/* ──────────── LEFT: original markup, zero changes ──────────── */}
-            <div className="flex flex-col gap-10" style={{ flex: 1, minWidth: 0 }}>
+            <div className="flex flex-col gap-10" style={{ flex: "0 0 46%", minWidth: 0 }}>
 
               {/* Heading */}
               <div className="flex flex-col gap-5">
@@ -147,7 +277,7 @@ export default function Hero() {
                   </div>
                   <button
                     onClick={handleSearch}
-                    className="bg-blue-900 hover:bg-blue-800 active:bg-blue-950 text-amber-400 font-bold px-8 py-4 transition-colors duration-200 text-base"
+                    className="search-btn-pulse bg-blue-900 hover:bg-blue-800 active:bg-blue-950 text-amber-400 font-bold px-8 py-4 transition-colors duration-200 text-base"
                   >
                     Search
                   </button>
@@ -156,171 +286,177 @@ export default function Hero() {
             </div>
             {/* ──────────── END original markup ──────────── */}
 
-            {/* ──────────── RIGHT: animated SVG illustration ──────────── */}
+            {/* ──────────── RIGHT: image + overlaid interactive panel ──────────── */}
             <div
-              className="hero-illus-wrap"
-              style={{ flex: "0 0 420px", position: "relative", height: "470px" }}
+              className="hero-illus-wrap interactive-panel"
+              style={{ flex: 1, position: "relative", minHeight: "520px" }}
             >
-              {/* Glow blob */}
-              <div
-                className="hero-pulse-bg"
+
+              {/* ── Hero image ── */}
+              <img
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
+                alt="Developers collaborating"
                 style={{
-                  position: "absolute", inset: 0,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle at 50% 50%, rgba(30,58,95,0.13) 0%, transparent 68%)",
-                  pointerEvents: "none",
+                  width: "100%",
+                  height: "520px",
+                  objectFit: "cover",
+                  borderRadius: "20px",
+                  display: "block",
+                  boxShadow: "0 24px 60px rgba(30,58,95,0.22)",
                 }}
               />
 
-              {/* Outer dashed ring */}
-              <svg
-                className="hero-ring-outer"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}
-                viewBox="0 0 420 460"
-              >
-                <circle cx="210" cy="230" r="185" fill="none" stroke="#1e3a5f"
-                  strokeWidth="1.2" strokeDasharray="5 15" strokeOpacity="0.16" />
-              </svg>
+             
+              {/* Gold left accent on image */}
+              <div style={{
+                position: "absolute", top: "16px", left: 0,
+                width: "4px", height: "calc(100% - 32px)",
+                background: "#f59e0b",
+                borderRadius: "0 4px 4px 0",
+                opacity: 0.9,
+              }} />
 
-              {/* Inner gold ring */}
-              <svg
-                className="hero-ring-inner"
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}
-                viewBox="0 0 420 460"
-              >
-                <circle cx="210" cy="230" r="140" fill="none" stroke="#f59e0b"
-                  strokeWidth="1.2" strokeDasharray="4 16" strokeOpacity="0.24" />
-              </svg>
-
-              {/* Floating main SVG illustration */}
-              <div
-                className="hero-illus-float"
-                style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}
-              >
-                <svg width="290" height="310" viewBox="0 0 280 305" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                  {/* ── Monitor body ── */}
-                  <rect x="28" y="18" width="224" height="158" rx="14" fill="#1e3a5f" />
-                  <rect x="28" y="18" width="224" height="158" rx="14" stroke="#2d5a8e" strokeWidth="1.5" />
-                  {/* Screen glass */}
-                  <rect x="40" y="30" width="200" height="134" rx="8" fill="#0c1c35" />
-                  {/* Subtle screen glare */}
-                  <rect x="40" y="30" width="200" height="30" rx="8" fill="white" opacity="0.03" />
-
-                  {/* Monitor stand */}
-                  <rect x="108" y="176" width="64" height="20" rx="4" fill="#162d4f" />
-                  <rect x="78" y="194" width="124" height="10" rx="5" fill="#162d4f" />
-
-                  {/* ── Code lines ── */}
-                  {/* row 1 */}
-                  <rect x="55" y="48" width="26" height="7" rx="3" fill="#f59e0b" opacity="0.95" />
-                  <rect x="87" y="48" width="52" height="7" rx="3" fill="#60a5fa" opacity="0.75" />
-                  <rect x="145" y="48" width="28" height="7" rx="3" fill="#94a3b8" opacity="0.45" />
-                  {/* row 2 */}
-                  <rect x="67" y="64" width="16" height="7" rx="3" fill="#818cf8" opacity="0.85" />
-                  <rect x="89" y="64" width="68" height="7" rx="3" fill="#94a3b8" opacity="0.45" />
-                  {/* row 3 */}
-                  <rect x="67" y="80" width="20" height="7" rx="3" fill="#34d399" opacity="0.85" />
-                  <rect x="93" y="80" width="42" height="7" rx="3" fill="#94a3b8" opacity="0.45" />
-                  <rect x="141" y="80" width="20" height="7" rx="3" fill="#f472b6" opacity="0.75" />
-                  {/* row 4 – blank */}
-                  <rect x="55" y="96" width="10" height="7" rx="3" fill="#94a3b8" opacity="0.25" />
-                  {/* row 5 */}
-                  <rect x="55" y="112" width="26" height="7" rx="3" fill="#f59e0b" opacity="0.95" />
-                  <rect x="87" y="112" width="42" height="7" rx="3" fill="#60a5fa" opacity="0.75" />
-                  {/* blinking cursor */}
-                  <rect className="hero-cursor-blink" x="135" y="112" width="2.5" height="9" rx="1.2" fill="#f59e0b" />
-                  {/* row 6 */}
-                  <rect x="67" y="128" width="78" height="7" rx="3" fill="#94a3b8" opacity="0.38" />
-                  <rect x="151" y="128" width="28" height="7" rx="3" fill="#34d399" opacity="0.6" />
-                  {/* row 7 */}
-                  <rect x="55" y="144" width="60" height="7" rx="3" fill="#94a3b8" opacity="0.3" />
-
-                  {/* ── Vertical flow line from stand ── */}
-                  <line x1="140" y1="204" x2="140" y2="242"
-                    stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="4 4" className="hero-flow" />
-
-                  {/* ── Node: left avatar ── */}
-                  <circle cx="58" cy="268" r="24" fill="#1e3a5f" />
-                  <circle cx="58" cy="268" r="24" stroke="#f59e0b" strokeWidth="1.5" strokeOpacity="0.55" />
-                  <circle cx="58" cy="262" r="9" fill="#60a5fa" opacity="0.85" />
-                  <rect x="44" y="276" width="28" height="9" rx="4.5" fill="#2d5a8e" />
-                  {/* ping */}
-                  <circle className="hero-ping-1" cx="58" cy="268" r="24"
-                    fill="none" stroke="#f59e0b" strokeWidth="1.5" opacity="0.7" />
-
-                  {/* ── Node: center trophy ── */}
-                  <circle cx="140" cy="260" r="28" fill="#1e3a5f" />
-                  <circle cx="140" cy="260" r="28" stroke="#f59e0b" strokeWidth="2" />
-                  <polygon
-                    points="140,245 143.5,255 154,255 145.5,261 148.5,271 140,265 131.5,271 134.5,261 126,255 136.5,255"
-                    fill="#f59e0b" opacity="0.95"
-                  />
-
-                  {/* ── Node: right avatar ── */}
-                  <circle cx="222" cy="268" r="24" fill="#1e3a5f" />
-                  <circle cx="222" cy="268" r="24" stroke="#34d399" strokeWidth="1.5" strokeOpacity="0.55" />
-                  <circle cx="222" cy="262" r="9" fill="#34d399" opacity="0.8" />
-                  <rect x="208" y="276" width="28" height="9" rx="4.5" fill="#2d5a8e" />
-                  {/* ping */}
-                  <circle className="hero-ping-2" cx="222" cy="268" r="24"
-                    fill="none" stroke="#34d399" strokeWidth="1.5" opacity="0.7" />
-
-                  {/* ── Connecting arcs ── */}
-                  <path d="M82 266 Q110 246 117 260"
-                    stroke="#f59e0b" strokeWidth="1" strokeDasharray="3 5" strokeOpacity="0.5"
-                    className="hero-flow" fill="none" />
-                  <path d="M163 260 Q171 246 198 266"
-                    stroke="#f59e0b" strokeWidth="1" strokeDasharray="3 5" strokeOpacity="0.5"
-                    className="hero-flow" fill="none" />
-                </svg>
+              {/* ── TOP-RIGHT: Stat cards floating ── */}
+              <div style={{
+                position: "absolute", top: "18px", right: "18px",
+                display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px",
+                width: "calc(100% - 36px)",
+              }}>
+                {[
+                  { label: "Learners", value: 48200, suffix: "+", color: "#1e3a5f" },
+                  { label: "Hire Rate", value: 94, suffix: "%", color: "#f59e0b" },
+                  { label: "Mentors", value: 320, suffix: "+", color: "#2d5a8e" },
+                ].map((s) => (
+                  <div
+                    key={s.label}
+                    className="stat-card"
+                    style={{
+                      background: "rgba(255,255,255,0.92)",
+                      backdropFilter: "blur(10px)",
+                      borderRadius: "10px",
+                      padding: "10px 8px",
+                      textAlign: "center",
+                      border: "1.5px solid rgba(255,255,255,0.6)",
+                      boxShadow: "0 4px 16px rgba(30,58,95,0.18)",
+                    }}
+                  >
+                    <div style={{ fontSize: "1.25rem", fontWeight: 900, color: s.color, lineHeight: 1 }}>
+                      <AnimatedCounter target={s.value} suffix={s.suffix} />
+                    </div>
+                    <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#64748b", marginTop: "3px", letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                      {s.label}
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* ── Badge 1: Live Session ── */}
-              <div
-                className="hero-badge-1"
-                style={{
-                  position: "absolute", top: "32px", right: "-4px",
-                  background: "white",
-                  border: "1.5px solid #e2e8f0",
-                  borderRadius: "12px",
-                  padding: "8px 14px",
-                  boxShadow: "0 8px 28px rgba(0,0,0,0.11)",
-                  display: "flex", alignItems: "center", gap: "8px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                <span style={{
-                  width: 8, height: 8, borderRadius: "50%",
-                  background: "#22c55e", display: "inline-block",
-                  boxShadow: "0 0 0 3px rgba(34,197,94,0.25)",
-                }} />
-                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#1e3a5f", letterSpacing: "0.05em" }}>
-                  Live Session
-                </span>
-              </div>
+              {/* ── BOTTOM: skill chips + live feed overlaid on image ── */}
+              <div style={{
+                position: "absolute", bottom: 0, left: 0, right: 0,
+                padding: "20px",
+                display: "flex", flexDirection: "column", gap: "10px",
+              }}>
 
-              {/* ── Badge 2: 94% Hired ── */}
-              <div
-                className="hero-badge-2"
-                style={{
-                  position: "absolute", bottom: "50px", left: "-4px",
-                  background: "#1e3a5f",
-                  borderRadius: "12px",
-                  padding: "10px 16px",
-                  boxShadow: "0 8px 28px rgba(30,58,95,0.28)",
-                  display: "flex", alignItems: "center", gap: "10px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                <span style={{ fontSize: "1.15rem", fontWeight: 900, color: "#f59e0b", lineHeight: 1 }}>94%</span>
-                <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "rgba(255,255,255,0.72)", letterSpacing: "0.06em", lineHeight: 1.35 }}>
-                  Hire<br />Rate
-                </span>
+                {/* Popular skills chip selector */}
+                <div style={{
+                  background: "rgba(255,255,255,0.93)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: "14px",
+                  padding: "14px 16px",
+                  border: "1.5px solid rgba(255,255,255,0.6)",
+                  boxShadow: "0 4px 20px rgba(30,58,95,0.18)",
+                }}>
+                  <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#94a3b8", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "9px" }}>
+                    Trending Skills
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {SKILLS.slice(0, 12).map((skill) => (
+                      <button
+                        key={skill}
+                        className={`skill-chip ${activeSkill === skill ? "active-chip" : ""}`}
+                        onClick={() => setActiveSkill(prev => prev === skill ? null : skill)}
+                        style={{
+                          fontSize: "0.68rem",
+                          fontWeight: 600,
+                          padding: "4px 10px",
+                          borderRadius: "20px",
+                          background: "rgba(30,58,95,0.07)",
+                          color: "#1e3a5f",
+                          border: "1.5px solid transparent",
+                          cursor: "pointer",
+                          transition: "all 0.18s ease",
+                        }}
+                      >
+                        {skill}
+                        {activeSkill === skill && <span style={{ marginLeft: "4px", color: "#f59e0b" }}>✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                  {activeSkill && (
+                    <div style={{
+                      marginTop: "9px",
+                      padding: "7px 11px",
+                      background: "rgba(245,158,11,0.08)",
+                      borderRadius: "8px",
+                      fontSize: "0.68rem",
+                      color: "#78350f",
+                      fontWeight: 600,
+                      border: "1px solid rgba(245,158,11,0.25)",
+                      animation: "slideDown 0.25s ease both",
+                    }}>
+                      🔍 Searching "{activeSkill}" — <span style={{ color: "#1e3a5f", textDecoration: "underline", cursor: "pointer" }}
+                        onClick={() => { setSearchQuery(activeSkill); navigate("/community", { state: { search: activeSkill } }); }}>
+                        View courses →
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Live activity feed */}
+                <div style={{
+                  background: "rgba(15,30,58,0.88)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: "14px",
+                  padding: "13px 16px",
+                  boxShadow: "0 4px 20px rgba(30,58,95,0.3)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                    <span className="live-dot" />
+                    <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "rgba(255,255,255,0.65)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                      Live Community Activity
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {activities.slice(0, 3).map((a, i) => (
+                      <div
+                        key={a.id}
+                        className="activity-item"
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "8px",
+                          padding: "6px 9px",
+                          background: "rgba(255,255,255,0.06)",
+                          borderRadius: "7px",
+                          animationDelay: `${i * 0.04}s`,
+                          borderLeft: i === 0 ? "2px solid #f59e0b" : "2px solid transparent",
+                          transition: "border-color 0.3s ease",
+                        }}
+                      >
+                        <span style={{ fontSize: "0.8rem", lineHeight: 1.4, flexShrink: 0 }}>{a.icon}</span>
+                        <span style={{ fontSize: "0.67rem", color: i === 0 ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.55)", lineHeight: 1.4, fontWeight: i === 0 ? 600 : 400 }}>
+                          {a.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
 
             </div>
-            {/* ──────────── END illustration ──────────── */}
+            {/* ──────────── END interactive panel ──────────── */}
 
           </div>
         </div>
