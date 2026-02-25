@@ -78,13 +78,13 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/register/mentor" element={<MentorRegister />} />
       <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
+      <Route path="/career" element={<Career />} />
       <Route path="/" element={<Homepage />} />
       <Route element={<MainLayout />}>
         <Route path="/community" element={<Community />} />
         <Route path="/community/:communityId" element={<SingleCommunity />} />
       </Route>
 
-      <Route path="/career" element={<Career />} />
 
       {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
       <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin"]} />}>
