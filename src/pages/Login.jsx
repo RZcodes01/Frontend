@@ -191,7 +191,7 @@ const Login = () => {
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder="Password (min. 8 characters)"
               value={form.password}
               onChange={handleChange}
               required
