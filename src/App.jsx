@@ -24,6 +24,7 @@ import ProjectSubmissions from "./pages/ProjectSubmissions";
 import CompanyManager from "./pages/CompanyManager";
 import ProjectView from "./pages/ProjectView";
 import Project from "./pages/Project";
+import ProfilePage from "./pages/ProfilePage";
 
 function MainLayout() {
   return (
@@ -105,6 +106,7 @@ export default function App() {
         <Route element={<MainLayout />}>
           <Route path="/leaderboard" element={<Project />} />
           {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/project-view" element={<ProjectView />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/quickskills" element={<QuickSkills />} />
