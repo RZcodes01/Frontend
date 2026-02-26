@@ -225,7 +225,7 @@ export default function Hero() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem" }}>
 
             {/* ──────────── LEFT: original markup, zero changes ──────────── */}
-            <div className="flex flex-col gap-10" style={{ flex: "0 0 38%", minWidth: 0 }}>
+            <div className="flex flex-col gap-10" style={{ flex: "0 0 50%", minWidth: 0 }}>
 
               {/* Heading */}
               <div className="flex flex-col gap-5">
@@ -250,7 +250,7 @@ export default function Hero() {
               </div>
 
               {/* Search bar */}
-              <div className="max-w-2xl w-full">
+              <div className="w-full">
                 <div className="flex flex-col sm:flex-row rounded-xl bg-blue-50 border-2 border-blue-200 shadow-sm hover:border-amber-400 hover:shadow-md transition-all duration-300 overflow-hidden">
                   <div className="flex flex-1 items-center px-5 py-4 gap-3">
                     <svg
@@ -289,13 +289,16 @@ export default function Hero() {
             {/* ──────────── RIGHT: card panel ──────────── */}
             <div
               className="hero-illus-wrap interactive-panel"
-              style={{ flex: "0 0 52%", position: "relative", minHeight: "620px", marginLeft: "auto", opacity: 0.85 }}
+              style={{ flex: "0 0 44%", position: "relative", marginLeft: "auto", marginRight: "-4%", opacity: 0.85 }}
             >
 
               {/* ── Card background ── */}
               <div style={{
                 width: "100%",
-                height: "620px",
+                height: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
                 borderRadius: "20px",
                 background: "linear-gradient(145deg, #1d6fca 0%, #3b8fe8 50%, #60a5fa 100%)",
                 boxShadow: "0 24px 60px rgba(59,143,232,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
@@ -313,7 +316,7 @@ export default function Hero() {
 
               {/* ── BOTTOM: leaderboard + skill chips ── */}
               <div style={{
-                position: "absolute", bottom: 0, left: 0, right: 0,
+                position: "relative",
                 padding: "20px",
                 display: "flex", flexDirection: "column", gap: "10px",
               }}>

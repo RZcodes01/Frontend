@@ -161,13 +161,61 @@ const Login = () => {
       )}
 
       <div className="relative bg-white w-[380px] rounded-2xl shadow-xl p-8">
+        
         {/* Logo */}
         <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 bg-blue-600 rounded-full"></div>
-          <h1 className="text-xl font-semibold text-blue-600">Skillconnect</h1>
+          <div className="w-14 h-14 rounded-xl bg-blue-950 flex items-center justify-center shadow-md group-hover:scale-105 transition">
+              <svg
+                viewBox="0 0 100 100"
+                className="w-10 h-10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Graduation Cap Top */}
+                <polygon
+                  points="50,15 85,35 50,55 15,35"
+                  fill="#fbbf24"
+                />
+
+                {/* Cap Base */}
+                <rect
+                  x="35"
+                  y="55"
+                  width="30"
+                  height="8"
+                  rx="4"
+                  fill="#fbbf24"
+                />
+
+                {/* Tassel Line */}
+                <line
+                  x1="70"
+                  y1="35"
+                  x2="78"
+                  y2="60"
+                  stroke="#fbbf24"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+
+                {/* Chain Link (Tassel End) */}
+                <ellipse
+                  cx="78"
+                  cy="68"
+                  rx="8"
+                  ry="6"
+                  stroke="#fbbf24"
+                  strokeWidth="3"
+                />
+              </svg>
+            </div>
+          <h1 className="font-black text-2xl sm:text-3xl tracking-tight">
+              <span className="text-blue-950">Skill</span>
+              <span className="text-amber-400">Connect</span>
+            </h1>
         </div>
 
-        <h2 className="text-center text-lg font-semibold mb-6">Let's Learn</h2>
+        <h2 className="text-center text-lg font-semibold mb-6">Ready to level up</h2>
 
         {/* FORM */}
         <form onSubmit={handleSubmit}>
