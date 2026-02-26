@@ -5,7 +5,8 @@ import {
   Clock,
   Video,
   Award,
-  FileText
+  FileText,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fetchMyBatches, fetchMyCommunities, fetchMyProjects } from '../api/userDashboard.api';
@@ -17,6 +18,8 @@ export default function StudentDashboard() {
   const [isPro, setIsPro] = useState(false);
   const [loading, setLoading] = useState(true);
   const [studentName, setStudentName] = useState("Student");
+  const [isCertificateOpen, setIsCertificateOpen] = useState(false);
+  const [selectedCertificateCommunity, setSelectedCertificateCommunity] = useState(null);
 
   const navigate = useNavigate();
 
@@ -119,14 +122,29 @@ export default function StudentDashboard() {
                   </span>
                 </div>
 
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between items-center text-sm">
+
                   <div className="flex items-center text-blue-600">
                     <Clock className="w-4 h-4 mr-1" />
                     Members: {community.membersCount || 0}
                   </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedCertificateCommunity(community);
+                      setIsCertificateOpen(true);
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded-md text-xs font-semibold transition"
+                  >
+                    Generate Certificate
+                  </button>
+
                 </div>
               </div>
             ))}
+
+
 
             {communities.length === 0 && (
               <div className="text-blue-500 text-center py-10">
@@ -135,6 +153,109 @@ export default function StudentDashboard() {
             )}
           </div>
         </div>
+
+        {isCertificateOpen && selectedCertificateCommunity && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+
+            <div className="relative bg-white h-[80vh] max-w-3xl rounded-2xl p-6 shadow-2xl"> 
+
+              {/* Close Button */}
+              <button
+                onClick={() => {
+                  setIsCertificateOpen(false);
+                  setSelectedCertificateCommunity(null);
+                }}
+                className="absolute top-6 right-6 text-gray-400 hover:text-black"
+              >
+                <X size={24} />
+              </button>
+
+              {/* Decorative Corners */}
+              <div className="absolute top-0 left-0 w-16 h-16 border-t-8 border-l-8 border-amber-400 rounded-tl-2xl" />
+              <div className="absolute top-0 right-0 w-16 h-16 border-t-8 border-r-8 border-amber-400 rounded-tr-2xl" />
+              <div className="absolute bottom-0 left-0 w-16 h-16 border-b-8 border-l-8 border-amber-400 rounded-bl-2xl" />
+              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-8 border-r-8 border-amber-400 rounded-br-2xl" />
+
+              {/* Certificate Body */}
+              <div className="relative border border-gray-200 rounded-xl p-6 text-center bg-gradient-to-br from-white via-amber-50/40 to-white overflow-hidden">
+
+                {/* Watermark */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="text-8xl font-extrabold text-blue-900 opacity-5 tracking-widest">
+                    SKILLCONNECT
+                  </span>
+                </div>
+
+                {/* Brand */}
+                <div className="mb-8 relative">
+                  <h1 className="text-4xl font-extrabold tracking-widest text-blue-900">
+                    SKILLCONNECT
+                  </h1>
+                  <div className="w-24 h-1 bg-amber-400 mx-auto mt-3 rounded-full" />
+                </div>
+
+                {/* Title */}
+                <h2 className="text-4xl font-serif font-bold text-gray-800 mb-6 relative">
+                  Certificate of Completion
+                </h2>
+
+                <p className="text-gray-600 text-lg mb-6 relative">
+                  This is proudly presented to
+                </p>
+
+                {/* Student Name */}
+                <h3 className="text-3xl font-bold text-blue-900 mb-6 tracking-wide relative">
+                  {studentName}
+                </h3>
+
+                <p className="text-gray-600 text-lg mb-6 relative">
+                  for successfully completing the community
+                </p>
+
+                {/* Community Name */}
+                <h4 className="text-2xl font-semibold text-amber-600 mb-12 relative">
+                  {selectedCertificateCommunity.name}
+                </h4>
+
+                {/* Signature Section */}
+                <div className="flex justify-between items-end mt-12 px-10 relative">
+
+                  <div className="text-left">
+                    <div className="w-40 border-t border-gray-400 mb-2" />
+                    <p className="text-sm text-gray-600 font-medium">
+                      Program Director
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+                    <div className="w-40 border-t border-gray-400 mb-2 ml-auto" />
+                    <p className="text-sm text-gray-600 font-medium">
+                      Date: {new Date().toLocaleDateString()}
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* Certificate ID */}
+                <p className="mt-12 text-xs text-gray-400 tracking-widest relative">
+                  Certificate ID: {selectedCertificateCommunity._id.slice(-6).toUpperCase()}
+                </p>
+
+              </div>
+
+              {/* Footer Actions */}
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={() => window.print()}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition shadow-md"
+                >
+                  Download / Print
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
 
         {/* Batches */}
         <SectionTitle title="My Live Batches" />
@@ -239,11 +360,10 @@ export default function StudentDashboard() {
                         </div>
 
                         <span
-                          className={`text-xs px-3 py-1 rounded-full border font-medium ${
-                            project.projectStatus === "open"
-                              ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                              : "bg-red-50 text-red-500 border-red-200"
-                          }`}
+                          className={`text-xs px-3 py-1 rounded-full border font-medium ${project.projectStatus === "open"
+                            ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                            : "bg-red-50 text-red-500 border-red-200"
+                            }`}
                         >
                           {project.projectStatus}
                         </span>
