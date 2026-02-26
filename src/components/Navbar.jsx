@@ -29,6 +29,8 @@ export default function Navbar() {
       return;
     }
 
+
+
     setIsLoggedIn(true);
 
     const fetchMyData = async () => {
@@ -78,7 +80,7 @@ export default function Navbar() {
   const navLinks = [
     { path: '/', label: 'Home' },
     { path: '/quickskills', label: 'Quick Skills' },
-    { path: '/project', label: 'Projects' },
+    { path: '/leaderboard', label: 'Leaderboard' },
     { path: '/community', label: 'Community' },
     { path: '/career', label: 'Career' },
   ];
@@ -100,16 +102,60 @@ export default function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-18 sm:h-22" style={{ height: '72px' }}>
 
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-lg bg-amber-400 flex items-center justify-center font-black text-blue-950 text-2xl">
-              S
+
+            {/* Icon Container */}
+            <div className="w-14 h-14 rounded-xl bg-blue-950 flex items-center justify-center shadow-md group-hover:scale-105 transition">
+              <svg
+                viewBox="0 0 100 100"
+                className="w-10 h-10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Graduation Cap Top */}
+                <polygon
+                  points="50,15 85,35 50,55 15,35"
+                  fill="#fbbf24"
+                />
+
+                {/* Cap Base */}
+                <rect
+                  x="35"
+                  y="55"
+                  width="30"
+                  height="8"
+                  rx="4"
+                  fill="#fbbf24"
+                />
+
+                {/* Tassel Line */}
+                <line
+                  x1="70"
+                  y1="35"
+                  x2="78"
+                  y2="60"
+                  stroke="#fbbf24"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+
+                {/* Chain Link (Tassel End) */}
+                <ellipse
+                  cx="78"
+                  cy="68"
+                  rx="8"
+                  ry="6"
+                  stroke="#fbbf24"
+                  strokeWidth="3"
+                />
+              </svg>
             </div>
-            <div className="flex flex-col -space-y-1">
-              <h1 className="font-black text-2xl sm:text-3xl text-blue-50 tracking-tight leading-none">
-                Skill<span className="text-amber-400">Connect</span>
-              </h1>
-            </div>
+
+            {/* Text */}
+            <h1 className="font-black text-2xl sm:text-3xl tracking-tight">
+              <span className="text-blue-50">Skill</span>
+              <span className="text-amber-400">Connect</span>
+            </h1>
           </Link>
 
           {/* Desktop Navigation */}
@@ -189,13 +235,29 @@ export default function Navbar() {
                     </div>
 
                     {/* ROLE BASED DASHBOARD LINK */}
-                    {myData?.role?.toLowerCase() === 'admin' ? (
+                    {myData?.role?.toLowerCase() === "admin" ? (
                       <Link
                         to="/admin"
                         className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-bold uppercase tracking-wider"
                         onClick={() => setIsProfileOpen(false)}
                       >
                         Admin Dashboard
+                      </Link>
+                    ) : myData?.role?.toLowerCase() === "mentor" ? (
+                      <Link
+                        to="/mentor"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Mentor Dashboard
+                      </Link>
+                    ) : myData?.role?.toLowerCase() === "company" ? (
+                      <Link
+                        to="/company"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Company Dashboard
                       </Link>
                     ) : (
                       <Link
@@ -232,7 +294,7 @@ export default function Navbar() {
 
         {/* Mobile Sidebar Overlay */}
         {isMenuOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] md:hidden transition-opacity"
             onClick={() => setIsMenuOpen(false)}
           />
@@ -240,70 +302,70 @@ export default function Navbar() {
 
         {/* Mobile Sidebar Menu */}
         <div className={`fixed top-0 left-0 h-full w-[280px] bg-blue-950 border-r border-blue-800 z-[58] transform transition-transform duration-300 ease-in-out md:hidden shadow-2xl ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-            <div className="flex flex-col h-full pt-20 px-4 space-y-1.5 overflow-y-auto">
-              {navLinks.map(({ path, label }) => (
+          <div className="flex flex-col h-full pt-20 px-4 space-y-1.5 overflow-y-auto">
+            {navLinks.map(({ path, label }) => (
+              <Link
+                key={path}
+                to={path}
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
+                  ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
+                  : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
+                  }`}
+              >
+                <span>{label}</span>
+              </Link>
+            ))}
+
+            <div className="pt-6 mt-6 border-t border-blue-800">
+              {!isLoggedIn ? (
                 <Link
-                  key={path}
-                  to={path}
+                  to="/login"
                   onClick={() => setIsMenuOpen(false)}
-                  className={`flex items-center justify-between py-3.5 px-4 text-base font-bold rounded-lg transition-colors ${isActive(path)
-                    ? 'bg-amber-400/10 text-amber-400 border border-amber-400/30'
-                    : 'text-blue-200 hover:bg-blue-800 hover:text-blue-50 border border-transparent'
-                    }`}
+                  className="w-full flex items-center justify-center py-3.5 px-4 bg-amber-400 text-blue-950 rounded-lg text-base font-bold hover:bg-amber-300 transition-colors"
                 >
-                  <span>{label}</span>
+                  Login
                 </Link>
-              ))}
-
-              <div className="pt-6 mt-6 border-t border-blue-800">
-                {!isLoggedIn ? (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="w-full flex items-center justify-center py-3.5 px-4 bg-amber-400 text-blue-950 rounded-lg text-base font-bold hover:bg-amber-300 transition-colors"
-                  >
-                    Login
-                  </Link>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3 px-4 py-3 bg-blue-900/50 rounded-lg border border-blue-800 mb-4">
-                        <div className="w-10 h-10 rounded-full bg-blue-800 border-2 border-blue-600 flex items-center justify-center">
-                            {myData?.name ? <span className="text-xs font-black text-amber-400">{getInitials(myData.name)}</span> : <User size={18}/>}
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-sm font-bold text-blue-50 truncate w-32">{myData?.name}</span>
-                            <span className="text-[10px] text-blue-400 font-bold uppercase">{myData?.role}</span>
-                        </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 px-4 py-3 bg-blue-900/50 rounded-lg border border-blue-800 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-blue-800 border-2 border-blue-600 flex items-center justify-center">
+                      {myData?.name ? <span className="text-xs font-black text-amber-400">{getInitials(myData.name)}</span> : <User size={18} />}
                     </div>
-
-                    {myData?.role?.toLowerCase() === 'admin' ? (
-                      <Link
-                        to="/admin"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-amber-400 rounded-lg text-base font-bold border border-amber-400/30"
-                      >
-                        ADMIN DASHBOARD
-                      </Link>
-                    ) : (
-                      <Link
-                        to="/dashboard"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700"
-                      >
-                        STUDENT DASHBOARD
-                      </Link>
-                    )}
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 hover:bg-red-500/20 transition-colors"
-                    >
-                      Log Out
-                    </button>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-blue-50 truncate w-32">{myData?.name}</span>
+                      <span className="text-[10px] text-blue-400 font-bold uppercase">{myData?.role}</span>
+                    </div>
                   </div>
-                )}
-              </div>
+
+                  {myData?.role?.toLowerCase() === 'admin' ? (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-amber-400 rounded-lg text-base font-bold border border-amber-400/30"
+                    >
+                      ADMIN DASHBOARD
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700"
+                    >
+                      STUDENT DASHBOARD
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center py-3.5 px-4 bg-red-500/10 text-red-400 rounded-lg text-base font-bold border border-red-500/30 hover:bg-red-500/20 transition-colors"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              )}
             </div>
+          </div>
         </div>
       </div>
     </nav>

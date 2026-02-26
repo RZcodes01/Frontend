@@ -5,7 +5,6 @@ import Community from "./pages/Community";
 import Register from "./pages/StudentRegister";
 import MentorRegister from "./pages/MentorRegister";
 import Login from "./pages/Login";
-import Project from "./pages/Project";
 import Leaderboard from "./pages/Leaderboard";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -23,6 +22,9 @@ import MentorDashboard from "./pages/MentorDashboard";
 import ProjectSubmission from "./pages/ProjectSubmission";
 import ProjectSubmissions from "./pages/ProjectSubmissions";
 import CompanyManager from "./pages/CompanyManager";
+import ProjectView from "./pages/ProjectView";
+import Project from "./pages/Project";
+import ProfilePage from "./pages/ProfilePage";
 
 function MainLayout() {
   return (
@@ -91,19 +93,21 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/register/mentor" element={<MentorRegister />} />
       <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
+      <Route path="/career" element={<Career />} />
       <Route path="/" element={<Homepage />} />
       <Route element={<MainLayout />}>
         <Route path="/community" element={<Community />} />
         <Route path="/community/:communityId" element={<SingleCommunity />} />
       </Route>
 
-      <Route path="/career" element={<Career />} />
 
       {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
       <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin"]} />}>
         <Route element={<MainLayout />}>
-          <Route path="/project" element={<Project />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/leaderboard" element={<Project />} />
+          {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/project-view" element={<ProjectView />} />
           <Route path="/projectdetail" element={<ProjectDetail />} />
           <Route path="/quickskills" element={<QuickSkills />} />
           <Route path="/upload-skill" element={<UploadReel />} />
@@ -139,7 +143,7 @@ export default function App() {
         <Route element={<CompanyDash />}>
           <Route path="/company" element={<CompanyManager />} />
           <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
-        </Route>add
+        </Route>
       </Route>
 
     </Routes>

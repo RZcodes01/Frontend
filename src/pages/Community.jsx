@@ -55,9 +55,9 @@ export default function Community() {
 
           {/* Adjusted font size for mobile */}
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-blue-950 mb-4 md:mb-6 tracking-tight px-2">
-            Discover Your{" "}
+            Discover {" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-amber-500">
-              Tribe
+              Communities
             </span>
           </h2>
 

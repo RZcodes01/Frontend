@@ -5,17 +5,19 @@ const MentorRegister = () => {
   const [form, setForm] = useState({
     expertise: "",
     experience_years: "",
-    resume: ""
+    resume: "",
+    resumeFile: null // State to handle the chosen file
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
+      // Logic remains unchanged: sending JSON data
       await axios.post(
         "http://localhost:5000/api/mentors/apply",
         {
-          expertise: form.expertise.split(",").map(e => e.trim()),
+          expertise: form.expertise.split(",").map((e) => e.trim()),
           experience_years: form.experience_years,
           resume: form.resume
         },
@@ -92,15 +94,16 @@ const MentorRegister = () => {
       />
 
       <div className="max-w-lg mx-auto bg-white p-8 rounded-2xl shadow" style={{ position: "relative", zIndex: 1, width: "100%" }}>
-        <h2 className="text-2xl font-bold mb-6">Apply As Mentor</h2>
+        <h2 className="text-2xl font-bold mb-6 text-slate-900">Apply As Mentor</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
           <div>
-            <label className="block font-semibold mb-1">Expertise (comma separated)</label>
+            <label className="block font-semibold mb-1 text-slate-700">Expertise (comma separated)</label>
             <input
               type="text"
-              className="w-full border p-3 rounded-xl"
+              className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
+              placeholder="React, Node.js, System Design"
               value={form.expertise}
               onChange={(e) => setForm({ ...form, expertise: e.target.value })}
               required
@@ -108,10 +111,10 @@ const MentorRegister = () => {
           </div>
 
           <div>
-            <label className="block font-semibold mb-1">Years of Experience</label>
+            <label className="block font-semibold mb-1 text-slate-700">Years of Experience</label>
             <input
               type="number"
-              className="w-full border p-3 rounded-xl"
+              className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
               value={form.experience_years}
               onChange={(e) => setForm({ ...form, experience_years: e.target.value })}
               required
@@ -119,19 +122,37 @@ const MentorRegister = () => {
           </div>
 
           <div>
-            <label className="block font-semibold mb-1">Resume Link (Drive / PDF)</label>
+            <label className="block font-semibold mb-0.5 text-slate-700">Resume Link</label>
+            <p className="text-xs text-slate-500 mb-1.5">Please provide a public link to your portfolio or resume (Google Drive, Dropbox, or PDF URL).</p>
             <input
               type="text"
-              className="w-full border p-3 rounded-xl"
+              className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
+              placeholder="https://drive.google.com/..."
               value={form.resume}
               onChange={(e) => setForm({ ...form, resume: e.target.value })}
               required
             />
           </div>
 
+          <div>
+            <label className="block font-semibold mb-1 text-slate-700">Or Upload File</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              className="w-full text-sm text-slate-500
+                file:mr-4 file:py-2.5 file:px-4
+                file:rounded-xl file:border-0
+                file:text-sm file:font-bold
+                file:bg-slate-100 file:text-slate-700
+                hover:file:bg-slate-200
+                cursor-pointer border border-slate-100 rounded-xl p-1"
+              onChange={(e) => setForm({ ...form, resumeFile: e.target.files[0] })}
+            />
+          </div>
+
           <button
             type="submit"
-            className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800"
+            className="w-full bg-slate-900 text-white py-3 mt-4 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200"
           >
             Submit Application
           </button>
