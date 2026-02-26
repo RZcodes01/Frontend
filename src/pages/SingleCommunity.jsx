@@ -127,7 +127,7 @@ export default function SingleCommunity() {
                 </div>
 
                 <div className="max-w-6xl mx-auto px-4 md:px-6 -mt-32 md:-mt-48 relative z-20">
-                    <div className="bg-blue-900/80 backdrop-blur-xl border border-blue-700 rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-2xl">
+                    <div className="bg-white border-2 border-blue-500 rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-2xl">
                         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
 
                             <div className="flex-1 space-y-4">
@@ -135,27 +135,27 @@ export default function SingleCommunity() {
                                     <Star size={10} className="text-amber-400" /> Global Community
                                 </div>
 
-                                <h1 className="text-2xl md:text-5xl font-black tracking-tight text-blue-50">
+                                <h1 className="text-2xl md:text-5xl font-black tracking-tight text-blue-900">
                                     {course?.name || "Loading..."}
                                 </h1>
 
-                                <p className="text-blue-300 text-sm md:text-lg max-w-xl leading-relaxed font-medium">
+                                <p className="text-blue-700 text-sm md:text-lg max-w-xl leading-relaxed font-medium">
                                     {course?.description || "Master new skills with industry experts and a supportive peer network."}
                                 </p>
 
                                 <div className="flex items-center gap-4 md:gap-6 pt-2 overflow-x-auto no-scrollbar">
                                     <div className="flex flex-col flex-shrink-0">
-                                        <span className="text-[10px] md:text-xs font-bold text-blue-400 uppercase tracking-widest">Enrolled</span>
-                                        <span className="text-xl md:text-2xl font-black text-blue-50">{course?.membersCount || 0}</span>
+                                        <span className="text-[10px] md:text-xs font-bold text-blue-500 uppercase tracking-widest">Enrolled</span>
+                                        <span className="text-xl md:text-2xl font-black text-blue-900">{course?.membersCount || 0}</span>
                                     </div>
-                                    <div className="w-px h-8 bg-blue-600 flex-shrink-0" />
+                                    <div className="w-px h-8 bg-blue-300 flex-shrink-0" />
                                     <div className="flex flex-col flex-shrink-0">
-                                        <span className="text-[10px] md:text-xs font-bold text-blue-400 uppercase tracking-widest">Modules</span>
-                                        <span className="text-xl md:text-2xl font-black text-blue-50">{course?.modules?.length || 0}</span>
+                                        <span className="text-[10px] md:text-xs font-bold text-blue-500 uppercase tracking-widest">Modules</span>
+                                        <span className="text-xl md:text-2xl font-black text-blue-900">{course?.modules?.length || 0}</span>
                                     </div>
-                                    <div className="w-px h-8 bg-blue-600 flex-shrink-0" />
+                                    <div className="w-px h-8 bg-blue-300 flex-shrink-0" />
                                     <div className="flex flex-col flex-shrink-0">
-                                        <span className="text-[10px] md:text-xs font-bold text-blue-400 uppercase tracking-widest">Difficulty</span>
+                                        <span className="text-[10px] md:text-xs font-bold text-blue-500 uppercase tracking-widest">Difficulty</span>
                                         <span className="text-xl md:text-2xl font-black text-amber-400">Pro</span>
                                     </div>
                                 </div>
@@ -201,7 +201,7 @@ export default function SingleCommunity() {
                             <div
                                 key={module._id}
                                 onClick={() => navigate(`/community/${communityId}/module/${module._id}`)}
-                                className="group bg-blue-900 rounded-[2rem] border border-blue-700 hover:border-amber-400/40 hover:bg-blue-800 transition-all p-6 md:p-8 cursor-pointer relative overflow-hidden"
+                                className="group bg-white rounded-[2rem] border-2 border-blue-500 hover:border-amber-400/60 hover:bg-blue-50 transition-all p-6 md:p-8 cursor-pointer relative overflow-hidden"
                             >
                                 <div className="flex flex-col md:flex-row md:items-start gap-6 relative z-10">
                                     <div className="bg-blue-950 border border-blue-700 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-sm md:text-base font-black text-blue-400 group-hover:text-amber-400 group-hover:border-amber-400/30 transition-all">
@@ -209,18 +209,18 @@ export default function SingleCommunity() {
                                     </div>
 
                                     <div className="flex-1">
-                                        <h3 className="text-lg md:text-xl font-black text-blue-50 mb-2 group-hover:text-amber-400 transition-colors">
+                                        <h3 className="text-2xl md:text-3xl font-black text-blue-900 mb-2 group-hover:text-amber-500 transition-colors">
                                             {module.title}
                                         </h3>
-                                        <p className="text-blue-300 text-sm md:text-base font-medium mb-6 leading-relaxed line-clamp-2">
+                                        <p className="text-blue-700 text-lg md:text-xl font-medium mb-6 leading-relaxed line-clamp-2">
                                             {module.description}
                                         </p>
 
                                         <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-2 mb-2">
                                             {module.topics?.map((topic, i) => (
-                                                <div key={i} className="flex items-center gap-2 text-blue-300">
+                                                <div key={i} className="flex items-center gap-2 text-blue-700">
                                                     <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
-                                                    <span className="text-[10px] md:text-sm font-semibold uppercase tracking-wider">{topic}</span>
+                                                    <span className="text-xs md:text-sm font-semibold uppercase tracking-wider">{topic}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -234,11 +234,11 @@ export default function SingleCommunity() {
                 {/* Sidebar Section */}
                 <div className="lg:col-span-4 order-1 lg:order-2">
                     <div className="lg:sticky lg:top-10 space-y-6">
-                        <div className="bg-blue-900 border border-blue-700 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 shadow-2xl relative overflow-hidden">
+                        <div className="bg-white border-2 border-blue-500 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 shadow-2xl relative overflow-hidden">
                             <Crown className="absolute -top-4 -right-4 w-16 h-16 md:w-20 md:h-20 text-amber-400/10 rotate-12" />
 
                             <div className="relative z-10">
-                                <h3 className="text-xl md:text-2xl font-black mb-6 flex items-center gap-2 text-blue-50">
+                                <h3 className="text-xl md:text-2xl font-black mb-6 flex items-center gap-2 text-blue-900">
                                     Pro Benefits <Sparkles className="text-amber-400" size={18} />
                                 </h3>
 
@@ -256,7 +256,7 @@ export default function SingleCommunity() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Locked</p>
-                                            <p className="text-[10px] text-blue-300 font-medium">Upgrade to Pro to access these features</p>
+                                            <p className="text-[10px] text-blue-700 font-medium">Upgrade to Pro to access these features</p>
                                         </div>
                                     </div>
                                 )}
@@ -284,8 +284,8 @@ function SidebarFeature({ icon, title, desc }) {
                 {icon && <span className="[&>svg]:w-5 [&>svg]:h-5">{icon}</span>}
             </div>
             <div>
-                <h4 className="text-sm md:text-base font-black text-blue-50">{title}</h4>
-                <p className="text-xs md:text-sm text-blue-300 font-medium leading-tight mt-0.5">{desc}</p>
+                <h4 className="text-sm md:text-base font-black text-blue-900">{title}</h4>
+                <p className="text-xs md:text-sm text-blue-700 font-medium leading-tight mt-0.5">{desc}</p>
             </div>
         </div>
     );

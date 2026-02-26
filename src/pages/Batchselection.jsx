@@ -95,7 +95,6 @@ const tagStyle = (tag) => {
     }
 };
 
-// Updated to accept communityName as a prop
 export default function BatchSelectionPage({ onBack, onSelectBatch, communityName }) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -107,7 +106,6 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
 
     const handleSelect = (batch) => {
         if (batch.seatsLeft === 0) return;
-        // Injects the communityName into the batch object before passing it up
         onSelectBatch?.({ ...batch, communityName: communityName || "Community" });
     };
 
@@ -139,8 +137,7 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                         Choose When You <br />
                         <span className="text-amber-500">Start Learning</span>
                     </h1>
-                    {/* Added visual confirmation of the community being joined */}
-                    <p className="text-blue-600 text-xl font-medium max-w-xl mx-auto">
+                    <p className="text-blue-600 text-2xl font-medium max-w-xl mx-auto">
                         Enrolling in: <span className="text-blue-900 font-black">{communityName || "Selected Community"}</span>
                     </p>
                 </div>
@@ -164,12 +161,12 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                                     onMouseLeave={() => setHovered(null)}
                                     onClick={() => handleSelect(batch)}
                                     className={`
-                                        relative bg-blue-900 rounded-2xl border transition-all duration-300 overflow-hidden
+                                        relative bg-white rounded-2xl border-2 transition-all duration-300 overflow-hidden
                                         ${isFull
-                                            ? 'border-blue-800 opacity-50 cursor-not-allowed'
+                                            ? 'border-blue-300 opacity-50 cursor-not-allowed'
                                             : isActive
                                                 ? 'border-amber-400/60 shadow-xl shadow-amber-400/10 cursor-pointer scale-[1.01]'
-                                                : 'border-blue-700 hover:border-amber-400/30 cursor-pointer'
+                                                : 'border-blue-500 hover:border-amber-400/60 cursor-pointer'
                                         }
                                     `}
                                 >
@@ -184,8 +181,8 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                                             {/* Left: info */}
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-3 mb-3 flex-wrap">
-                                                    <h2 className="text-2xl font-black text-blue-50">{batch.name}</h2>
-                                                    <span className={`text-sm font-bold px-3 py-1 rounded-full border ${tagStyle(batch.tag)}`}>
+                                                    <h2 className="text-4xl font-black text-blue-900">{batch.name}</h2>
+                                                    <span className={`text-base font-bold px-3 py-1 rounded-full border ${tagStyle(batch.tag)}`}>
                                                         {batch.tag}
                                                     </span>
                                                     {batch.tag === 'Almost Full' && (
@@ -196,7 +193,7 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                                                 </div>
 
                                                 {/* Dates */}
-                                                <div className="flex flex-wrap gap-4 text-base text-blue-300 font-medium mb-4">
+                                                <div className="flex flex-wrap gap-4 text-lg text-blue-700 font-medium mb-4">
                                                     <span className="flex items-center gap-1.5">
                                                         <Calendar className="w-4 h-4 text-amber-400/70" />
                                                         {fmt(batch.startDate)} → {fmt(batch.endDate)}
@@ -208,7 +205,7 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                                                 </div>
 
                                                 {/* Seat bar */}
-                                                <div className="w-full h-1.5 bg-blue-800 rounded-full mb-5 overflow-hidden">
+                                                <div className="w-full h-1.5 bg-blue-100 rounded-full mb-5 overflow-hidden">
                                                     <div
                                                         className={`h-full rounded-full transition-all duration-700 ${fillPct >= 90 ? 'bg-orange-400' : fillPct >= 60 ? 'bg-yellow-400' : 'bg-amber-400'}`}
                                                         style={{ width: `${fillPct}%` }}
@@ -218,7 +215,7 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                                                 {/* Highlights */}
                                                 <ul className="flex flex-wrap gap-x-5 gap-y-1">
                                                     {batch.highlights.map((h, i) => (
-                                                        <li key={i} className="flex items-center gap-1.5 text-base text-blue-300 font-medium">
+                                                        <li key={i} className="flex items-center gap-1.5 text-base text-blue-700 font-medium">
                                                             <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
                                                             {h}
                                                         </li>
@@ -229,12 +226,12 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                                             {/* Right: price + CTA */}
                                             <div className="flex flex-col items-center md:items-end gap-3 md:min-w-[160px]">
                                                 <div className="text-right">
-                                                    <p className="text-3xl font-black text-blue-50">₹{batch.price.toLocaleString('en-IN')}</p>
-                                                    <p className="text-blue-400 text-sm font-medium mt-0.5">one-time payment</p>
+                                                    <p className="text-4xl font-black text-blue-900">₹{batch.price.toLocaleString('en-IN')}</p>
+                                                    <p className="text-blue-500 text-base font-medium mt-0.5">one-time payment</p>
                                                 </div>
 
                                                 {isFull ? (
-                                                    <div className="flex items-center gap-1.5 text-blue-500 text-base font-bold">
+                                                    <div className="flex items-center gap-1.5 text-blue-400 text-base font-bold">
                                                         <Lock className="w-4 h-4" /> Batch Closed
                                                     </div>
                                                 ) : (
@@ -257,7 +254,7 @@ export default function BatchSelectionPage({ onBack, onSelectBatch, communityNam
                 {/* Past batches notice */}
                 {pastBatches.length > 0 && (
                     <div className="mt-12 p-5 rounded-xl border border-dashed border-blue-300 bg-blue-100 text-center">
-                        <p className="text-blue-600 text-base font-medium">
+                        <p className="text-blue-600 text-lg font-medium">
                             <span className="font-black text-blue-700">{pastBatches.length} past batch{pastBatches.length > 1 ? 'es' : ''}</span>
                             {' '}hidden — enrollment is only available for upcoming batches.
                         </p>

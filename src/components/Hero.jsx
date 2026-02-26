@@ -219,13 +219,13 @@ export default function Hero() {
         {/* Gold left accent bar */}
         <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-400" />
 
-        <div className="relative z-10 w-full px-6 sm:px-12 lg:px-20 py-28 max-w-6xl mx-auto">
+        <div className="relative z-10 w-full px-6 sm:px-12 lg:px-20 py-16 max-w-7xl mx-auto">
 
           {/* Flex row: original left content + new right illustration */}
-          <div style={{ display: "flex", alignItems: "center", gap: "3.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem" }}>
 
             {/* ──────────── LEFT: original markup, zero changes ──────────── */}
-            <div className="flex flex-col gap-10" style={{ flex: "0 0 46%", minWidth: 0 }}>
+            <div className="flex flex-col gap-10" style={{ flex: "0 0 38%", minWidth: 0 }}>
 
               {/* Heading */}
               <div className="flex flex-col gap-5">
@@ -286,32 +286,20 @@ export default function Hero() {
             </div>
             {/* ──────────── END original markup ──────────── */}
 
-            {/* ──────────── RIGHT: image + overlaid interactive panel ──────────── */}
+            {/* ──────────── RIGHT: card panel ──────────── */}
             <div
               className="hero-illus-wrap interactive-panel"
-              style={{ flex: 1, position: "relative", minHeight: "520px" }}
+              style={{ flex: "0 0 52%", position: "relative", minHeight: "620px", marginLeft: "auto", opacity: 0.85 }}
             >
 
-              {/* ── Hero image ── */}
-              <img
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
-                alt="Developers collaborating"
-                style={{
-                  width: "100%",
-                  height: "520px",
-                  objectFit: "cover",
-                  borderRadius: "20px",
-                  display: "block",
-                  boxShadow: "0 24px 60px rgba(30,58,95,0.22)",
-                }}
-              />
-
-              {/* Dark gradient overlay for readability */}
+              {/* ── Card background ── */}
               <div style={{
-                position: "absolute", inset: 0,
+                width: "100%",
+                height: "620px",
                 borderRadius: "20px",
-                background: "linear-gradient(160deg, rgba(12,28,53,0.18) 0%, rgba(12,28,53,0.72) 100%)",
-                pointerEvents: "none",
+                background: "linear-gradient(145deg, #1d6fca 0%, #3b8fe8 50%, #60a5fa 100%)",
+                boxShadow: "0 24px 60px rgba(59,143,232,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
+                border: "1px solid rgba(96,165,250,0.4)",
               }} />
 
               {/* Gold left accent on image */}
@@ -323,69 +311,83 @@ export default function Hero() {
                 opacity: 0.9,
               }} />
 
-              {/* ── TOP-RIGHT: Stat cards floating ── */}
-              <div style={{
-                position: "absolute", top: "18px", right: "18px",
-                display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px",
-                width: "calc(100% - 36px)",
-              }}>
-                {[
-                  { label: "Learners", value: 48200, suffix: "+", color: "#1e3a5f" },
-                  { label: "Hire Rate", value: 94, suffix: "%", color: "#f59e0b" },
-                  { label: "Mentors", value: 320, suffix: "+", color: "#2d5a8e" },
-                ].map((s) => (
-                  <div
-                    key={s.label}
-                    className="stat-card"
-                    style={{
-                      background: "rgba(255,255,255,0.92)",
-                      backdropFilter: "blur(10px)",
-                      borderRadius: "10px",
-                      padding: "10px 8px",
-                      textAlign: "center",
-                      border: "1.5px solid rgba(255,255,255,0.6)",
-                      boxShadow: "0 4px 16px rgba(30,58,95,0.18)",
-                    }}
-                  >
-                    <div style={{ fontSize: "1.25rem", fontWeight: 900, color: s.color, lineHeight: 1 }}>
-                      <AnimatedCounter target={s.value} suffix={s.suffix} />
-                    </div>
-                    <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#64748b", marginTop: "3px", letterSpacing: "0.07em", textTransform: "uppercase" }}>
-                      {s.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* ── BOTTOM: skill chips + live feed overlaid on image ── */}
+              {/* ── BOTTOM: leaderboard + skill chips ── */}
               <div style={{
                 position: "absolute", bottom: 0, left: 0, right: 0,
                 padding: "20px",
                 display: "flex", flexDirection: "column", gap: "10px",
               }}>
 
-                {/* Popular skills chip selector */}
+                {/* Mini Leaderboard */}
                 <div style={{
                   background: "rgba(255,255,255,0.93)",
                   backdropFilter: "blur(12px)",
                   borderRadius: "14px",
-                  padding: "14px 16px",
+                  padding: "18px 20px",
+                  boxShadow: "0 4px 20px rgba(30,58,95,0.18)",
+                  border: "1.5px solid rgba(255,255,255,0.6)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{ fontSize: "1.1rem" }}>🏆</span>
+                      <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#64748b", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                        Top Learners This Week
+                      </span>
+                    </div>
+                    <span style={{ fontSize: "0.72rem", color: "#f59e0b", fontWeight: 600 }}>LIVE</span>
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {[
+                      { rank: 1, name: "Arjun K.", skill: "React", xp: "2,840 XP", medal: "🥇" },
+                      { rank: 2, name: "Priya S.", skill: "Python", xp: "2,610 XP", medal: "🥈" },
+                      { rank: 3, name: "Rohan M.", skill: "DSA", xp: "2,390 XP", medal: "🥉" },
+                    ].map((user, i) => (
+                      <div key={user.rank} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "10px 14px",
+                        background: i === 0 ? "rgba(245,158,11,0.1)" : "rgba(30,58,95,0.05)",
+                        borderRadius: "10px",
+                        borderLeft: i === 0 ? "3px solid #f59e0b" : "3px solid transparent",
+                      }}>
+                        <span style={{ fontSize: "1.2rem", flexShrink: 0 }}>{user.medal}</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span style={{ fontSize: "0.9rem", fontWeight: i === 0 ? 700 : 500, color: i === 0 ? "#1e3a8a" : "#475569", whiteSpace: "nowrap" }}>
+                              {user.name}
+                            </span>
+                            <span style={{ fontSize: "0.8rem", color: "#f59e0b", fontWeight: 700, flexShrink: 0 }}>{user.xp}</span>
+                          </div>
+                          <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>{user.skill}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{
+                  background: "rgba(255,255,255,0.93)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: "14px",
+                  padding: "18px 20px",
                   border: "1.5px solid rgba(255,255,255,0.6)",
                   boxShadow: "0 4px 20px rgba(30,58,95,0.18)",
                 }}>
-                  <div style={{ fontSize: "0.65rem", fontWeight: 700, color: "#94a3b8", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "9px" }}>
+                  <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#94a3b8", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "12px" }}>
                     Trending Skills
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                     {SKILLS.slice(0, 12).map((skill) => (
                       <button
                         key={skill}
                         className={`skill-chip ${activeSkill === skill ? "active-chip" : ""}`}
                         onClick={() => setActiveSkill(prev => prev === skill ? null : skill)}
                         style={{
-                          fontSize: "0.68rem",
+                          fontSize: "0.8rem",
                           fontWeight: 600,
-                          padding: "4px 10px",
+                          padding: "6px 14px",
                           borderRadius: "20px",
                           background: "rgba(30,58,95,0.07)",
                           color: "#1e3a5f",
@@ -401,11 +403,11 @@ export default function Hero() {
                   </div>
                   {activeSkill && (
                     <div style={{
-                      marginTop: "9px",
-                      padding: "7px 11px",
+                      marginTop: "12px",
+                      padding: "9px 13px",
                       background: "rgba(245,158,11,0.08)",
                       borderRadius: "8px",
-                      fontSize: "0.68rem",
+                      fontSize: "0.8rem",
                       color: "#78350f",
                       fontWeight: 600,
                       border: "1px solid rgba(245,158,11,0.25)",
@@ -417,47 +419,6 @@ export default function Hero() {
                       </span>
                     </div>
                   )}
-                </div>
-
-                {/* Live activity feed */}
-                <div style={{
-                  background: "rgba(15,30,58,0.88)",
-                  backdropFilter: "blur(12px)",
-                  borderRadius: "14px",
-                  padding: "13px 16px",
-                  boxShadow: "0 4px 20px rgba(30,58,95,0.3)",
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-                    <span className="live-dot" />
-                    <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "rgba(255,255,255,0.65)", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                      Live Community Activity
-                    </span>
-                  </div>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                    {activities.slice(0, 3).map((a, i) => (
-                      <div
-                        key={a.id}
-                        className="activity-item"
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "8px",
-                          padding: "6px 9px",
-                          background: "rgba(255,255,255,0.06)",
-                          borderRadius: "7px",
-                          animationDelay: `${i * 0.04}s`,
-                          borderLeft: i === 0 ? "2px solid #f59e0b" : "2px solid transparent",
-                          transition: "border-color 0.3s ease",
-                        }}
-                      >
-                        <span style={{ fontSize: "0.8rem", lineHeight: 1.4, flexShrink: 0 }}>{a.icon}</span>
-                        <span style={{ fontSize: "0.67rem", color: i === 0 ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.55)", lineHeight: 1.4, fontWeight: i === 0 ? 600 : 400 }}>
-                          {a.text}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
 
               </div>

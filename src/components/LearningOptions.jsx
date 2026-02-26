@@ -15,14 +15,14 @@ export default function LearningOptions() {
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl">
 
           {/* Self Paced Card */}
-          <div className="group bg-blue-50 border-2 border-blue-200 p-8 rounded-2xl hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+          <div className="group bg-blue-50 border-2 border-blue-900 p-8 rounded-2xl hover:border-blue-800 hover:shadow-lg transition-all duration-300">
             <div className="flex flex-col h-full">
 
-              <h3 className="text-2xl font-semibold text-blue-900 mb-4">
+              <h3 className="text-3xl font-semibold text-blue-900 mb-4">
                 Self-Paced Learning
               </h3>
 
-              <p className="text-blue-600 leading-relaxed mb-8 flex-grow">
+              <p className="text-blue-800 text-lg leading-relaxed mb-8 flex-grow">
                 Learn at your own speed with structured lessons and practical examples.
                 Perfect if you like flexibility and want to build skills on your schedule.
               </p>
@@ -33,7 +33,7 @@ export default function LearningOptions() {
                   "Access to learner community",
                   "Track your learning progress"
                 ].map((item) => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-blue-700">
+                  <div key={item} className="flex items-center gap-3 text-base text-blue-900 font-medium">
                     <div className="w-5 h-5 rounded-full bg-blue-200 flex items-center justify-center shrink-0">
                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                     </div>
@@ -49,10 +49,10 @@ export default function LearningOptions() {
           <div className="group relative bg-blue-900 border-2 border-blue-900 p-8 rounded-2xl shadow-xl hover:shadow-2xl hover:border-amber-400 transition-all duration-300">
 
             <div className="flex flex-col h-full">
-              <h3 className="text-2xl font-semibold text-blue-50 mb-4">
+              <h3 className="text-3xl font-semibold text-blue-50 mb-4">
                 Mentor-Led Cohort
               </h3>
-              <p className="text-blue-300 leading-relaxed mb-8 flex-grow">
+              <p className="text-blue-200 text-lg leading-relaxed mb-8 flex-grow">
                 Learn alongside a small group with guidance from industry experts.
                 Get feedback, build real projects, and stay accountable throughout your journey.
               </p>
@@ -64,7 +64,7 @@ export default function LearningOptions() {
                   "Industry-recognized certificate",
                   "Career guidance & placement support"
                 ].map((item) => (
-                  <div key={item} className="flex items-center gap-3 text-sm text-blue-200">
+                  <div key={item} className="flex items-center gap-3 text-base text-blue-100 font-medium">
                     <div className="w-5 h-5 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center shrink-0">
                       <svg className="w-3 h-3 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
