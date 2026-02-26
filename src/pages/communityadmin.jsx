@@ -3,7 +3,7 @@ import {
   ArrowLeft, Users, Calendar, Ban, ChevronRight, X,
   User, Clock, Trash2, Edit3, Plus, ShieldAlert, GraduationCap, Mail, Crown, Image as ImageIcon, Loader2
 } from 'lucide-react';
-import { fetchAllCommunities, createCommunity } from '../api/community.api';
+import { fetchAllCommunities, createCommunity, updateCommunity } from '../api/community.api';
 import { allEnrollmentsForACommunity, fetchAllBatchesOfACommunity } from '../api/adminDashboard.api';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ const CommunityAdmin = () => {
   const [activeTab, setActiveTab] = useState('batches'); // 'batches' | 'students'
   const [loading, setLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [communities, setCommunities] = useState([]);
   const [selectedComm, setSelectedComm] = useState(null);
   const [selectedBatch, setSelectedBatch] = useState(null);
@@ -20,6 +20,13 @@ const CommunityAdmin = () => {
 
   // Community Creation Form State
   const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    visibility: 'public',
+    banner: null
+  });
+
+  const [editFormData, setEditFormData] = useState({
     name: '',
     description: '',
     visibility: 'public',
@@ -86,7 +93,48 @@ const CommunityAdmin = () => {
     }
   };
 
-  console.log(selectedComm)
+
+  const openEditModal = () => {
+    setEditFormData({
+      name: selectedComm.name,
+      description: selectedComm.description || '',
+      visibility: selectedComm.visibility,
+      banner: null
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditCommunitySubmit = async (e) => {
+    e.preventDefault();
+
+    const data = new FormData();
+    data.append('name', editFormData.name);
+    data.append('description', editFormData.description);
+    data.append('visibility', editFormData.visibility);
+    if (editFormData.banner) {
+      data.append('bannerImage', editFormData.banner);
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await updateCommunity(selectedComm._id, data);
+
+      // update local UI
+      setSelectedComm(prev => ({
+        ...prev,
+        ...response.data.community
+      }));
+
+      setIsEditModalOpen(false);
+      await loadInitialData();
+
+    } catch (error) {
+      alert(error.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading && view === 'list' && communities.length === 0) {
     return (
@@ -301,12 +349,105 @@ const CommunityAdmin = () => {
               <div className="p-20 text-center text-slate-400 italic">No records found.</div>
             )}
           </div>
-          
-          <button onClick={()=> navigate(`/community/${selectedComm._id}/edit`)}>Edit Community</button>
+          <button
+            onClick={openEditModal}
+            className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-600 transition"
+          >
+            Edit Community
+          </button>
+          <button className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-600 transition" onClick={() => navigate(`/community/${selectedComm._id}/edit`)}>Manage Modules</button>
 
         </div>
+
+        {isEditModalOpen && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white w-full max-w-lg rounded-[2.5rem] p-10 relative shadow-2xl animate-in zoom-in-95 duration-200">
+
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-800"
+              >
+                <X />
+              </button>
+
+              <h2 className="text-2xl font-black text-slate-800 mb-8 uppercase tracking-tighter">
+                Edit Community
+              </h2>
+
+              <form onSubmit={handleEditCommunitySubmit} className="space-y-5">
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-2">
+                    Community Name
+                  </label>
+                  <input
+                    required
+                    className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold outline-none focus:ring-2 focus:ring-blue-500 transition"
+                    value={editFormData.name}
+                    onChange={e =>
+                      setEditFormData({ ...editFormData, name: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase ml-2">
+                    Description
+                  </label>
+                  <textarea
+                    className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold outline-none h-24 resize-none"
+                    value={editFormData.description}
+                    onChange={e =>
+                      setEditFormData({ ...editFormData, description: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2">
+                      Visibility
+                    </label>
+                    <select
+                      className="w-full bg-slate-50 border-none rounded-2xl p-4 font-bold outline-none cursor-pointer"
+                      value={editFormData.visibility}
+                      onChange={e =>
+                        setEditFormData({ ...editFormData, visibility: e.target.value })
+                      }
+                    >
+                      <option value="public">Public</option>
+                      <option value="private">Private</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-400 uppercase ml-2">
+                      Banner
+                    </label>
+                    <input
+                      type="file"
+                      className="w-full text-[10px] pt-4"
+                      onChange={e =>
+                        setEditFormData({ ...editFormData, banner: e.target.files[0] })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <button
+                  disabled={loading}
+                  className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black mt-4 uppercase hover:bg-blue-600 transition disabled:opacity-50"
+                >
+                  {loading ? 'Updating...' : 'Update Community'}
+                </button>
+
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     );
+
   }
 
   // --- VIEW 3: BATCH DETAILS ---
@@ -330,6 +471,9 @@ const CommunityAdmin = () => {
             <button onClick={() => setView('detail')} className="px-8 py-4 border-2 border-slate-100 rounded-2xl font-black text-slate-400 hover:text-slate-800 transition">Go Back</button>
           </div>
         </div>
+
+
+
       </div>
     );
   }

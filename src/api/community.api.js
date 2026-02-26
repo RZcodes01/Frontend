@@ -19,3 +19,5 @@ export const fetchAllCommunities = () => API.get(`/`)
 export const fetchCommunityById = (id) => API.get(`/${id}`)
 
 export const createCommunity = (formData) => API.post("/", formData);
+
+export const updateCommunity = (id, data) => API.put(`/${id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
