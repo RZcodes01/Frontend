@@ -25,6 +25,7 @@ import CompanyManager from "./pages/CompanyManager";
 import ProjectView from "./pages/ProjectView";
 import Project from "./pages/Project";
 import ProfilePage from "./pages/ProfilePage";
+import CompanyDashboardPage from "./pages/CompanyDashboard";
 
 function MainLayout() {
   return (
@@ -102,7 +103,7 @@ export default function App() {
 
 
       {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
-      <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin", "company "]} />}>
         <Route element={<MainLayout />}>
           <Route path="/leaderboard" element={<Project />} />
           {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
@@ -141,7 +142,7 @@ export default function App() {
 
       <Route element={<ProtectedRoute allowedRoles={["company"]} />}>
         <Route element={<CompanyDash />}>
-          <Route path="/company" element={<CompanyManager />} />
+          <Route path="/company" element={<CompanyDashboardPage />} />
           <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
         </Route>
       </Route>
