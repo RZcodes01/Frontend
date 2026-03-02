@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import {
   UserCheck, UserX, FileText, Loader2,
   ShieldCheck, ExternalLink, Mail, Calendar, AlertCircle
@@ -39,7 +40,7 @@ const MentorManager = () => {
       const inputReason = window.prompt("Enter reason for rejection:", "Application did not meet requirements");
       if (inputReason === null) return; // Admin cancelled the prompt
       if (inputReason.trim() === "") {
-        alert("A rejection reason is required.");
+        toast.error("A rejection reason is required.");
         return;
       }
       reason = inputReason;
@@ -59,7 +60,7 @@ const MentorManager = () => {
     } catch (error) {
       console.error("Action error:", error);
       const errorMsg = error.response?.data?.message || "Operation failed";
-      alert(`Error: ${errorMsg}`);
+      toast.error(`Error: ${errorMsg}`);
     } finally {
       setActionLoading(null);
     }

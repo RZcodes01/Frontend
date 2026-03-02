@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import {
   ArrowLeft, Users, Calendar, Ban, ChevronRight, X,
   User, Clock, Trash2, Edit3, Plus, ShieldAlert, GraduationCap, Mail, Crown, Image as ImageIcon, Loader2
@@ -65,7 +66,7 @@ const CommunityAdmin = () => {
       setView('detail');
     } catch (error) {
       console.error("Error fetching community data:", error);
-      alert("Could not load community details.");
+      toast.error("Could not load community details.");
     } finally {
       setLoading(false);
     }
@@ -86,7 +87,7 @@ const CommunityAdmin = () => {
       setFormData({ name: '', description: '', visibility: 'public', banner: null });
       await loadInitialData();
     } catch (error) {
-      alert(error.response?.data?.message || "Creation failed");
+      toast.error(error.response?.data?.message || "Creation failed");
     } finally {
       setLoading(false);
     }
@@ -123,7 +124,7 @@ const CommunityAdmin = () => {
       setIsEditModalOpen(false);
       await loadInitialData();
     } catch (error) {
-      alert(error.response?.data?.message || "Update failed");
+      toast.error(error.response?.data?.message || "Update failed");
     } finally {
       setLoading(false);
     }
@@ -131,7 +132,7 @@ const CommunityAdmin = () => {
 
   if (loading && view === 'list' && communities.length === 0) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4 bg-blue-50">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-blue-50">
         <div className="w-10 h-10 border-4 border-amber-400/20 border-t-amber-400 rounded-full animate-spin"></div>
         <p className="font-bold text-blue-500 animate-pulse">Loading Hub...</p>
       </div>

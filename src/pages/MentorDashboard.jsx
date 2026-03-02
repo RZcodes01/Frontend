@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { toast } from 'sonner';
 import { useNavigate } from "react-router-dom";
 import {
   Users, Video, Clock, ChevronRight,
@@ -138,7 +139,7 @@ export default function MentorDashboard() {
       }
       setIsModalOpen(false);
     } catch {
-      alert("Operation failed");
+      toast.error("Operation failed");
     } finally {
       setSaving(false);
     }
@@ -176,7 +177,7 @@ export default function MentorDashboard() {
 
   const handleBatchSubmit = async () => {
     if (!batchFormData.name || !batchFormData.classAt || (!isBatchEdit && !batchFormData.communityId)) {
-      return alert("Please fill all required fields");
+      return toast.error("Please fill all required fields");
     }
 
     try {
@@ -198,7 +199,7 @@ export default function MentorDashboard() {
       setIsBatchModalOpen(false);
     } catch (err) {
       console.error("Batch Error Details:", err.response?.data);
-      alert(err.response?.data?.message || "Batch operation failed");
+      toast.error(err.response?.data?.message || "Batch operation failed");
     } finally {
       setSaving(false);
     }
@@ -212,7 +213,7 @@ export default function MentorDashboard() {
       await deleteBatch(id);
     } catch {
       setBatches(backup);
-      alert("Failed to delete session");
+      toast.error("Failed to delete session");
     }
   };
 
@@ -268,11 +269,10 @@ export default function MentorDashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${
-                activeTab === tab.id
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.id
                   ? "bg-blue-900 text-white"
                   : "bg-white border border-blue-200 text-blue-600 hover:border-amber-400"
-              }`}
+                }`}
             >
               {tab.label}
             </button>

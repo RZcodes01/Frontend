@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import {
     Plus, Edit2, Trash2, Calendar, X,
     User as UserIcon, Loader2, RefreshCcw
@@ -95,7 +96,7 @@ const AdminBatchManager = () => {
             loadData();
 
         } catch (err) {
-            alert(err.response?.data?.message || "Operation failed");
+            toast.error(err.response?.data?.message || "Operation failed");
         }
     };
 
@@ -115,7 +116,7 @@ const AdminBatchManager = () => {
             );
 
         } catch (err) {
-            alert(err.response?.data?.message || "Action failed");
+            toast.error(err.response?.data?.message || "Action failed");
         }
     };
 
@@ -155,8 +156,8 @@ const AdminBatchManager = () => {
                     <div
                         key={batch._id}
                         className={`bg-white rounded-[2rem] border transition-all duration-300 ${batch.isDeleted
-                                ? 'opacity-60 border-dashed border-slate-300'
-                                : 'border-slate-100 shadow-sm hover:shadow-md'
+                            ? 'opacity-60 border-dashed border-slate-300'
+                            : 'border-slate-100 shadow-sm hover:shadow-md'
                             }`}
                     >
 
@@ -203,8 +204,8 @@ const AdminBatchManager = () => {
                                     <button
                                         onClick={() => handleToggleDelete(batch._id)}
                                         className={`p-2 rounded-xl transition ${batch.isDeleted
-                                                ? 'text-green-500 hover:bg-green-50'
-                                                : 'text-slate-400 hover:text-red-600 hover:bg-red-50'
+                                            ? 'text-green-500 hover:bg-green-50'
+                                            : 'text-slate-400 hover:text-red-600 hover:bg-red-50'
                                             }`}
                                     >
                                         {batch.isDeleted ? <RefreshCcw size={16} /> : <Trash2 size={16} />}
