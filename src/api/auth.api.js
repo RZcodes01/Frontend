@@ -1,20 +1,5 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const getToken = () => localStorage.getItem("accessToken")
+export const loginUser = (data) => axiosInstance.post(`/auth/login`, data);
 
-const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/auth",
-});
-
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-})
-
-
-export const loginUser = (data) => API.post(`/login`, data)
-
-export const registerUser = (data) => API.post(`/register`, data)
+export const registerUser = (data) => axiosInstance.post(`/auth/register`, data);

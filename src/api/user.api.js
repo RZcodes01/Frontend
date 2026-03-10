@@ -1,17 +1,3 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const getToken = () => localStorage.getItem("accessToken")
-
-const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/users" /*"http://localhost:4000/users"*/,
-});
-
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-})
-
-export const fetchMe = () => API.get(`/me`)
+export const fetchMe = () => axiosInstance.get(`/users/me`);

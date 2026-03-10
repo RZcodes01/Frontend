@@ -79,7 +79,7 @@ function CompanyDash() {
   return (
     <div className="h-screen flex flex-col bg-neutral-950">
       <Navbar />
-      <main className="flex-1 pt-[72px] overflow-hidden">
+      <main className="flex-1 pt-[72px] overflow-y-auto">
         <Outlet />
       </main>
     </div>

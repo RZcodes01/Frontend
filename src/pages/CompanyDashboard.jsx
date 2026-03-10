@@ -1,112 +1,508 @@
-import React, { useState } from "react";
-import { Trash2, Briefcase, Star, Users } from "lucide-react";
-import Leaderboard from "./Leaderboard";
+import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  Users, Globe, Code, Zap, Search, ChevronDown,
+  Trophy, ArrowUpDown, ChevronLeft, ChevronRight,
+  Crown, Loader2,
+} from "lucide-react";
+import { fetchAllCommunities } from "../api/community.api";
+import {
+  fetchDashboardStats,
+  fetchLeaderboard,
+  fetchTopPerformers,
+  searchStudentsAPI,
+} from "../api/companyDashboard.api";
+import CompanyStudentProfile from "./CompanyStudentProfile";
 
-const CompanyDashboardPage = () => {
-  const [savedCandidates, setSavedCandidates] = useState([]);
+// ─── Animated Counter ───────────────────────────────────────────────
+function AnimatedCounter({ target, duration = 1200 }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const increment = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [target, duration]);
+  return <>{count.toLocaleString()}</>;
+}
 
-  const handleView = (project) => {
-    console.log("Viewing project:", project);
-  };
+// ─── Stat Card ──────────────────────────────────────────────────────
+function StatCard({ icon: Icon, label, value, color, iconBg, delay = 0, loading }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+  return (
+    <div
+      className={`bg-blue-950/60 border border-blue-800/50 rounded-2xl p-6 hover:border-blue-600/60 transition-all duration-500 group cursor-default ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      }`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-11 h-11 ${iconBg} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
+          <Icon size={20} className={color} />
+        </div>
+      </div>
+      {loading ? (
+        <div className="h-10 w-20 bg-blue-800/40 rounded-lg animate-pulse" />
+      ) : (
+        <p className={`text-3xl sm:text-4xl font-black ${color}`}>
+          <AnimatedCounter target={value} />
+        </p>
+      )}
+      <p className="text-blue-400/70 text-sm font-semibold mt-1">{label}</p>
+    </div>
+  );
+}
 
-  const handleAddToDashboard = (project) => {
-    // Prevent duplicates
-    setSavedCandidates((prev) => {
-      if (prev.find((p) => p.id === project.id)) return prev;
-      return [...prev, project];
-    });
-  };
+// ─── Skeleton Row ───────────────────────────────────────────────────
+function SkeletonRow() {
+  return (
+    <tr className="animate-pulse">
+      <td className="px-6 py-4"><div className="h-4 w-8 bg-blue-800/40 rounded" /></td>
+      <td className="px-6 py-4"><div className="flex items-center gap-3"><div className="w-9 h-9 bg-blue-800/40 rounded-lg" /><div className="space-y-1.5"><div className="h-4 w-28 bg-blue-800/40 rounded" /><div className="h-3 w-20 bg-blue-800/40 rounded" /></div></div></td>
+      <td className="px-6 py-4"><div className="h-4 w-24 bg-blue-800/40 rounded" /></td>
+      <td className="px-6 py-4"><div className="h-4 w-12 bg-blue-800/40 rounded" /></td>
+      <td className="px-6 py-4"><div className="h-4 w-16 bg-blue-800/40 rounded" /></td>
+      <td className="px-6 py-4 text-right"><div className="h-8 w-24 bg-blue-800/40 rounded-lg ml-auto" /></td>
+    </tr>
+  );
+}
 
-  const handleRemove = (id) => {
-    setSavedCandidates((prev) => prev.filter((p) => p.id !== id));
-  };
+// ─── Avatar Helper ──────────────────────────────────────────────────
+function avatarUrl(name, profileImage) {
+  if (profileImage) return profileImage;
+  return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "U")}&backgroundColor=0369a1,0e7490,0891b2&fontSize=40`;
+}
+
+// ─── Main Dashboard ─────────────────────────────────────────────────
+export default function CompanyDashboardPage() {
+  const [communities, setCommunities] = useState([]);
+  const [selectedCommunityId, setSelectedCommunityId] = useState("");
+  const [selectedCommunityName, setSelectedCommunityName] = useState("All Communities");
+  const [stats, setStats] = useState({ totalStudents: 0, totalCommunities: 0, totalProblemsSolved: 0, activeUsers: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [top3, setTop3] = useState([]);
+  const [top3Loading, setTop3Loading] = useState(true);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+  const [leaderboardTotal, setLeaderboardTotal] = useState(0);
+  const [leaderboardPages, setLeaderboardPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState("desc");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [error, setError] = useState(null);
+
+  const searchRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const ITEMS_PER_PAGE = 10;
+
+  // ─── Load communities on mount ──────────────────
+  useEffect(() => {
+    fetchAllCommunities()
+      .then((res) => setCommunities(res.data?.communities || res.data || []))
+      .catch(() => {});
+  }, []);
+
+  // ─── Close dropdowns on outside click ───────────
+  useEffect(() => {
+    function handleClick(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) setShowSearchDropdown(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // ─── Fetch stats when community changes ─────────
+  useEffect(() => {
+    setStatsLoading(true);
+    setError(null);
+    fetchDashboardStats(selectedCommunityId || undefined)
+      .then((res) => setStats(res.data.stats))
+      .catch((err) => setError(err.response?.data?.message || "Failed to load stats"))
+      .finally(() => setStatsLoading(false));
+  }, [selectedCommunityId]);
+
+  // ─── Fetch top performers when community changes ─
+  useEffect(() => {
+    setTop3Loading(true);
+    fetchTopPerformers(selectedCommunityId || undefined)
+      .then((res) => setTop3(res.data.topPerformers || []))
+      .catch(() => setTop3([]))
+      .finally(() => setTop3Loading(false));
+  }, [selectedCommunityId]);
+
+  // ─── Fetch leaderboard ──────────────────────────
+  useEffect(() => {
+    setLeaderboardLoading(true);
+    fetchLeaderboard(selectedCommunityId || undefined, currentPage, ITEMS_PER_PAGE, sortOrder)
+      .then((res) => {
+        setLeaderboard(res.data.leaderboard || []);
+        setLeaderboardTotal(res.data.total || 0);
+        setLeaderboardPages(res.data.pages || 0);
+      })
+      .catch(() => setLeaderboard([]))
+      .finally(() => setLeaderboardLoading(false));
+  }, [selectedCommunityId, currentPage, sortOrder]);
+
+  // ─── Reset page when community changes ──────────
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCommunityId]);
+
+  // ─── Debounced search ───────────────────────────
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchQuery.trim().length > 0) {
+        searchStudentsAPI(searchQuery)
+          .then((res) => {
+            setSearchResults(res.data.users || []);
+            setShowSearchDropdown(true);
+          })
+          .catch(() => setSearchResults([]));
+      } else {
+        setSearchResults([]);
+        setShowSearchDropdown(false);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const handleViewProfile = useCallback((studentId) => {
+    setSelectedStudentId(studentId);
+    setSearchQuery("");
+    setShowSearchDropdown(false);
+  }, []);
+
+  const handleCommunitySelect = useCallback((id, name) => {
+    setSelectedCommunityId(id);
+    setSelectedCommunityName(name);
+    setDropdownOpen(false);
+  }, []);
+
+  // ─── Student Profile View ──────────────────
+  if (selectedStudentId) {
+    return (
+      <div className="min-h-screen bg-neutral-950 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+        <CompanyStudentProfile
+          studentId={selectedStudentId}
+          onBack={() => setSelectedStudentId(null)}
+        />
+      </div>
+    );
+  }
+
+  // ─── Podium Medal Configs ──────────────────
+  const podiumConfig = [
+    { index: 1, order: "order-2 md:order-1", height: "sm:h-72", width: "sm:w-72", border: "border-blue-500/50", hoverBorder: "hover:border-blue-400", rankBg: "bg-gradient-to-br from-gray-300 to-gray-400", rankText: "text-blue-950", label: "2nd Place", labelColor: "text-blue-300", scoreBg: "bg-blue-500/15 text-blue-200 border-blue-500/30", glow: "" },
+    { index: 0, order: "order-1 md:order-2", height: "sm:h-80", width: "sm:w-80", border: "border-yellow-500/50", hoverBorder: "hover:border-yellow-400", rankBg: "bg-gradient-to-br from-yellow-400 to-amber-500", rankText: "text-blue-950", label: "1st Place", labelColor: "text-yellow-400", scoreBg: "bg-yellow-500 text-blue-950", glow: "shadow-2xl shadow-yellow-500/10", champion: true },
+    { index: 2, order: "order-3", height: "sm:h-64", width: "sm:w-68", border: "border-orange-500/30", hoverBorder: "hover:border-orange-400/50", rankBg: "bg-gradient-to-br from-orange-400 to-orange-600", rankText: "text-white", label: "3rd Place", labelColor: "text-orange-400", scoreBg: "bg-orange-500/15 text-orange-300 border-orange-500/30", glow: "" },
+  ];
 
   return (
-    <div className="min-h-screen bg-blue-50">
-      
-      {/* Header */}
-      <div className="bg-blue-900 text-blue-50 px-8 py-6 shadow-md">
-        <h1 className="text-3xl font-black">Company Dashboard</h1>
-        <p className="text-blue-300 mt-1 font-medium">
-          Saved candidates from leaderboard
-        </p>
+    <div className="min-h-screen bg-neutral-950 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+
+      {/* ══════════ HEADER ══════════ */}
+      <div className="mb-10">
+        <h1 className="text-3xl sm:text-4xl font-black text-blue-50">Company Dashboard</h1>
+        <p className="text-blue-400/70 font-medium mt-1">Analyze student performance across communities</p>
       </div>
 
-      {/* Leaderboard Section */}
-      <Leaderboard
-        onViewProject={handleView}
-        onAddToDashboard={handleAddToDashboard}
-      />
+      {/* ══════════ ERROR ══════════ */}
+      {error && (
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-semibold">
+          {error}
+        </div>
+      )}
 
-      {/* Saved Candidates Section */}
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <h2 className="text-2xl font-black text-blue-900 mb-6 flex items-center gap-2">
-          <Users size={22} />
-          Saved Candidates ({savedCandidates.length})
-        </h2>
+      {/* ══════════ STAT CARDS ══════════ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+        <StatCard icon={Users} label="Total Students" value={stats.totalStudents} color="text-blue-400" iconBg="bg-blue-500/10" delay={0} loading={statsLoading} />
+        <StatCard icon={Globe} label="Communities" value={stats.totalCommunities} color="text-purple-400" iconBg="bg-purple-500/10" delay={100} loading={statsLoading} />
+        <StatCard icon={Code} label="Problems Solved" value={stats.totalProblemsSolved} color="text-emerald-400" iconBg="bg-emerald-500/10" delay={200} loading={statsLoading} />
+        <StatCard icon={Zap} label="Active (7 days)" value={stats.activeUsers} color="text-amber-400" iconBg="bg-amber-500/10" delay={300} loading={statsLoading} />
+      </div>
 
-        {savedCandidates.length === 0 ? (
-          <div className="bg-white border border-blue-200 rounded-2xl p-8 text-center shadow-sm">
-            <Briefcase size={40} className="mx-auto text-blue-400 mb-3" />
-            <p className="text-blue-700 font-bold text-lg">
-              No candidates saved yet
-            </p>
-            <p className="text-blue-500 mt-1">
-              Click the + button in leaderboard to add candidates
-            </p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-6">
-            {savedCandidates.map((candidate) => (
-              <div
-                key={candidate.id}
-                className="bg-white border border-blue-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all"
+      {/* ══════════ SEARCH BAR ══════════ */}
+      <div className="mb-10 relative" ref={searchRef}>
+        <div className="relative max-w-lg">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-500" size={20} />
+          <input
+            type="text"
+            placeholder="Search students by name, username, or email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => searchResults.length > 0 && setShowSearchDropdown(true)}
+            className="w-full pl-12 pr-4 py-3.5 bg-blue-950/60 border border-blue-800/50 rounded-xl text-blue-100 text-sm font-medium placeholder-blue-500/60 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition-all"
+          />
+        </div>
+
+        {showSearchDropdown && searchResults.length > 0 && (
+          <div className="absolute z-50 mt-2 w-full max-w-lg bg-blue-950 border border-blue-800/60 rounded-xl shadow-2xl shadow-black/40 overflow-hidden">
+            {searchResults.map((s) => (
+              <button
+                key={s._id}
+                onClick={() => handleViewProfile(s._id)}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-900/60 transition-colors text-left border-b border-blue-800/30 last:border-b-0"
               >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-xl font-black text-blue-900">
-                      {candidate.student}
-                    </h3>
-                    <p className="text-blue-600 font-semibold mt-1">
-                      {candidate.title}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => handleRemove(candidate.id)}
-                    className="text-red-500 hover:bg-red-100 p-2 rounded-lg transition"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                <img src={avatarUrl(s.name, s.profileImage)} alt={s.name} className="w-9 h-9 rounded-lg object-cover border border-blue-700" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-blue-100 text-sm font-bold truncate">{s.name}</p>
+                  <p className="text-blue-500 text-xs truncate">
+                    {s.username ? `@${s.username}` : s.email}
+                    {s.communities?.length > 0 && ` · ${s.communities[0]}`}
+                  </p>
                 </div>
-
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {candidate.stack.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-sm font-semibold"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Score & Reviews */}
-                <div className="flex justify-between mt-5 text-sm font-semibold text-blue-700">
-                  <div className="flex items-center gap-1">
-                    <Star size={16} />
-                    {candidate.score} pts
-                  </div>
-                  <div>{candidate.reviews} Reviews</div>
-                </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
       </div>
+
+      {/* ══════════ COMMUNITY SELECTOR + SECTION HEADER ══════════ */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h2 className="text-2xl font-black text-blue-50 flex items-center gap-2">
+            <Trophy size={22} className="text-amber-400" /> Leaderboard
+          </h2>
+          <p className="text-blue-400/70 text-sm font-medium mt-0.5">Rankings based on score</p>
+        </div>
+
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="flex items-center gap-2 px-5 py-3 bg-blue-950/60 border border-blue-800/50 rounded-xl text-blue-200 text-sm font-semibold hover:border-blue-600 transition-colors min-w-[220px] justify-between"
+          >
+            <span>{selectedCommunityName}</span>
+            <ChevronDown size={16} className={`text-blue-500 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 z-50 mt-2 w-full bg-blue-950 border border-blue-800/60 rounded-xl shadow-2xl shadow-black/40 overflow-hidden">
+              <button
+                onClick={() => handleCommunitySelect("", "All Communities")}
+                className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors border-b border-blue-800/30 ${
+                  !selectedCommunityId ? "bg-amber-400/10 text-amber-400" : "text-blue-200 hover:bg-blue-900/60"
+                }`}
+              >
+                All Communities
+              </button>
+              {communities.map((c) => (
+                <button
+                  key={c._id}
+                  onClick={() => handleCommunitySelect(c._id, c.name)}
+                  className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors border-b border-blue-800/30 last:border-b-0 ${
+                    selectedCommunityId === c._id ? "bg-amber-400/10 text-amber-400" : "text-blue-200 hover:bg-blue-900/60"
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ══════════ TOP 3 PERFORMERS ══════════ */}
+      {top3Loading ? (
+        <div className="flex justify-center items-center py-16 mb-12">
+          <Loader2 size={32} className="text-amber-400 animate-spin" />
+        </div>
+      ) : top3.length >= 3 ? (
+        <div className="mb-12">
+          <h3 className="text-xl font-black text-blue-50 mb-6 text-center">Top Performers</h3>
+          <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-6 md:gap-4">
+            {podiumConfig.map((cfg) => {
+              const student = top3[cfg.index];
+              if (!student) return null;
+              return (
+                <div
+                  key={student.userId}
+                  className={`w-full ${cfg.width} bg-gradient-to-b from-blue-900/80 to-blue-950 border-2 ${cfg.border} ${cfg.hoverBorder} rounded-2xl p-6 text-center shadow-lg transition-all duration-300 hover:scale-[1.03] ${cfg.order} h-auto ${cfg.height} flex flex-col justify-center relative overflow-hidden group cursor-pointer ${cfg.glow}`}
+                  onClick={() => handleViewProfile(student.userId)}
+                >
+                  {cfg.champion && (
+                    <div className="absolute top-0 right-0 bg-yellow-500/10 border-l border-b border-yellow-500/30 text-yellow-400 px-4 py-1.5 font-black text-[10px] uppercase tracking-wider rounded-bl-xl hidden sm:block">
+                      <Crown size={12} className="inline mr-1 -mt-0.5" /> Champion
+                    </div>
+                  )}
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 ${cfg.rankBg} ${cfg.rankText} w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg`}>
+                    {cfg.index + 1}
+                  </div>
+                  <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-blue-700/50 mx-auto mb-3 mt-2">
+                    <img src={avatarUrl(student.name, student.profileImage)} alt={student.name} className="w-full h-full object-cover" />
+                  </div>
+                  <p className={`${cfg.labelColor} font-bold text-xs uppercase tracking-wider mb-1`}>{cfg.label}</p>
+                  <h3 className="font-black text-lg text-blue-50 mb-0.5 group-hover:text-amber-400 transition-colors">{student.name}</h3>
+                  <p className="text-blue-400 text-xs font-medium mb-3">{student.community}</p>
+                  <div className="flex items-center justify-center gap-4 mb-3 text-xs text-blue-300">
+                    <span><strong className="text-blue-100">{student.problemsSolved}</strong> solved</span>
+                  </div>
+                  <div className={`${cfg.scoreBg} border py-2 px-4 rounded-xl text-sm font-black inline-block mx-auto`}>
+                    {student.score} PTS
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : top3.length > 0 ? (
+        <div className="mb-12 text-center text-blue-400/60 text-sm py-8">Not enough students for podium display.</div>
+      ) : null}
+
+      {/* ══════════ LEADERBOARD TABLE ══════════ */}
+      <div className="bg-blue-950/60 border border-blue-800/50 rounded-2xl overflow-hidden mb-8">
+        <div className="px-6 py-5 border-b border-blue-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="font-black text-blue-50 text-lg">Student Rankings</h3>
+            <p className="text-sm text-blue-400/70 font-medium mt-0.5">
+              {leaderboardLoading ? "Loading..." : `Showing ${leaderboard.length} of ${leaderboardTotal} students`}
+            </p>
+          </div>
+          <button
+            onClick={() => setSortOrder((s) => (s === "desc" ? "asc" : "desc"))}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-900/60 border border-blue-700/50 rounded-lg text-blue-300 text-xs font-bold hover:border-blue-600 transition-colors"
+          >
+            <ArrowUpDown size={14} />
+            Score: {sortOrder === "asc" ? "Low → High" : "High → Low"}
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
+            <thead>
+              <tr className="text-left text-xs font-black text-blue-400/80 uppercase tracking-wider border-b border-blue-800/40 bg-blue-950/80">
+                <th className="px-6 py-4">Rank</th>
+                <th className="px-6 py-4">Student</th>
+                <th className="px-6 py-4">Community</th>
+                <th className="px-6 py-4">Problems</th>
+                <th className="px-6 py-4">Score</th>
+                <th className="px-6 py-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-blue-800/30">
+              {leaderboardLoading ? (
+                Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)
+              ) : leaderboard.length > 0 ? (
+                leaderboard.map((student) => {
+                  const isTop3 = student.rank <= 3;
+                  const maxScore = leaderboard[0]?.score || 1;
+                  return (
+                    <tr key={student.userId} className="hover:bg-blue-900/30 transition-colors group">
+                      <td className="px-6 py-4">
+                        {isTop3 ? (
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm ${
+                            student.rank === 1 ? "bg-yellow-500 text-blue-950" :
+                            student.rank === 2 ? "bg-gray-300 text-blue-950" :
+                            "bg-orange-500 text-white"
+                          }`}>{student.rank}</div>
+                        ) : (
+                          <span className="text-blue-400 font-black text-base">#{student.rank}</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <img src={avatarUrl(student.name, student.profileImage)} alt={student.name} className="w-9 h-9 rounded-lg object-cover border border-blue-700/50" />
+                          <div className="min-w-0">
+                            <p className="text-blue-50 font-bold text-sm truncate group-hover:text-amber-400 transition-colors">{student.name}</p>
+                            <p className="text-blue-500 text-xs truncate">{student.username ? `@${student.username}` : student.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-blue-300 text-sm font-medium">{student.community}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-blue-200 text-sm font-bold">{student.problemsSolved}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 bg-blue-900/60 rounded-full h-1.5 w-20">
+                            <div className="bg-amber-400 h-1.5 rounded-full transition-all" style={{ width: `${Math.min((student.score / maxScore) * 100, 100)}%` }} />
+                          </div>
+                          <span className="text-blue-100 text-sm font-black min-w-[3rem]">{student.score}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleViewProfile(student.userId)}
+                          className="px-4 py-2 bg-amber-400/10 text-amber-400 border border-amber-400/30 rounded-lg text-xs font-bold hover:bg-amber-400 hover:text-blue-950 transition-all"
+                        >
+                          View Profile
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center py-16">
+                    <Users className="mx-auto text-blue-700 mb-3" size={48} />
+                    <p className="text-blue-300 font-bold text-lg">No students found</p>
+                    <p className="text-blue-500 text-sm mt-1">Try selecting a different community</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {leaderboardPages > 1 && (
+          <div className="px-6 py-4 border-t border-blue-800/40 flex items-center justify-between">
+            <p className="text-blue-500 text-xs font-medium">Page {currentPage} of {leaderboardPages}</p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-blue-800/50 text-blue-400 hover:bg-blue-900/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {Array.from({ length: leaderboardPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-colors ${
+                    currentPage === page ? "bg-amber-400 text-blue-950" : "text-blue-400 hover:bg-blue-900/60 border border-blue-800/50"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(leaderboardPages, p + 1))}
+                disabled={currentPage === leaderboardPages}
+                className="p-2 rounded-lg border border-blue-800/50 text-blue-400 hover:bg-blue-900/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(16px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+      `}</style>
     </div>
   );
-};
-
-export default CompanyDashboardPage;
+}

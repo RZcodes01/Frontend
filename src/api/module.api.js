@@ -1,13 +1,5 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const API = axios.create({ baseURL: "https://skillconnect-backend-7ftb.onrender.com/modules" });
-
-API.interceptors.request.use((config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-});
-
-export const addModule = (communityId, data) => API.post(`/${communityId}`, data);
-export const updateModule = (communityId, moduleId, data) => API.put(`/${communityId}/${moduleId}`, data);
-export const deleteModule = (communityId, moduleId) => API.delete(`/${communityId}/${moduleId}`);
+export const addModule = (communityId, data) => axiosInstance.post(`/modules/${communityId}`, data);
+export const updateModule = (communityId, moduleId, data) => axiosInstance.put(`/modules/${communityId}/${moduleId}`, data);
+export const deleteModule = (communityId, moduleId) => axiosInstance.delete(`/modules/${communityId}/${moduleId}`);

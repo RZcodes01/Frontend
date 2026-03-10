@@ -1,27 +1,11 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const getToken = () => localStorage.getItem("accessToken")
+export const myAssignedCommunities = () => axiosInstance.get("/mentordashboards/assigned-communities");
+export const myAllStudents = () => axiosInstance.get("/mentordashboards/all-students");
+export const allBatches = () => axiosInstance.get("/mentordashboards/all-batches");
 
-const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/mentordashboards",
-});
+export const allProjectSubmissions = (projectId) => axiosInstance.get(`/mentordashboards/all-submissions/${projectId}`);
 
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-})
+export const getMentorProjects = () => axiosInstance.get("/mentordashboards/all-projects");
 
-export const myAssignedCommunities = () => API.get("/assigned-communities")
-export const myAllStudents = () => API.get("/all-students")
-export const allBatches = () => API.get("/all-batches")
-
-export const allProjectSubmissions = (projectId) => API.get(`/all-submissions/${projectId}`)
-
-export const getMentorProjects = () => API.get("/all-projects");
-
-export const gradeSubmission = (submissionId, data) => API.put(`/grade-submission/${submissionId}`, data);
-
-
+export const gradeSubmission = (submissionId, data) => axiosInstance.put(`/mentordashboards/grade-submission/${submissionId}`, data);

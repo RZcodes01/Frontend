@@ -1,23 +1,9 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const getToken = () => localStorage.getItem("accessToken")
+export const fetchAllCommunities = () => axiosInstance.get(`/community/`);
 
-const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/community",
-});
+export const fetchCommunityById = (id) => axiosInstance.get(`/community/${id}`);
 
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-})
+export const createCommunity = (formData) => axiosInstance.post("/community/", formData);
 
-export const fetchAllCommunities = () => API.get(`/`)
-
-export const fetchCommunityById = (id) => API.get(`/${id}`)
-
-export const createCommunity = (formData) => API.post("/", formData);
-
-export const updateCommunity = (id, data) => API.put(`/${id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
+export const updateCommunity = (id, data) => axiosInstance.put(`/community/${id}`, data, { headers: { "Content-Type": "multipart/form-data" } });

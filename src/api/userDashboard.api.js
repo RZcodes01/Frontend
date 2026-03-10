@@ -1,22 +1,8 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const getToken = () => localStorage.getItem("accessToken")
+export const fetchMyCommunities = () => axiosInstance.get("/userdashboards/my");
 
-const API = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com/userdashboards",
-});
-
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-})
-
-export const fetchMyCommunities = () => API.get("/my")
-
-export const fetchMyBatches = () => API.get("/student-batches");
+export const fetchMyBatches = () => axiosInstance.get("/userdashboards/student-batches");
 
 export const fetchMyProjects = () =>
-    API.get("/my-projects");
+    axiosInstance.get("/userdashboards/my-projects");
