@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar";
 import { Route, Routes, Outlet } from "react-router-dom";
+import { Toaster } from "sonner";
 import Homepage from "./pages/Homepage";
 import Community from "./pages/Community";
 import Register from "./pages/StudentRegister";
@@ -29,12 +30,8 @@ import CompanyDashboardPage from "./pages/CompanyDashboard";
 
 function MainLayout() {
   return (
-    <div className="flex flex-col h-screen bg-neutral-950 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-neutral-950">
       <Navbar />
-      {/* Using h-screen and overflow-hidden on the parent 
-          plus pt-[72px] ensures the content starts after the navbar 
-          and stays within the visible bounds.
-      */}
       <main className="flex-1 pt-[72px] relative overflow-y-auto">
         <Outlet />
       </main>
@@ -44,9 +41,9 @@ function MainLayout() {
 
 function AdminDash() {
   return (
-    <div className="h-screen flex flex-col bg-neutral-950">
+    <div className="min-h-screen flex flex-col bg-neutral-950">
       <Navbar />
-      <main className="flex-1 pt-[72px] overflow-hidden">
+      <main className="flex-1 pt-[72px] overflow-y-auto">
         <Outlet />
       </main>
     </div>
@@ -55,7 +52,7 @@ function AdminDash() {
 
 function StudentDashLayout() {
   return (
-    <div className="h-screen flex flex-col bg-neutral-950">
+    <div className="min-h-screen flex flex-col bg-neutral-950">
       <Navbar />
       <main className="flex-1 pt-[72px] overflow-y-auto">
         <Outlet />
@@ -66,9 +63,9 @@ function StudentDashLayout() {
 
 function MentorDash() {
   return (
-    <div className="h-screen flex flex-col bg-neutral-950">
+    <div className="min-h-screen flex flex-col bg-neutral-950">
       <Navbar />
-      <main className="flex-1 pt-[72px] overflow-hidden">
+      <main className="flex-1 pt-[72px] overflow-y-auto">
         <Outlet />
       </main>
     </div>
@@ -77,7 +74,7 @@ function MentorDash() {
 
 function CompanyDash() {
   return (
-    <div className="h-screen flex flex-col bg-neutral-950">
+    <div className="min-h-screen flex flex-col bg-neutral-950">
       <Navbar />
       <main className="flex-1 pt-[72px] overflow-y-auto">
         <Outlet />
@@ -88,65 +85,80 @@ function CompanyDash() {
 
 export default function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/register/mentor" element={<MentorRegister />} />
-      <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
-      <Route path="/career" element={<Career />} />
-      <Route path="/" element={<Homepage />} />
-      <Route element={<MainLayout />}>
-        <Route path="/community" element={<Community />} />
-        <Route path="/community/:communityId" element={<SingleCommunity />} />
-      </Route>
-
-
-      {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
-      <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin", "company "]} />}>
+    <>
+      <Toaster
+        position="top-right"
+        richColors
+        toastOptions={{
+          style: {
+            borderRadius: '12px',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+            padding: '14px 18px',
+            fontSize: '14px',
+            fontFamily: "'Nunito', sans-serif",
+          },
+        }}
+      />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/register/mentor" element={<MentorRegister />} />
+        <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
+        <Route path="/career" element={<Career />} />
+        <Route path="/" element={<Homepage />} />
         <Route element={<MainLayout />}>
-          <Route path="/leaderboard" element={<Project />} />
-          {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/project-view" element={<ProjectView />} />
-          <Route path="/projectdetail" element={<ProjectDetail />} />
-          <Route path="/quickskills" element={<QuickSkills />} />
-          <Route path="/upload-skill" element={<UploadReel />} />
-          <Route path="/community/:id/module/:moduleId" element={<ModulePage />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/community/:communityId" element={<SingleCommunity />} />
         </Route>
-      </Route>
 
-      {/* --- ADMIN ONLY ROUTES --- */}
-      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-        <Route element={<AdminDash />}>
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/community/:communityId/edit" element={<AdminModuleManager />} />
+
+        {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
+        <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin", "company "]} />}>
+          <Route element={<MainLayout />}>
+            <Route path="/leaderboard" element={<Project />} />
+            {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/project-view" element={<ProjectView />} />
+            <Route path="/projectdetail" element={<ProjectDetail />} />
+            <Route path="/quickskills" element={<QuickSkills />} />
+            <Route path="/upload-skill" element={<UploadReel />} />
+            <Route path="/community/:id/module/:moduleId" element={<ModulePage />} />
+          </Route>
         </Route>
-      </Route>
 
-      {/* --- STUDENT ONLY ROUTES --- */}
-      <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-        <Route element={<StudentDashLayout />}>
-          <Route path="/dashboard" element={<StudentDashboard />} />
-          <Route path="/projects/:projectId" element={<ProjectDetail />} />
-          <Route path="/submission" element={<ProjectSubmission />} />
+        {/* --- ADMIN ONLY ROUTES --- */}
+        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+          <Route element={<AdminDash />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/community/:communityId/edit" element={<AdminModuleManager />} />
+          </Route>
         </Route>
-      </Route>
 
-      <Route element={<ProtectedRoute allowedRoles={["mentor"]} />}>
-        <Route element={<MentorDash />}>
-          <Route path="/mentor" element={<MentorDashboard />} />
-          <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
+        {/* --- STUDENT ONLY ROUTES --- */}
+        <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
+          <Route element={<StudentDashLayout />}>
+            <Route path="/dashboard" element={<StudentDashboard />} />
+            <Route path="/projects/:projectId" element={<ProjectDetail />} />
+            <Route path="/submission" element={<ProjectSubmission />} />
+          </Route>
         </Route>
-      </Route>
 
-      <Route element={<ProtectedRoute allowedRoles={["company"]} />}>
-        <Route element={<CompanyDash />}>
-          <Route path="/company" element={<CompanyDashboardPage />} />
-          <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
+        <Route element={<ProtectedRoute allowedRoles={["mentor"]} />}>
+          <Route element={<MentorDash />}>
+            <Route path="/mentor" element={<MentorDashboard />} />
+            <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
+          </Route>
         </Route>
-      </Route>
 
-    </Routes>
+        <Route element={<ProtectedRoute allowedRoles={["company"]} />}>
+          <Route element={<CompanyDash />}>
+            <Route path="/company" element={<CompanyDashboardPage />} />
+            <Route path="/submissions/:projectId" element={<ProjectSubmissions />} />
+          </Route>
+        </Route>
+
+      </Routes>
+    </>
   );
 }

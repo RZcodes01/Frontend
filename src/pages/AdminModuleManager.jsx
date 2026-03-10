@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     ArrowLeft, Plus, Trash2, Edit3, X,
@@ -92,7 +93,7 @@ const AdminModuleManager = () => {
             setIsModalOpen(false);
             resetForm();
         } catch {
-            alert("Failed to save module. Please try again.");
+            toast.error("Failed to save module. Please try again.");
         } finally {
             setFormLoading(false);
         }
@@ -107,7 +108,7 @@ const AdminModuleManager = () => {
             await loadCommunityData();
             setDeleteTarget(null);
         } catch {
-            alert("Failed to delete module. Please try again.");
+            toast.error("Failed to delete module. Please try again.");
         } finally {
             setDeleteLoading(false);
         }
@@ -128,7 +129,7 @@ const AdminModuleManager = () => {
     const modules = selectedComm?.modules || [];
 
     return (
-        <div className="h-screen flex flex-col bg-gray-950 font-sans overflow-hidden">
+        <div className="min-h-screen flex flex-col bg-gray-950 font-sans">
 
             {/* ── Header ── */}
             <header className="shrink-0 bg-gray-900 border-b border-gray-800 shadow-lg">

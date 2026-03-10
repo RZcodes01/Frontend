@@ -1,22 +1,25 @@
 import { useState, useMemo, useEffect } from "react";
+import { toast } from 'sonner';
 import { useNavigate } from "react-router-dom";
 import {
-  Users, Video, Clock, CheckCircle, ChevronRight,
-  Play, GraduationCap, Loader2, MapPin,
-  ExternalLink, Plus, Edit, Trash2, X
+  Users, Video, Clock, ChevronRight,
+  MapPin, ExternalLink, Plus, Edit, Trash2, X, Loader2,
+  BookOpen
 } from "lucide-react";
 import { getMentorProjects, myAllStudents, myAssignedCommunities } from "../api/mentor.api";
-import { createBatch, deleteBatch, fetchAllBatches, fetchMentorAssignedBatches, updateBatch } from "../api/batch.api";
+import { createBatch, deleteBatch, fetchMentorAssignedBatches, updateBatch } from "../api/batch.api";
 import { createProject, deleteProject, updateProject } from "../api/project.api";
 
 
-const StatCard = ({ label, value, icon: Icon, colorClass }) => (
-  <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow">
-    <div className={`w-10 h-10 rounded-xl ${colorClass} bg-opacity-10 flex items-center justify-center mb-4`}>
-      <Icon size={18} className={colorClass.replace('bg-', 'text-')} />
+const StatCard = ({ label, value, icon: Icon }) => (
+  <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm">
+    <div className="flex items-center justify-between mb-4">
+      <div className="w-12 h-12 bg-amber-400/10 rounded-lg flex items-center justify-center border border-amber-400/30">
+        <Icon className="w-6 h-6 text-blue-900" />
+      </div>
     </div>
-    <p className="text-2xl sm:text-3xl font-black syne text-slate-900">{value}</p>
-    <p className="text-slate-500 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">{label}</p>
+    <h3 className="text-2xl font-bold text-blue-900 mb-1">{value}</h3>
+    <p className="text-sm text-blue-600">{label}</p>
   </div>
 );
 
@@ -66,7 +69,7 @@ export default function MentorDashboard() {
         const [commRes, studRes, batchRes, projectRes] = await Promise.all([
           myAssignedCommunities(),
           myAllStudents(),
-          fetchMentorAssignedBatches(), // Integrated fetchAllBatches here
+          fetchMentorAssignedBatches(),
           getMentorProjects()
         ]);
 
@@ -136,7 +139,7 @@ export default function MentorDashboard() {
       }
       setIsModalOpen(false);
     } catch {
-      alert("Operation failed");
+      toast.error("Operation failed");
     } finally {
       setSaving(false);
     }
@@ -174,27 +177,21 @@ export default function MentorDashboard() {
 
   const handleBatchSubmit = async () => {
     if (!batchFormData.name || !batchFormData.classAt || (!isBatchEdit && !batchFormData.communityId)) {
-      return alert("Please fill all required fields");
+      return toast.error("Please fill all required fields");
     }
 
     try {
       setSaving(true);
 
-      // Create FormData object
       const data = new FormData();
       data.append("name", batchFormData.name);
       data.append("classAt", batchFormData.classAt);
       data.append("classLink", batchFormData.classLink);
-      // Note: If you add a file input later, you'd append it here:
-      // data.append("banner", fileState);
 
       if (isBatchEdit) {
-        // For PUT requests, some backends prefer JSON unless uploading a file
-        // If PUT fails with 500, try sending 'data' (FormData) here too
         const res = await updateBatch(selectedBatch._id, batchFormData);
         setBatches(prev => prev.map(b => b._id === selectedBatch._id ? res.data.batch : b));
       } else {
-        // POSTing to /batches/:communityId
         const res = await createBatch(batchFormData.communityId, data);
         setBatches(prev => [res.data.batch, ...prev]);
       }
@@ -202,7 +199,7 @@ export default function MentorDashboard() {
       setIsBatchModalOpen(false);
     } catch (err) {
       console.error("Batch Error Details:", err.response?.data);
-      alert(err.response?.data?.message || "Batch operation failed");
+      toast.error(err.response?.data?.message || "Batch operation failed");
     } finally {
       setSaving(false);
     }
@@ -216,42 +213,54 @@ export default function MentorDashboard() {
       await deleteBatch(id);
     } catch {
       setBatches(backup);
-      alert("Failed to delete session");
+      toast.error("Failed to delete session");
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="animate-spin text-orange-500" size={40} />
+      <div className="h-full flex items-center justify-center text-blue-900">
+        Loading...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-24 sm:pb-10">
+    <div style={{ minHeight: '100vh', overflowY: 'auto', backgroundColor: '#eff6ff', position: 'relative' }}>
+      {/* Dot-grid background */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, #1e3a5f 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+          minHeight: '100%',
+        }}
+      />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      {/* Left accent bar */}
+      <div className="absolute top-0 left-0 w-1.5 bg-amber-400 z-10" style={{ minHeight: '100%' }} />
+
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pl-8">
 
         {/* HEADER */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-black syne text-slate-900">
+          <h1 className="text-3xl font-extrabold text-blue-900 mb-1 tracking-tight">
             Mentor Dashboard
           </h1>
-          <p className="text-slate-500 text-xs sm:text-sm italic font-medium">
-            Monitoring {stats.totalCommunities} assigned hubs
+          <p className="text-blue-700">
+            Monitoring {stats.totalCommunities} assigned communities
           </p>
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <StatCard label="Communities" value={stats.totalCommunities} icon={MapPin} colorClass="bg-blue-500" />
-          <StatCard label="Total Students" value={stats.totalStudents} icon={Users} colorClass="bg-purple-500" />
-          <StatCard label="Sessions" value={stats.upcomingSessions} icon={Video} colorClass="bg-orange-500" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <StatCard label="Communities" value={stats.totalCommunities} icon={MapPin} />
+          <StatCard label="Total Students" value={stats.totalStudents} icon={Users} />
+          <StatCard label="Sessions" value={stats.upcomingSessions} icon={Video} />
         </div>
 
         {/* TABS */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex gap-2 mb-8 flex-wrap">
           {[
             { id: "communities", label: "Projects" },
             { id: "my-communities", label: "Communities" },
@@ -260,9 +269,9 @@ export default function MentorDashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeTab === tab.id
-                ? "bg-orange-500 text-white"
-                : "bg-white border border-slate-200 text-slate-500"
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.id
+                  ? "bg-blue-900 text-white"
+                  : "bg-white border border-blue-200 text-blue-600 hover:border-amber-400"
                 }`}
             >
               {tab.label}
@@ -270,116 +279,158 @@ export default function MentorDashboard() {
           ))}
         </div>
 
-        {/* ================= PROJECT TAB ================= */}
+        {/* ================= PROJECTS TAB ================= */}
         {activeTab === "communities" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-black syne">Manage Projects</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-blue-900 tracking-tight">Manage Projects</h2>
               <button
                 onClick={openCreateModal}
-                className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase"
+                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
               >
-                <Plus size={14} /> Create Project
+                <Plus size={16} /> Create Project
               </button>
             </div>
 
-            {mentorProjects.length > 0 ? (
-              mentorProjects.map(p => (
-                <div
-                  key={p._id}
-                  onClick={() => navigate(`/submissions/${p._id}`)}
-                  className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-orange-400 hover:shadow-md transition-all cursor-pointer"
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="text-xs font-black text-orange-500 uppercase">
-                        {p.communityId?.name}
-                      </p>
-                      <h3 className="font-black text-slate-900">{p.title}</h3>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase">
-                        Due: {new Date(p.dueDate).toLocaleDateString()} | {p.status}
-                      </p>
+            <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm">
+              <div className="space-y-4">
+                {mentorProjects.length > 0 ? (
+                  mentorProjects.map(p => (
+                    <div
+                      key={p._id}
+                      onClick={() => navigate(`/submissions/${p._id}`)}
+                      className="border border-blue-100 hover:border-amber-400 rounded-lg p-4 transition-all duration-200 cursor-pointer hover:shadow-md bg-blue-50/50"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1 min-w-0 mr-4">
+                          <p className="text-xs font-semibold text-amber-600 uppercase mb-1">
+                            {p.communityId?.name}
+                          </p>
+                          <h3 className="font-semibold text-blue-900">{p.title}</h3>
+                          <p className="text-sm text-blue-600 mt-1">
+                            Due: {new Date(p.dueDate).toLocaleDateString()} &nbsp;|&nbsp;
+                            <span className={`font-semibold ${p.status === "open" ? "text-emerald-600" : "text-red-500"}`}>
+                              {p.status}
+                            </span>
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                          <button
+                            onClick={() => openEditModal(p)}
+                            className="p-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors text-blue-700"
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p._id)}
+                            className="p-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors text-blue-700"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                          <ChevronRight size={16} className="text-blue-300" />
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
-                      <button onClick={() => openEditModal(p)} className="p-2 bg-slate-100 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
-                        <Edit size={14} />
-                      </button>
-                      <button onClick={() => handleDelete(p._id)} className="p-2 bg-slate-100 rounded-lg hover:bg-red-500 hover:text-white transition-colors">
-                        <Trash2 size={14} />
-                      </button>
-                      <ChevronRight size={16} className="text-slate-300" />
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-blue-500 text-center py-10">
+                    No projects created yet.
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-10 bg-white border border-dashed border-slate-200 rounded-2xl">
-                <p className="text-sm text-slate-400 italic">No projects created yet.</p>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
 
         {/* ================= COMMUNITIES TAB ================= */}
         {activeTab === "my-communities" && (
-          <div className="grid sm:grid-cols-2 gap-6">
-            {allCommunities.map(c => (
-              <div key={c._id} className="bg-white border rounded-3xl p-6 shadow-sm">
-                <h3 className="font-black syne text-slate-900">{c.name}</h3>
-                <p className="text-xs text-slate-500 mt-2">{c.description}</p>
+          <div>
+            <h2 className="text-xl font-bold text-blue-900 mb-4 tracking-tight">Communities</h2>
+            <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm">
+              <div className="space-y-4">
+                {allCommunities.map(c => (
+                  <div
+                    key={c._id}
+                    className="border border-blue-100 hover:border-amber-400 rounded-lg p-4 transition-all duration-200 bg-blue-50/50"
+                  >
+                    <h3 className="font-semibold text-blue-900">{c.name}</h3>
+                    <p className="text-sm text-blue-600 mt-1">{c.description}</p>
+                  </div>
+                ))}
+                {allCommunities.length === 0 && (
+                  <div className="text-blue-500 text-center py-10">
+                    No communities assigned yet.
+                  </div>
+                )}
               </div>
-            ))}
+            </div>
           </div>
         )}
 
         {/* ================= SESSIONS TAB ================= */}
         {activeTab === "sessions" && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-black syne">Manage Sessions</h2>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-blue-900 tracking-tight">Manage Sessions</h2>
               <button
                 onClick={openBatchCreateModal}
-                className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-black uppercase"
+                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
               >
-                <Plus size={14} /> Schedule Session
+                <Plus size={16} /> Schedule Session
               </button>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-6">
-              {batches.map(batch => (
-                <div key={batch._id} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all relative group">
-                  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => openBatchEditModal(batch)} className="p-2 bg-slate-100 rounded-lg hover:bg-blue-500 hover:text-white transition-colors">
-                      <Edit size={12} />
-                    </button>
-                    <button onClick={() => handleBatchDelete(batch._id)} className="p-2 bg-slate-100 rounded-lg hover:bg-red-500 hover:text-white transition-colors">
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                  <p className="text-[10px] font-black text-orange-500 uppercase mb-1">{batch.communityId?.name || "No Community"}</p>
-                  <h3 className="font-black text-slate-900">{batch.name}</h3>
-                  <div className="flex items-center gap-2 mt-2 text-slate-500">
-                    <Clock size={14} />
-                    <p className="text-xs font-bold uppercase tracking-tight">
-                      {new Date(batch.classAt).toLocaleString()}
-                    </p>
-                  </div>
-                  <a
-                    href={batch.classLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 transition-colors"
+            <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm">
+              <div className="space-y-4">
+                {batches.map(batch => (
+                  <div
+                    key={batch._id}
+                    className="border border-blue-100 hover:border-amber-400 rounded-lg p-4 transition-all duration-200 bg-blue-50/50"
                   >
-                    Join Room <ExternalLink size={12} />
-                  </a>
-                </div>
-              ))}
-            </div>
-            {batches.length === 0 && (
-              <div className="text-center py-10 bg-white border border-dashed border-slate-200 rounded-2xl">
-                <p className="text-sm text-slate-400 italic">No sessions scheduled.</p>
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0 mr-4">
+                        <p className="text-xs font-semibold text-amber-600 uppercase mb-1">
+                          {batch.communityId?.name || "No Community"}
+                        </p>
+                        <h3 className="font-semibold text-blue-900">{batch.name}</h3>
+                        <div className="flex items-center gap-1 mt-1 text-blue-600">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">{new Date(batch.classAt).toLocaleString()}</span>
+                        </div>
+                        <a
+                          href={batch.classLink}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={e => e.stopPropagation()}
+                          className="inline-flex items-center gap-1 mt-3 text-blue-900 hover:text-amber-500 font-semibold text-sm transition-colors"
+                        >
+                          Join Class <ExternalLink size={13} />
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button
+                          onClick={() => openBatchEditModal(batch)}
+                          className="p-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-colors text-blue-700"
+                        >
+                          <Edit size={14} />
+                        </button>
+                        <button
+                          onClick={() => handleBatchDelete(batch._id)}
+                          className="p-2 bg-blue-50 border border-blue-200 rounded-lg hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors text-blue-700"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {batches.length === 0 && (
+                  <div className="text-blue-500 text-center py-10">
+                    No sessions scheduled.
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
 
@@ -387,50 +438,84 @@ export default function MentorDashboard() {
 
       {/* ===== PROJECT MODAL ===== */}
       {isModalOpen && (
-        <div onClick={() => setIsModalOpen(false)} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div onClick={(e) => e.stopPropagation()} className="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl">
-            <div className="flex justify-between mb-6">
-              <h3 className="font-black text-xl">{isEditMode ? "Edit Project" : "Create Project"}</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-900"><X /></button>
+        <div
+          onClick={() => setIsModalOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            className="relative bg-white w-full max-w-md rounded-2xl p-8 shadow-2xl"
+          >
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-amber-400 rounded-tl-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-amber-400 rounded-tr-2xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-amber-400 rounded-bl-2xl pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-amber-400 rounded-br-2xl pointer-events-none" />
+
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-extrabold text-blue-900 tracking-tight">
+                {isEditMode ? "Edit Project" : "Create Project"}
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-gray-400 hover:text-blue-900 transition-colors"
+              >
+                <X size={22} />
+              </button>
             </div>
+
             <div className="space-y-4">
-              <input
-                type="text" placeholder="Title" value={formData.title}
-                onChange={e => setFormData({ ...formData, title: e.target.value })}
-                className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
-              />
-              {errors.title && <p className="text-red-500 text-xs px-1">{errors.title}</p>}
-
-              <textarea
-                rows="4" placeholder="Description" value={formData.description}
-                onChange={e => setFormData({ ...formData, description: e.target.value })}
-                className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
-              />
-              {errors.description && <p className="text-red-500 text-xs px-1">{errors.description}</p>}
-
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase text-slate-400 px-1">Due Date</label>
+              <div>
                 <input
-                  type="date" value={formData.dueDate}
-                  onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
+                  type="text"
+                  placeholder="Title"
+                  value={formData.title}
+                  onChange={e => setFormData({ ...formData, title: e.target.value })}
+                  className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 placeholder-blue-300 outline-none focus:border-amber-400 transition-all"
                 />
+                {errors.title && <p className="text-red-500 text-xs mt-1 px-1">{errors.title}</p>}
+              </div>
+
+              <div>
+                <textarea
+                  rows="4"
+                  placeholder="Description"
+                  value={formData.description}
+                  onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 placeholder-blue-300 outline-none focus:border-amber-400 transition-all resize-none"
+                />
+                {errors.description && <p className="text-red-500 text-xs mt-1 px-1">{errors.description}</p>}
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-blue-600 uppercase tracking-wider px-1 block mb-1">Due Date</label>
+                <input
+                  type="date"
+                  value={formData.dueDate}
+                  onChange={e => setFormData({ ...formData, dueDate: e.target.value })}
+                  className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 outline-none focus:border-amber-400 transition-all"
+                />
+                {errors.dueDate && <p className="text-red-500 text-xs mt-1 px-1">{errors.dueDate}</p>}
               </div>
 
               {!isEditMode && (
-                <select
-                  value={formData.communityId}
-                  onChange={e => setFormData({ ...formData, communityId: e.target.value })}
-                  className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
-                >
-                  <option value="">Select Community</option>
-                  {allCommunities.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
-                </select>
+                <div>
+                  <select
+                    value={formData.communityId}
+                    onChange={e => setFormData({ ...formData, communityId: e.target.value })}
+                    className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 outline-none focus:border-amber-400 transition-all"
+                  >
+                    <option value="">Select Community</option>
+                    {allCommunities.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                  </select>
+                  {errors.communityId && <p className="text-red-500 text-xs mt-1 px-1">{errors.communityId}</p>}
+                </div>
               )}
 
               <button
-                onClick={handleSubmit} disabled={saving}
-                className="w-full py-4 bg-orange-500 text-white rounded-2xl font-black uppercase tracking-wider hover:bg-orange-600 transition-colors disabled:opacity-50"
+                onClick={handleSubmit}
+                disabled={saving}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition shadow-md disabled:opacity-50 mt-2"
               >
                 {saving ? "Processing..." : isEditMode ? "Update Project" : "Create Project"}
               </button>
@@ -441,39 +526,64 @@ export default function MentorDashboard() {
 
       {/* ===== BATCH MODAL ===== */}
       {isBatchModalOpen && (
-        <div onClick={() => setIsBatchModalOpen(false)} className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div onClick={(e) => e.stopPropagation()} className="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl">
-            <div className="flex justify-between mb-6">
-              <h3 className="font-black text-xl">{isBatchEdit ? "Edit Session" : "Schedule Session"}</h3>
-              <button onClick={() => setIsBatchModalOpen(false)} className="text-slate-400 hover:text-slate-900"><X /></button>
+        <div
+          onClick={() => setIsBatchModalOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            className="relative bg-white w-full max-w-md rounded-2xl p-8 shadow-2xl"
+          >
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-amber-400 rounded-tl-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-amber-400 rounded-tr-2xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-amber-400 rounded-bl-2xl pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-amber-400 rounded-br-2xl pointer-events-none" />
+
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-extrabold text-blue-900 tracking-tight">
+                {isBatchEdit ? "Edit Session" : "Schedule Session"}
+              </h3>
+              <button
+                onClick={() => setIsBatchModalOpen(false)}
+                className="text-gray-400 hover:text-blue-900 transition-colors"
+              >
+                <X size={22} />
+              </button>
             </div>
+
             <div className="space-y-4">
               <input
-                type="text" placeholder="Session Name (e.g., Live Q&A)" value={batchFormData.name}
+                type="text"
+                placeholder="Session Name (e.g., Live Q&A)"
+                value={batchFormData.name}
                 onChange={e => setBatchFormData({ ...batchFormData, name: e.target.value })}
-                className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
+                className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 placeholder-blue-300 outline-none focus:border-amber-400 transition-all"
               />
 
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase text-slate-400 px-1">Session Date & Time</label>
+              <div>
+                <label className="text-xs font-semibold text-blue-600 uppercase tracking-wider px-1 block mb-1">Session Date & Time</label>
                 <input
-                  type="datetime-local" value={batchFormData.classAt}
+                  type="datetime-local"
+                  value={batchFormData.classAt}
                   onChange={e => setBatchFormData({ ...batchFormData, classAt: e.target.value })}
-                  className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
+                  className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 outline-none focus:border-amber-400 transition-all"
                 />
               </div>
 
               <input
-                type="url" placeholder="Meeting Link (Zoom, Meet, etc.)" value={batchFormData.classLink}
+                type="url"
+                placeholder="Meeting Link (Zoom, Meet, etc.)"
+                value={batchFormData.classLink}
                 onChange={e => setBatchFormData({ ...batchFormData, classLink: e.target.value })}
-                className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
+                className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 placeholder-blue-300 outline-none focus:border-amber-400 transition-all"
               />
 
               {!isBatchEdit && (
                 <select
                   value={batchFormData.communityId}
                   onChange={e => setBatchFormData({ ...batchFormData, communityId: e.target.value })}
-                  className="w-full p-4 border rounded-2xl bg-slate-50 outline-orange-500 transition-all"
+                  className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 outline-none focus:border-amber-400 transition-all"
                 >
                   <option value="">Select Community</option>
                   {allCommunities.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
@@ -481,8 +591,9 @@ export default function MentorDashboard() {
               )}
 
               <button
-                onClick={handleBatchSubmit} disabled={saving}
-                className="w-full py-4 bg-orange-500 text-white rounded-2xl font-black uppercase tracking-wider hover:bg-orange-600 transition-colors disabled:opacity-50"
+                onClick={handleBatchSubmit}
+                disabled={saving}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition shadow-md disabled:opacity-50 mt-2"
               >
                 {saving ? "Saving..." : isBatchEdit ? "Update Session" : "Schedule Session"}
               </button>

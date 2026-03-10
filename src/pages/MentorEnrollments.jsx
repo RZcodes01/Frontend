@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import {
     UserPlus, Users, ShieldCheck, AlertCircle,
     Loader2, Trash2, BookOpen, User as UserIcon
@@ -63,7 +64,7 @@ const MentorEnrollments = () => {
             await removeUserFromCommunity(commId, userId);
             setRefreshTrigger(prev => prev + 1);
         } catch (err) {
-            alert("Failed to remove mentor");
+            toast.error("Failed to remove mentor");
         }
     };
 

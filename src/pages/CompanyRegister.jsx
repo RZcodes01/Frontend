@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from 'sonner';
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/auth.api";
 
@@ -30,11 +31,11 @@ const CompanyRegister = () => {
         role: "company"
       });
 
-      alert(res.data.message);
+      toast.success(res.data.message);
       navigate("/login");
 
     } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      toast.error(error.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }

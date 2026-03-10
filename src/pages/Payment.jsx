@@ -85,9 +85,8 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         <span className="text-blue-900 font-black">{fmt(batch.startDate)}</span>.
                     </p>
                     <div className="flex flex-col gap-3">
-
                         <button
-                            onClick={() => navigate('/dashboard')} // This matches the Route path above
+                            onClick={() => navigate('/dashboard')}
                             className="bg-amber-400 hover:bg-amber-300 text-blue-950 px-8 py-3 rounded-xl font-black text-base transition-all hover:scale-105"
                         >
                             Go to Dashboard
@@ -138,22 +137,22 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                 <div className="lg:col-span-3 space-y-8">
                     <div>
                         <h1 className="text-3xl font-black mb-1 text-blue-950">Complete Payment</h1>
-                        <p className="text-blue-500 text-base font-medium">Secure, encrypted payment powered by Razorpay</p>
+                        <p className="text-blue-500 text-lg font-medium">Secure, encrypted payment powered by Razorpay</p>
                     </div>
 
                     {/* Personal Info */}
-                    <div className="bg-blue-900 rounded-2xl border border-blue-700 p-6 space-y-4">
-                        <h3 className="font-black text-blue-50 text-lg flex items-center gap-2">
+                    <div className="bg-white rounded-2xl border-2 border-blue-500 p-6 space-y-4">
+                        <h3 className="font-black text-blue-900 text-xl flex items-center gap-2">
                             <Users className="w-5 h-5 text-amber-400" /> Personal Details
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label className="text-sm text-blue-300 font-semibold mb-1 block">Full Name</label>
+                                <label className="text-base text-blue-600 font-semibold mb-1 block">Full Name</label>
                                 <input value={form.name} onChange={set('name')} placeholder="Aditya Sharma" className={inputClass('name')} />
                                 {errors.name && <p className="text-red-400 text-sm mt-1 font-medium">{errors.name}</p>}
                             </div>
                             <div>
-                                <label className="text-sm text-blue-300 font-semibold mb-1 block">Email Address</label>
+                                <label className="text-base text-blue-600 font-semibold mb-1 block">Email Address</label>
                                 <input value={form.email} onChange={set('email')} placeholder="aditya@email.com" className={inputClass('email')} type="email" />
                                 {errors.email && <p className="text-red-400 text-sm mt-1 font-medium">{errors.email}</p>}
                             </div>
@@ -161,8 +160,8 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                     </div>
 
                     {/* Payment Method Toggle */}
-                    <div className="bg-blue-900 rounded-2xl border border-blue-700 p-6 space-y-5">
-                        <h3 className="font-black text-blue-50 text-lg flex items-center gap-2">
+                    <div className="bg-white rounded-2xl border-2 border-blue-500 p-6 space-y-5">
+                        <h3 className="font-black text-blue-900 text-xl flex items-center gap-2">
                             <CreditCard className="w-5 h-5 text-amber-400" /> Payment Method
                         </h3>
 
@@ -171,7 +170,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                                 <button
                                     key={m}
                                     onClick={() => setMethod(m)}
-                                    className={`py-2.5 rounded-xl border text-base font-black transition-all ${method === m ? 'bg-amber-400/10 border-amber-400/50 text-amber-400' : 'border-blue-700 text-blue-300 hover:border-blue-500'}`}
+                                    className={`py-2.5 rounded-xl border text-base font-black transition-all ${method === m ? 'bg-amber-400/10 border-amber-400/50 text-amber-500' : 'border-blue-300 text-blue-600 hover:border-blue-500 text-base'}`}
                                 >
                                     {m === 'card' ? '💳 Card' : '⚡ UPI'}
                                 </button>
@@ -181,18 +180,18 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         {method === 'card' ? (
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-sm text-blue-300 font-semibold mb-1 block">Card Number</label>
+                                    <label className="text-base text-blue-600 font-semibold mb-1 block">Card Number</label>
                                     <input value={form.cardNumber} onChange={set('cardNumber')} placeholder="4242 4242 4242 4242" className={inputClass('cardNumber')} />
                                     {errors.cardNumber && <p className="text-red-400 text-sm mt-1 font-medium">{errors.cardNumber}</p>}
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-sm text-blue-300 font-semibold mb-1 block">Expiry</label>
+                                        <label className="text-base text-blue-600 font-semibold mb-1 block">Expiry</label>
                                         <input value={form.expiry} onChange={set('expiry')} placeholder="MM/YY" className={inputClass('expiry')} />
                                         {errors.expiry && <p className="text-red-400 text-sm mt-1 font-medium">{errors.expiry}</p>}
                                     </div>
                                     <div>
-                                        <label className="text-sm text-blue-300 font-semibold mb-1 block">CVV</label>
+                                        <label className="text-base text-blue-600 font-semibold mb-1 block">CVV</label>
                                         <input value={form.cvv} onChange={set('cvv')} placeholder="•••" className={inputClass('cvv')} type="password" />
                                         {errors.cvv && <p className="text-red-400 text-sm mt-1 font-medium">{errors.cvv}</p>}
                                     </div>
@@ -200,7 +199,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                             </div>
                         ) : (
                             <div>
-                                <label className="text-sm text-blue-300 font-semibold mb-1 block">UPI ID</label>
+                                <label className="text-base text-blue-600 font-semibold mb-1 block">UPI ID</label>
                                 <input value={form.upi} onChange={set('upi')} placeholder="yourname@upi" className={inputClass('upi')} />
                                 {errors.upi && <p className="text-red-400 text-sm mt-1 font-medium">{errors.upi}</p>}
                             </div>
@@ -226,7 +225,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         )}
                     </button>
 
-                    <p className="text-center text-blue-400 text-sm font-medium flex items-center justify-center gap-1.5">
+                    <p className="text-center text-blue-400 text-base font-medium flex items-center justify-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-blue-400" />
                         256-bit SSL encrypted · Your data is never stored
                     </p>
@@ -234,16 +233,16 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
 
                 {/* ── Right: Order Summary ── */}
                 <div className="lg:col-span-2 space-y-5">
-                    <div className="bg-blue-900 rounded-2xl border border-blue-700 p-6 sticky top-8">
-                        <h3 className="font-black text-blue-50 text-xl mb-5 flex items-center gap-2">
+                    <div className="bg-white rounded-2xl border-2 border-blue-500 p-6 sticky top-8">
+                        <h3 className="font-black text-blue-900 text-2xl mb-5 flex items-center gap-2">
                             <Crown className="w-5 h-5 text-amber-400" /> Order Summary
                         </h3>
 
                         {/* Batch Card */}
-                        <div className="bg-blue-950 rounded-xl border border-blue-700 p-4 mb-5">
-                            <p className="text-amber-400 text-xs font-black uppercase tracking-widest mb-1">Selected Batch</p>
-                            <p className="text-blue-50 font-black text-xl">{batch.name}</p>
-                            <div className="mt-3 space-y-1.5 text-base text-blue-300 font-medium">
+                        <div className="bg-blue-50 rounded-xl border border-blue-300 p-4 mb-5">
+                            <p className="text-amber-500 text-sm font-black uppercase tracking-widest mb-1">Selected Batch</p>
+                            <p className="text-blue-900 font-black text-2xl">{batch.name}</p>
+                            <div className="mt-3 space-y-1.5 text-lg text-blue-700 font-medium">
                                 <div className="flex items-center gap-2">
                                     <Calendar className="w-4 h-4 text-amber-400/60" />
                                     {fmt(batch.startDate)} → {fmt(batch.endDate)}
@@ -257,30 +256,30 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
 
                         {/* Pricing Breakdown */}
                         <div className="space-y-3 text-base">
-                            <div className="flex justify-between text-blue-300 font-medium">
+                            <div className="flex justify-between text-blue-700 font-medium text-lg">
                                 <span>Course Fee</span>
                                 <span>₹{batch.price.toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="flex justify-between text-blue-300 font-medium">
+                            <div className="flex justify-between text-blue-700 font-medium text-lg">
                                 <span>GST (18%)</span>
                                 <span>₹{gst.toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="h-px bg-blue-700 my-2" />
-                            <div className="flex justify-between text-blue-50 font-black text-lg">
+                            <div className="h-px bg-blue-200 my-2" />
+                            <div className="flex justify-between text-blue-900 font-black text-xl">
                                 <span>Total</span>
-                                <span className="text-amber-400">₹{total.toLocaleString('en-IN')}</span>
+                                <span className="text-amber-500">₹{total.toLocaleString('en-IN')}</span>
                             </div>
                         </div>
 
                         {/* Perks */}
                         <div className="mt-6 space-y-2">
-                            <p className="text-sm text-blue-400 uppercase tracking-widest font-black mb-3">What's included</p>
+                            <p className="text-base text-blue-500 uppercase tracking-widest font-black mb-3">What's included</p>
                             {[
                                 'Lifetime access to batch recordings',
                                 'Certificate of completion',
                                 'Private community access',
                             ].map((perk, i) => (
-                                <div key={i} className="flex items-center gap-2 text-base text-blue-200 font-medium">
+                                <div key={i} className="flex items-center gap-2 text-lg text-blue-700 font-medium">
                                     <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
                                     {perk}
                                 </div>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from 'sonner';
 import axios from "axios";
 
 const MentorRegister = () => {
@@ -28,9 +29,9 @@ const MentorRegister = () => {
         }
       );
 
-      alert("Application submitted successfully");
+      toast.success("Application submitted successfully");
     } catch (err) {
-      alert("Application failed");
+      toast.error("Application failed");
     }
   };
 
