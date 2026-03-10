@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Heart, MessageCircle, Eye, Play, Send, ThumbsUp,
-  ChevronDown, Loader2, Volume2, VolumeX, Plus
+  ChevronDown, Loader2, Volume2, VolumeX, Plus,
+  Trash2, RotateCcw, Settings, X, AlertCircle,
 } from "lucide-react";
-import { fetchReels } from "../api/reels.api";
+import { toast } from "sonner";
+import { fetchReels, fetchReelsAdmin, softDeleteReel, toggleDeleteReel } from "../api/reels.api";
 
 function formatCount(n) {
   if (!n) return 0;
@@ -101,7 +103,7 @@ function CommentPanel({ reelId, comments, onClose, onAddComment, onLikeComment }
   );
 }
 
-function Reel({ reel, isActive, comments, onOpenComments, isMuted, onToggleMute }) {
+function Reel({ reel, isActive, comments, onOpenComments, isMuted, onToggleMute, canDelete, onDelete }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(reel.likes);
   const [playing, setPlaying] = useState(true);
@@ -185,10 +187,151 @@ function Reel({ reel, isActive, comments, onOpenComments, isMuted, onToggleMute 
           onClick={() => onOpenComments(reel._id)}
         />
         <ActionBtn icon={<div style={circleStyle(false, "#93C5FD")}><Eye size={22} color="#EFF6FF" /></div>} label={formatCount(reel.views)} />
+
+        {canDelete && (
+          <ActionBtn
+            icon={<div style={circleStyle(false, "#EF4444")}><Trash2 size={20} color="#EF4444" /></div>}
+            label="Delete"
+            labelColor="#EF4444"
+            onClick={() => onDelete(reel._id)}
+          />
+        )}
       </div>
     </div>
   );
 }
+
+// ─── Manage Panel (Admin / Mentor) ────────────────────────────────
+function ManagePanel({ onClose }) {
+  const [reels, setReels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [toggling, setToggling] = useState(null);
+
+  const loadReels = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchReelsAdmin();
+      setReels(data || []);
+    } catch {
+      toast.error("Failed to load reels");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadReels(); }, []);
+
+  const handleToggle = async (id) => {
+    setToggling(id);
+    try {
+      const res = await toggleDeleteReel(id);
+      toast.success(res.data.message);
+      await loadReels();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to toggle");
+    } finally {
+      setToggling(null);
+    }
+  };
+
+  return (
+    <>
+      <div onClick={onClose} className="fixed inset-0 z-[400] bg-black/60 backdrop-blur-sm" />
+      <div className="fixed inset-y-0 right-0 z-[401] w-full max-w-md bg-blue-950 border-l border-blue-800/60 shadow-2xl flex flex-col overflow-hidden"
+        style={{ animation: "slideInRight 0.3s cubic-bezier(.34,1.2,.64,1)" }}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-blue-800/40 flex-shrink-0">
+          <div>
+            <h2 className="text-blue-50 font-black text-lg">Manage Reels</h2>
+            <p className="text-blue-400/60 text-xs font-medium">{reels.length} total reels</p>
+          </div>
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-blue-900/60 text-blue-400 transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 size={32} className="text-amber-400 animate-spin mb-3" />
+              <p className="text-blue-400 text-sm">Loading all reels...</p>
+            </div>
+          ) : reels.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-blue-400/60">
+              <AlertCircle size={40} className="mb-3" />
+              <p className="font-bold">No reels found</p>
+            </div>
+          ) : (
+            reels.map((reel) => (
+              <div key={reel._id} className={`rounded-xl border p-4 transition-all ${
+                reel.isDeleted
+                  ? "bg-red-500/5 border-red-500/20"
+                  : "bg-blue-900/30 border-blue-800/40"
+              }`}>
+                <div className="flex items-start gap-3">
+                  {/* Thumbnail */}
+                  <div className="w-14 h-20 rounded-lg overflow-hidden bg-blue-900/60 flex-shrink-0">
+                    {reel.thumbnail ? (
+                      <img src={reel.thumbnail} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Play size={16} className="text-blue-500" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        reel.isDeleted
+                          ? "bg-red-500/15 text-red-400 border border-red-500/20"
+                          : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+                      }`}>
+                        {reel.isDeleted ? "Deleted" : "Active"}
+                      </span>
+                    </div>
+                    <h4 className="text-blue-100 font-bold text-sm truncate capitalize">{reel.title}</h4>
+                    <p className="text-blue-500 text-xs mt-0.5">
+                      by {reel.creator?.username || "Unknown"} · {new Date(reel.createdAt).toLocaleDateString()}
+                    </p>
+                    {reel.isDeleted && reel.deletedBy && (
+                      <p className="text-red-400/60 text-[11px] mt-1">
+                        Deleted by {reel.deletedBy.name || reel.deletedBy.username || "admin"} · {reel.deletedAt && new Date(reel.deletedAt).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Toggle Button */}
+                  <button
+                    onClick={() => handleToggle(reel._id)}
+                    disabled={toggling === reel._id}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
+                      reel.isDeleted
+                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white"
+                        : "bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {toggling === reel._id ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : reel.isDeleted ? (
+                      <><RotateCcw size={14} /> Restore</>
+                    ) : (
+                      <><Trash2 size={14} /> Delete</>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
 
 export default function QuickSkills() {
   const navigate = useNavigate();
@@ -198,28 +341,29 @@ export default function QuickSkills() {
   const [allComments, setAllComments] = useState({});
   const [openCommentsId, setOpenCommentsId] = useState(null);
   const [isGlobalMuted, setIsGlobalMuted] = useState(true);
+  const [showManagePanel, setShowManagePanel] = useState(false);
   const containerRef = useRef();
 
   const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const canUpload = userData.role === "admin" || userData.role === "mentor";
+  const canDelete = userData.role === "admin" || userData.role === "mentor";
 
-  useEffect(() => {
-    const loadReels = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchReels();
-        setReels(data);
-        const commentMap = {};
-        data.forEach(reel => { commentMap[reel._id] = reel.comments || []; });
-        setAllComments(commentMap);
-      } catch (err) {
-        console.error("Fetch Error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadReels();
-  }, []);
+  const loadReels = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchReels();
+      setReels(data || []);
+      const commentMap = {};
+      (data || []).forEach(reel => { commentMap[reel._id] = reel.comments || []; });
+      setAllComments(commentMap);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { loadReels(); }, []);
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -240,6 +384,17 @@ export default function QuickSkills() {
     }));
   };
 
+  const handleDeleteReel = async (reelId) => {
+    try {
+      await softDeleteReel(reelId);
+      toast.success("Reel deleted successfully");
+      // Remove from feed immediately (optimistic)
+      setReels(prev => prev.filter(r => r._id !== reelId));
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete reel");
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-full w-full bg-blue-950 flex flex-col items-center justify-center text-blue-50 gap-4">
@@ -256,15 +411,28 @@ export default function QuickSkills() {
         ::-webkit-scrollbar { display: none; }
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
         @keyframes sheetUp { from { transform: translateX(-50%) translateY(100%) } to { transform: translateX(-50%) translateY(0) } }
+        @keyframes slideInRight { from { transform: translateX(100%) } to { transform: translateX(0) } }
       `}</style>
 
+      {/* Upload Button */}
       {canUpload && (
         <button
           onClick={() => navigate("/upload-skill")}
-          className="absolute bottom-10 left-10 z-50 flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-blue-950 px-5 py-3 rounded-full font-black shadow-lg shadow-amber-400/40 transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-10 left-10 z-50 flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-blue-950 px-5 py-3 rounded-full font-black shadow-lg shadow-amber-400/40 transition-all hover:scale-105 active:scale-95"
         >
           <Plus size={20} strokeWidth={3} />
           <span className="hidden sm:inline">Upload Skill</span>
+        </button>
+      )}
+
+      {/* Manage Button (Admin / Mentor) */}
+      {canDelete && (
+        <button
+          onClick={() => setShowManagePanel(true)}
+          className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-blue-900/80 hover:bg-blue-800 border border-blue-700/50 text-blue-200 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
+        >
+          <Settings size={16} />
+          <span className="hidden sm:inline">Manage</span>
         </button>
       )}
 
@@ -281,24 +449,34 @@ export default function QuickSkills() {
           scrollbarWidth: "none",
         }}
       >
-        {reels.map((reel, i) => (
-          <Reel
-            key={reel._id}
-            reel={{
-              ...reel,
-              video: reel.videoUrl || reel.video,
-              title: reel.title || "SkillConnect",
-              creator: reel.creator?.username || "@creator",
-              likes: reel.likes?.length || 0,
-              views: reel.views || 0,
-            }}
-            isActive={i === activeIndex}
-            comments={allComments[reel._id] || []}
-            onOpenComments={setOpenCommentsId}
-            isMuted={isGlobalMuted}
-            onToggleMute={() => setIsGlobalMuted(!isGlobalMuted)}
-          />
-        ))}
+        {reels.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-blue-400/60 gap-3">
+            <AlertCircle size={48} />
+            <p className="font-bold text-lg">No reels available</p>
+            <p className="text-sm">Be the first to upload a skill!</p>
+          </div>
+        ) : (
+          reels.map((reel, i) => (
+            <Reel
+              key={reel._id}
+              reel={{
+                ...reel,
+                video: reel.videoUrl || reel.video,
+                title: reel.title || "SkillConnect",
+                creator: reel.creator?.username || "@creator",
+                likes: reel.likes?.length || 0,
+                views: reel.views || 0,
+              }}
+              isActive={i === activeIndex}
+              comments={allComments[reel._id] || []}
+              onOpenComments={setOpenCommentsId}
+              isMuted={isGlobalMuted}
+              onToggleMute={() => setIsGlobalMuted(!isGlobalMuted)}
+              canDelete={canDelete}
+              onDelete={handleDeleteReel}
+            />
+          ))
+        )}
       </div>
 
       {openCommentsId && (
@@ -309,6 +487,10 @@ export default function QuickSkills() {
           onAddComment={handleAddComment}
           onLikeComment={handleLikeComment}
         />
+      )}
+
+      {showManagePanel && (
+        <ManagePanel onClose={() => { setShowManagePanel(false); loadReels(); }} />
       )}
     </div>
   );
