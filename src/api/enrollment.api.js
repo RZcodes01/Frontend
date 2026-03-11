@@ -10,6 +10,16 @@ export const enrollCommunity = (communityId) =>
 export const enrollMentorToCommunity = (communityId, userId) =>
     axiosInstance.post(`/enrollments/community/${communityId}/mentor`, { userId });
 
+// Admin: list/update/remove mentor assignments
+export const fetchMentorAssignments = () =>
+    axiosInstance.get("/enrollments/mentor-assignments");
+
+export const updateMentorAssignment = (enrollmentId, data) =>
+    axiosInstance.put(`/enrollments/mentor-assignments/${enrollmentId}`, data);
+
+export const removeMentorAssignment = (enrollmentId) =>
+    axiosInstance.delete(`/enrollments/mentor-assignments/${enrollmentId}`);
+
 // Fetch all members of a community (including the mentor)
 export const fetchCommunityMembers = (communityId) =>
     axiosInstance.get(`/enrollments/community/${communityId}/members`);

@@ -190,10 +190,14 @@ export default function MentorDashboard() {
 
       if (isBatchEdit) {
         const res = await updateBatch(selectedBatch._id, batchFormData);
-        setBatches(prev => prev.map(b => b._id === selectedBatch._id ? res.data.batch : b));
+        const updatedBatch = res?.data?.batch || res?.data?.data;
+        if (!updatedBatch?._id) throw new Error("Invalid batch response");
+        setBatches(prev => prev.map(b => (b?._id === selectedBatch._id ? updatedBatch : b)));
       } else {
         const res = await createBatch(batchFormData.communityId, data);
-        setBatches(prev => [res.data.batch, ...prev]);
+        const createdBatch = res?.data?.batch || res?.data?.data;
+        if (!createdBatch?._id) throw new Error("Invalid batch response");
+        setBatches(prev => [createdBatch, ...prev].filter(Boolean));
       }
 
       setIsBatchModalOpen(false);
@@ -382,7 +386,7 @@ export default function MentorDashboard() {
 
             <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm">
               <div className="space-y-4">
-                {batches.map(batch => (
+                {batches.filter(Boolean).map(batch => (
                   <div
                     key={batch._id}
                     className="border border-blue-100 hover:border-amber-400 rounded-lg p-4 transition-all duration-200 bg-blue-50/50"
