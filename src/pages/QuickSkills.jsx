@@ -137,7 +137,7 @@ function Reel({ reel, isActive, comments, onOpenComments, isMuted, onToggleMute,
   });
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", flexShrink: 0, scrollSnapAlign: "start", scrollSnapStop: "always", background: "#0f172a", overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", flexShrink: 0, background: "#0f172a", overflow: "hidden" }}>
       <video
         ref={videoRef}
         src={reel.video}
@@ -343,6 +343,7 @@ export default function QuickSkills() {
   const [isGlobalMuted, setIsGlobalMuted] = useState(true);
   const [showManagePanel, setShowManagePanel] = useState(false);
   const containerRef = useRef();
+  const itemRefs = useRef([]);
 
   const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const canUpload = userData.role === "admin" || userData.role === "mentor";
@@ -365,14 +366,47 @@ export default function QuickSkills() {
 
   useEffect(() => { loadReels(); }, []);
 
-  const handleScroll = () => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
-    const index = Math.round(container.scrollTop / container.clientHeight);
-    if (index !== activeIndex) {
-      setActiveIndex(index);
-    }
-  };
+  // Detect which reel is most visible using IntersectionObserver
+  useEffect(() => {
+    if (!containerRef.current || reels.length === 0) return;
+
+    const options = {
+      root: containerRef.current,
+      threshold: 0.6,
+    };
+
+    let currentIndex = activeIndex;
+
+    const observer = new IntersectionObserver((entries) => {
+      let bestIndex = currentIndex;
+      let bestRatio = 0;
+
+      entries.forEach((entry) => {
+        const idxAttr = entry.target.getAttribute("data-index");
+        const idx = typeof idxAttr === "string" ? parseInt(idxAttr, 10) : NaN;
+        if (Number.isNaN(idx)) return;
+
+        if (entry.intersectionRatio > bestRatio) {
+          bestRatio = entry.intersectionRatio;
+          bestIndex = idx;
+        }
+      });
+
+      if (bestIndex !== currentIndex) {
+        currentIndex = bestIndex;
+        setActiveIndex(bestIndex);
+      }
+    }, options);
+
+    itemRefs.current.forEach((ref, i) => {
+      if (ref && ref instanceof HTMLElement) {
+        ref.setAttribute("data-index", String(i));
+        observer.observe(ref);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [reels.length]);
 
   const handleAddComment = (reelId, comment) => {
     setAllComments(p => ({ ...p, [reelId]: [...(p[reelId] || []), comment] }));
@@ -405,7 +439,7 @@ export default function QuickSkills() {
   }
 
   return (
-    <div style={{ height: "100%", width: "100vw", display: "flex", justifyContent: "center", background: "#0f172a", overflow: "hidden", position: "relative" }}>
+    <div style={{ height: "100vh", width: "100vw", display: "flex", justifyContent: "center", background: "#0f172a", overflow: "hidden", position: "relative" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
         ::-webkit-scrollbar { display: none; }
@@ -438,9 +472,8 @@ export default function QuickSkills() {
 
       <div
         ref={containerRef}
-        onScroll={handleScroll}
         style={{
-          height: "100%",
+          height: "100vh",
           width: "min(100%, calc((100dvh - 72px) * 9 / 16))",
           overflowY: "scroll",
           scrollSnapType: "y mandatory",
@@ -456,26 +489,43 @@ export default function QuickSkills() {
             <p className="text-sm">Be the first to upload a skill!</p>
           </div>
         ) : (
-          reels.map((reel, i) => (
-            <Reel
-              key={reel._id}
-              reel={{
-                ...reel,
-                video: reel.videoUrl || reel.video,
-                title: reel.title || "SkillConnect",
-                creator: reel.creator?.username || "@creator",
-                likes: reel.likes?.length || 0,
-                views: reel.views || 0,
-              }}
-              isActive={i === activeIndex}
-              comments={allComments[reel._id] || []}
-              onOpenComments={setOpenCommentsId}
-              isMuted={isGlobalMuted}
-              onToggleMute={() => setIsGlobalMuted(!isGlobalMuted)}
-              canDelete={canDelete}
-              onDelete={handleDeleteReel}
-            />
-          ))
+          reels.map((reel, i) => {
+            if (!itemRefs.current[i]) {
+              itemRefs.current[i] = null;
+            }
+            return (
+              <div
+                key={reel._id}
+                ref={(el) => {
+                  if (el) itemRefs.current[i] = el;
+                }}
+                data-index={i}
+                style={{
+                  height: "100vh",
+                  scrollSnapAlign: "start",
+                  scrollSnapStop: "always",
+                }}
+              >
+                <Reel
+                  reel={{
+                    ...reel,
+                    video: reel.videoUrl || reel.video,
+                    title: reel.title || "SkillConnect",
+                    creator: reel.creator?.username || "@creator",
+                    likes: reel.likes?.length || 0,
+                    views: reel.views || 0,
+                  }}
+                  isActive={i === activeIndex}
+                  comments={allComments[reel._id] || []}
+                  onOpenComments={setOpenCommentsId}
+                  isMuted={isGlobalMuted}
+                  onToggleMute={() => setIsGlobalMuted(!isGlobalMuted)}
+                  canDelete={canDelete}
+                  onDelete={handleDeleteReel}
+                />
+              </div>
+            );
+          })
         )}
       </div>
 

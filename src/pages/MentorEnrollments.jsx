@@ -6,29 +6,35 @@ import {
 } from 'lucide-react';
 import { fetchAllCommunities } from '../api/community.api';
 import { fetchActiveMentors } from '../api/adminDashboard.api';
-import { enrollMentorToCommunity } from '../api/enrollment.api';
+import { enrollMentorToCommunity, fetchMentorAssignments, removeMentorAssignment, updateMentorAssignment } from '../api/enrollment.api';
 
 
 
 const MentorEnrollments = () => {
     const [communities, setCommunities] = useState([]);
     const [activeMentors, setActiveMentors] = useState([]);
+    const [assignments, setAssignments] = useState([]);
     const [selectedCommunity, setSelectedCommunity] = useState('');
     const [selectedMentor, setSelectedMentor] = useState('');
     const [loading, setLoading] = useState(false);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [message, setMessage] = useState({ type: '', text: '' });
+    const [editingId, setEditingId] = useState(null);
+    const [editCommunityId, setEditCommunityId] = useState('');
+    const [editMentorId, setEditMentorId] = useState('');
 
     // Load Data for dropdowns and table
     useEffect(() => {
         const loadData = async () => {
             try {
-                const [commRes, mentorRes] = await Promise.all([
+                const [commRes, mentorRes, assignmentsRes] = await Promise.all([
                     fetchAllCommunities(),
-                    fetchActiveMentors()
+                    fetchActiveMentors(),
+                    fetchMentorAssignments()
                 ]);
                 setCommunities(commRes.data.communities || []);
                 setActiveMentors(mentorRes.data.mentors || []);
+                setAssignments(assignmentsRes.data.enrollments || []);
             } catch (err) {
                 console.error("Error loading enrollment data", err);
             }
@@ -57,11 +63,37 @@ const MentorEnrollments = () => {
         }
     };
 
-    const handleRemove = async (commId, userId) => {
+    const startEdit = (enrollment) => {
+        setEditingId(enrollment._id);
+        setEditCommunityId(enrollment.communityId?._id || '');
+        setEditMentorId(enrollment.userId?._id || '');
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditCommunityId('');
+        setEditMentorId('');
+    };
+
+    const saveEdit = async () => {
+        if (!editingId || !editCommunityId || !editMentorId) return;
+        try {
+            setLoading(true);
+            await updateMentorAssignment(editingId, { communityId: editCommunityId, userId: editMentorId });
+            toast.success("Assignment updated");
+            cancelEdit();
+            setRefreshTrigger(prev => prev + 1);
+        } catch (err) {
+            toast.error(err.response?.data?.message || "Failed to update assignment");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleRemove = async (enrollmentId) => {
         if (!window.confirm("Remove this mentor from the community?")) return;
         try {
-            // API call to: /enrollments/community/:communityId/user/:userId
-            await removeUserFromCommunity(commId, userId);
+            await removeMentorAssignment(enrollmentId);
             setRefreshTrigger(prev => prev + 1);
         } catch (err) {
             toast.error("Failed to remove mentor");
@@ -134,41 +166,93 @@ const MentorEnrollments = () => {
                 <table className="w-full text-left">
                     <thead className="bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         <tr>
+                            <th className="p-6">Community</th>
                             <th className="p-6">Mentor</th>
-                            <th className="p-6">Assigned Communities</th>
-                            <th className="p-6 text-center">Managed Batches</th>
                             <th className="p-6 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                        {activeMentors.filter(m => m.totalCommunities > 0).map((m) => (
-                            <tr key={m.userId} className="group hover:bg-slate-50/50 transition">
-                                <td className="p-6">
-                                    <div className="font-bold text-slate-800 capitalize">{m.name}</div>
-                                    <div className="text-[10px] text-slate-400 font-medium">{m.email}</div>
-                                </td>
-                                <td className="p-6">
-                                    <div className="flex flex-wrap gap-2">
-                                        {/* These community names are coming from the updated Backend Aggregation */}
-                                        {m.communities.map((name, i) => (
-                                            <span key={i} className="inline-flex items-center px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-black border border-blue-100 uppercase">
-                                                {name}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </td>
-                                <td className="p-6 text-center font-black text-slate-700">
-                                    {m.totalBatches}
-                                </td>
-                                <td className="p-6 text-right">
-                                    {/* To remove, we need the specific enrollment. Usually handled in Community view */}
-                                    <span className="text-[10px] text-slate-300 font-bold uppercase italic">Verified Mentor</span>
-                                </td>
-                            </tr>
-                        ))}
-                        {activeMentors.every(m => m.totalCommunities === 0) && (
+                        {assignments.map((enroll) => {
+                            const isEditing = editingId === enroll._id;
+                            return (
+                                <tr key={enroll._id} className="group hover:bg-slate-50/50 transition">
+                                    <td className="p-6">
+                                        {isEditing ? (
+                                            <select
+                                                value={editCommunityId}
+                                                onChange={(e) => setEditCommunityId(e.target.value)}
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                            >
+                                                <option value="">Select Community</option>
+                                                {communities.map(c => (
+                                                    <option key={c._id} value={c._id}>{c.name}</option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            <div className="font-bold text-slate-800">{enroll.communityId?.name || "Unknown Community"}</div>
+                                        )}
+                                    </td>
+                                    <td className="p-6">
+                                        {isEditing ? (
+                                            <select
+                                                value={editMentorId}
+                                                onChange={(e) => setEditMentorId(e.target.value)}
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                            >
+                                                <option value="">Select Mentor</option>
+                                                {activeMentors.map(m => (
+                                                    <option key={m.userId} value={m.userId}>{m.name}</option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            <>
+                                                <div className="font-bold text-slate-800 capitalize">{enroll.userId?.name || "Unknown Mentor"}</div>
+                                                <div className="text-[10px] text-slate-400 font-medium">{enroll.userId?.email || ""}</div>
+                                            </>
+                                        )}
+                                    </td>
+                                    <td className="p-6 text-right">
+                                        {isEditing ? (
+                                            <div className="inline-flex gap-2">
+                                                <button
+                                                    disabled={loading}
+                                                    onClick={saveEdit}
+                                                    className="px-4 py-2 rounded-xl bg-blue-600 text-white font-black text-[10px] uppercase tracking-widest disabled:opacity-50"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    disabled={loading}
+                                                    onClick={cancelEdit}
+                                                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-black text-[10px] uppercase tracking-widest disabled:opacity-50"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="inline-flex gap-2 justify-end">
+                                                <button
+                                                    onClick={() => startEdit(enroll)}
+                                                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-800 font-black text-[10px] uppercase tracking-widest hover:border-blue-300 hover:text-blue-700 transition"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleRemove(enroll._id)}
+                                                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-red-50 border border-red-100 text-red-700 font-black text-[10px] uppercase tracking-widest hover:bg-red-100 transition"
+                                                >
+                                                    <Trash2 size={14} /> Remove
+                                                </button>
+                                            </div>
+                                        )}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+
+                        {assignments.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="p-12 text-center text-slate-400 italic font-medium">
+                                <td colSpan="3" className="p-12 text-center text-slate-400 italic font-medium">
                                     No mentors are currently assigned to communities.
                                 </td>
                             </tr>
