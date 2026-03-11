@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 // ─── Fake live data ───────────────────────────────────────────────────────────
 const SKILLS = [
-  "React", "Python", "System Design", "DSA", "Node.js",
-  "TypeScript", "Machine Learning", "SQL", "Docker", "GraphQL",
-  "Rust", "Kubernetes", "AWS", "Next.js", "Golang",
+  "React", "Robotics", "Java", "C++", "Redhat",
+  "JavaScript", "Artificial Intelligence", "Dart", "MERN", "DSA",
+  "Cyber Security",
 ];
 
 const ACTIVITY_TEMPLATES = [

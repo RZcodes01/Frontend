@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const TrendingCommunities = () => {
   const communities = [
-    { id: 1, name: "Frontend Mastery", members: "30", topic: "React & Tailwind" },
-    { id: 2, name: "Python Pioneers", members: "28", topic: "AI & Backend" },
-    { id: 3, name: "UI/UX Collective", members: "30", topic: "Figma & Design" },
+    { id: 1, name: "React", members: "30",  },
+    { id: 2, name: "AI", members: "28",  },
+    { id: 3, name: "Cyber Security", members: "30", },
   ];
 
   return (
@@ -107,9 +107,7 @@ const TrendingCommunities = () => {
               key={item.id} 
               className="community-card group bg-blue-900 border border-blue-800 p-10 rounded-2xl shadow-md"
             >
-              <div className="card-badge inline-flex items-center bg-amber-400/20 border border-amber-400/40 text-amber-600 rounded-full mb-6 px-4 py-1.5 text-sm font-semibold tracking-wide" style={{ transition: "all 0.25s ease" }}>
-                {item.topic}
-              </div>
+            
 
               <h3 className="text-2xl font-bold mb-3 text-blue-50">
                 {item.name}

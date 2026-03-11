@@ -23,15 +23,15 @@ export default function LearningOptions() {
               </h3>
 
               <p className="text-blue-800 text-lg leading-relaxed mb-8 flex-grow">
-                Learn at your own speed with structured lessons and practical examples.
+                Learn with structured lessons and practical examples.
                 Perfect if you like flexibility and want to build skills on your schedule.
               </p>
 
               <div className="space-y-3 mb-6">
                 {[
                   "Step-by-step guided tutorials",
-                  "Access to learner community",
-                  "Track your learning progress"
+                  "Learn by watching Quick skills videos",
+                  "Learn at your own speed"
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3 text-base text-blue-900 font-medium">
                     <div className="w-5 h-5 rounded-full bg-blue-200 flex items-center justify-center shrink-0">
