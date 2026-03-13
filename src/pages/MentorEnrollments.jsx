@@ -23,7 +23,6 @@ const MentorEnrollments = () => {
     const [editCommunityId, setEditCommunityId] = useState('');
     const [editMentorId, setEditMentorId] = useState('');
 
-    // Load Data for dropdowns and table
     useEffect(() => {
         const loadData = async () => {
             try {
@@ -46,12 +45,11 @@ const MentorEnrollments = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            // API call to: /enrollments/community/:communityId/mentor
             await enrollMentorToCommunity(selectedCommunity, selectedMentor);
             setMessage({ type: 'success', text: "Mentor successfully assigned!" });
             setSelectedMentor('');
             setSelectedCommunity('');
-            setRefreshTrigger(prev => prev + 1); // Refresh table and dropdowns
+            setRefreshTrigger(prev => prev + 1);
         } catch (err) {
             setMessage({
                 type: 'error',
@@ -102,19 +100,20 @@ const MentorEnrollments = () => {
 
     return (
         <div className="space-y-10 p-6">
+
             {/* 1. ASSIGNMENT FORM */}
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 p-8 shadow-sm">
-                <h2 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-3">
-                    <UserPlus className="text-blue-600" /> ASSIGN MENTOR
+            <div className="bg-white rounded-[2.5rem] border border-blue-100 p-8 shadow-sm">
+                <h2 className="text-2xl font-black text-[#1e3a5f] mb-8 flex items-center gap-3">
+                    <UserPlus className="text-amber-400" /> ASSIGN MENTOR
                 </h2>
 
                 <form onSubmit={handleEnroll} className="grid grid-cols-1 md:grid-cols-7 gap-6 items-end">
                     <div className="md:col-span-3 space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Community</label>
+                        <label className="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1">Community</label>
                         <select
                             value={selectedCommunity}
                             onChange={(e) => setSelectedCommunity(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                            className="w-full bg-blue-50 border border-blue-100 rounded-2xl p-4 font-bold text-[#1e3a5f] outline-none focus:ring-2 focus:ring-blue-500 transition"
                         >
                             <option value="">Select Target Community</option>
                             {communities.map(c => (
@@ -124,11 +123,11 @@ const MentorEnrollments = () => {
                     </div>
 
                     <div className="md:col-span-3 space-y-2">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Mentor</label>
+                        <label className="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1">Mentor</label>
                         <select
                             value={selectedMentor}
                             onChange={(e) => setSelectedMentor(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                            className="w-full bg-blue-50 border border-blue-100 rounded-2xl p-4 font-bold text-[#1e3a5f] outline-none focus:ring-2 focus:ring-blue-500 transition"
                         >
                             <option value="">Select Available Mentor</option>
                             {activeMentors.map(m => (
@@ -140,7 +139,7 @@ const MentorEnrollments = () => {
                     <div className="md:col-span-1">
                         <button
                             disabled={loading || !selectedCommunity || !selectedMentor}
-                            className="w-full bg-slate-900 text-white h-[58px] rounded-2xl font-black hover:bg-blue-600 transition disabled:opacity-30"
+                            className="w-full bg-[#1e3a5f] text-amber-400 h-[58px] rounded-2xl font-black hover:bg-blue-800 transition disabled:opacity-30"
                         >
                             {loading ? <Loader2 className="animate-spin mx-auto" size={20} /> : "ASSIGN"}
                         </button>
@@ -148,7 +147,7 @@ const MentorEnrollments = () => {
                 </form>
 
                 {message.text && (
-                    <div className={`mt-4 p-4 rounded-xl font-bold text-sm flex items-center gap-2 ${message.type === 'success' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                    <div className={`mt-4 p-4 rounded-xl font-bold text-sm flex items-center gap-2 ${message.type === 'success' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-red-50 text-red-600 border border-red-100'}`}>
                         {message.type === 'success' ? <ShieldCheck size={18} /> : <AlertCircle size={18} />}
                         {message.text}
                     </div>
@@ -156,32 +155,34 @@ const MentorEnrollments = () => {
             </div>
 
             {/* 2. LIVE ASSIGNMENTS TABLE */}
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-                <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
-                    <div className="flex items-center gap-3 font-black text-slate-800 uppercase text-xs tracking-widest">
-                        <Users size={18} /> Live Mentor Connections
+            <div className="bg-white rounded-[2.5rem] border border-blue-100 shadow-sm overflow-hidden">
+                <div className="p-8 border-b border-blue-50 bg-[#1e3a5f] flex items-center justify-between relative overflow-hidden">
+                    {/* Amber accent bar */}
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-400" />
+                    <div className="flex items-center gap-3 font-black text-white uppercase text-xs tracking-widest ml-4">
+                        <Users size={18} className="text-amber-400" /> Live Mentor Connections
                     </div>
                 </div>
 
                 <table className="w-full text-left">
-                    <thead className="bg-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <thead className="bg-blue-50 text-[10px] font-black text-blue-400 uppercase tracking-widest border-b border-blue-100">
                         <tr>
                             <th className="p-6">Community</th>
                             <th className="p-6">Mentor</th>
                             <th className="p-6 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-50">
+                    <tbody className="divide-y divide-blue-50">
                         {assignments.map((enroll) => {
                             const isEditing = editingId === enroll._id;
                             return (
-                                <tr key={enroll._id} className="group hover:bg-slate-50/50 transition">
+                                <tr key={enroll._id} className="group hover:bg-blue-50/50 transition">
                                     <td className="p-6">
                                         {isEditing ? (
                                             <select
                                                 value={editCommunityId}
                                                 onChange={(e) => setEditCommunityId(e.target.value)}
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                                className="w-full bg-blue-50 border border-blue-100 rounded-xl p-3 font-bold text-[#1e3a5f] outline-none focus:ring-2 focus:ring-blue-500 transition"
                                             >
                                                 <option value="">Select Community</option>
                                                 {communities.map(c => (
@@ -189,7 +190,7 @@ const MentorEnrollments = () => {
                                                 ))}
                                             </select>
                                         ) : (
-                                            <div className="font-bold text-slate-800">{enroll.communityId?.name || "Unknown Community"}</div>
+                                            <div className="font-bold text-[#1e3a5f]">{enroll.communityId?.name || "Unknown Community"}</div>
                                         )}
                                     </td>
                                     <td className="p-6">
@@ -197,7 +198,7 @@ const MentorEnrollments = () => {
                                             <select
                                                 value={editMentorId}
                                                 onChange={(e) => setEditMentorId(e.target.value)}
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl p-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500 transition"
+                                                className="w-full bg-blue-50 border border-blue-100 rounded-xl p-3 font-bold text-[#1e3a5f] outline-none focus:ring-2 focus:ring-blue-500 transition"
                                             >
                                                 <option value="">Select Mentor</option>
                                                 {activeMentors.map(m => (
@@ -206,8 +207,8 @@ const MentorEnrollments = () => {
                                             </select>
                                         ) : (
                                             <>
-                                                <div className="font-bold text-slate-800 capitalize">{enroll.userId?.name || "Unknown Mentor"}</div>
-                                                <div className="text-[10px] text-slate-400 font-medium">{enroll.userId?.email || ""}</div>
+                                                <div className="font-bold text-[#1e3a5f] capitalize">{enroll.userId?.name || "Unknown Mentor"}</div>
+                                                <div className="text-[10px] text-blue-300 font-medium">{enroll.userId?.email || ""}</div>
                                             </>
                                         )}
                                     </td>
@@ -217,14 +218,14 @@ const MentorEnrollments = () => {
                                                 <button
                                                     disabled={loading}
                                                     onClick={saveEdit}
-                                                    className="px-4 py-2 rounded-xl bg-blue-600 text-white font-black text-[10px] uppercase tracking-widest disabled:opacity-50"
+                                                    className="px-4 py-2 rounded-xl bg-[#1e3a5f] text-amber-400 font-black text-[10px] uppercase tracking-widest hover:bg-blue-800 transition disabled:opacity-50"
                                                 >
                                                     Save
                                                 </button>
                                                 <button
                                                     disabled={loading}
                                                     onClick={cancelEdit}
-                                                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-black text-[10px] uppercase tracking-widest disabled:opacity-50"
+                                                    className="px-4 py-2 rounded-xl border border-blue-100 text-[#1e3a5f] font-black text-[10px] uppercase tracking-widest hover:bg-blue-50 transition disabled:opacity-50"
                                                 >
                                                     Cancel
                                                 </button>
@@ -233,7 +234,7 @@ const MentorEnrollments = () => {
                                             <div className="inline-flex gap-2 justify-end">
                                                 <button
                                                     onClick={() => startEdit(enroll)}
-                                                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-800 font-black text-[10px] uppercase tracking-widest hover:border-blue-300 hover:text-blue-700 transition"
+                                                    className="px-4 py-2 rounded-xl border border-blue-100 text-[#1e3a5f] font-black text-[10px] uppercase tracking-widest hover:border-amber-300 hover:text-amber-700 transition"
                                                 >
                                                     Edit
                                                 </button>
@@ -252,7 +253,7 @@ const MentorEnrollments = () => {
 
                         {assignments.length === 0 && (
                             <tr>
-                                <td colSpan="3" className="p-12 text-center text-slate-400 italic font-medium">
+                                <td colSpan="3" className="p-12 text-center text-blue-300 italic font-medium">
                                     No mentors are currently assigned to communities.
                                 </td>
                             </tr>

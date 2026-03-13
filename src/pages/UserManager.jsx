@@ -13,10 +13,10 @@ import { allStudents, toggleBanStudent } from '../api/admin.api';
 const Avatar = ({ name, image }) => {
   const initials = name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "?";
   if (image) {
-    return <img src={image} alt={name} className="w-9 h-9 rounded-xl object-cover shrink-0 border border-gray-700" />;
+    return <img src={image} alt={name} className="w-9 h-9 rounded-xl object-cover shrink-0 border border-blue-200" />;
   }
   return (
-    <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center font-bold text-cyan-400 text-xs shrink-0">
+    <div className="w-9 h-9 rounded-xl bg-[#1e3a5f] border border-blue-200 flex items-center justify-center font-bold text-amber-400 text-xs shrink-0">
       {initials}
     </div>
   );
@@ -24,20 +24,20 @@ const Avatar = ({ name, image }) => {
 
 const StatusBadge = ({ status }) => {
   const map = {
-    active: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-    cancelled: "bg-gray-500/10 text-gray-400 border-gray-500/20",
-    banned: "bg-red-500/10 text-red-400 border-red-500/20"
+    active: "bg-green-50 text-green-700 border-green-200",
+    cancelled: "bg-blue-50 text-blue-400 border-blue-200",
+    banned: "bg-red-50 text-red-500 border-red-200"
   };
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide border ${map[status] || map.active}`}>
-      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status === "active" ? "bg-emerald-400" : status === "banned" ? "bg-red-400" : "bg-gray-400"}`} />
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${status === "active" ? "bg-green-500" : status === "banned" ? "bg-red-400" : "bg-blue-400"}`} />
       {status}
     </span>
   );
 };
 
 const ProBadge = () => (
-  <span className="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+  <span className="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
     <Crown size={8} /> Pro
   </span>
 );
@@ -48,8 +48,8 @@ const BanButton = ({ isBanned, toggling, onClick }) => (
     disabled={toggling}
     className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap
       ${isBanned
-        ? "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20"
-        : "bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20"
+        ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+        : "bg-red-50 text-red-500 hover:bg-red-100 border border-red-200"
       }`}
   >
     {toggling
@@ -150,20 +150,22 @@ const UserManager = () => {
   const totalBanned = students.filter(s => s.status === "banned").length;
 
   return (
-    <div className="h-screen flex flex-col bg-gray-950 font-sans overflow-hidden">
+    <div className="h-screen flex flex-col bg-blue-50 font-sans overflow-hidden">
 
       {/* ── Header ── */}
-      <header className="shrink-0 bg-gray-900 border-b border-gray-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
+      <header className="shrink-0 bg-[#1e3a5f] border-b border-blue-900 relative">
+        {/* Amber accent bar */}
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-400" />
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3 ml-1.5">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={() => navigate(-1)}
-              className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-gray-800 hover:bg-gray-700 transition-colors"
+              className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
             >
-              <ArrowLeft size={16} className="text-gray-300" />
+              <ArrowLeft size={16} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <GraduationCap size={15} className="text-cyan-400 shrink-0" />
+              <GraduationCap size={15} className="text-amber-400 shrink-0" />
               <span className="text-sm font-bold text-white">Students</span>
             </div>
           </div>
@@ -171,14 +173,13 @@ const UserManager = () => {
           {/* Stats inline on mobile header */}
           {!loading && (
             <div className="flex items-center gap-3 shrink-0">
-              <span className="text-xs text-gray-500 hidden sm:block">
-                <span className="text-gray-300 font-bold">{visible.length}</span> result{visible.length !== 1 ? 's' : ''}
+              <span className="text-xs text-blue-300 hidden sm:block">
+                <span className="text-white font-bold">{visible.length}</span> result{visible.length !== 1 ? 's' : ''}
               </span>
-              {/* Mobile stat pills */}
               <div className="flex sm:hidden items-center gap-1.5 text-[10px] font-bold">
-                <span className="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{totalActive} active</span>
+                <span className="px-2 py-1 rounded-lg bg-green-50 text-green-700 border border-green-200">{totalActive} active</span>
                 {totalBanned > 0 && (
-                  <span className="px-2 py-1 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20">{totalBanned} banned</span>
+                  <span className="px-2 py-1 rounded-lg bg-red-50 text-red-500 border border-red-200">{totalBanned} banned</span>
                 )}
               </div>
             </div>
@@ -187,42 +188,42 @@ const UserManager = () => {
       </header>
 
       {/* ── Search + Stats ── */}
-      <div className="shrink-0 bg-gray-900/50 border-b border-gray-800/50">
+      <div className="shrink-0 bg-white border-b border-blue-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
 
           {/* Search */}
           <div className="relative flex-1">
-            <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+            <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-300 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by name or email…"
-              className="w-full bg-gray-800 border border-gray-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 rounded-xl pl-9 pr-9 py-2.5 text-sm text-white outline-none transition-all placeholder:text-gray-600"
+              className="w-full bg-blue-50 border border-blue-100 focus:border-blue-400 focus:ring-2 focus:ring-blue-200 rounded-xl pl-9 pr-9 py-2.5 text-sm text-[#1e3a5f] outline-none transition-all placeholder:text-blue-300"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-300 hover:text-[#1e3a5f]"
               >
                 <X size={14} />
               </button>
             )}
           </div>
 
-          {/* Stats — hidden on mobile (shown in header instead) */}
+          {/* Stats — hidden on mobile */}
           <div className="hidden sm:flex gap-2 shrink-0">
-            <div className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 flex items-center gap-2">
-              <span className="text-xs text-gray-500">Total</span>
-              <span className="text-sm font-bold text-gray-300">{students.length}</span>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 flex items-center gap-2">
+              <span className="text-xs text-blue-300">Total</span>
+              <span className="text-sm font-bold text-[#1e3a5f]">{students.length}</span>
             </div>
-            <div className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 flex items-center gap-2">
-              <span className="text-xs text-gray-500">Active</span>
-              <span className="text-sm font-bold text-emerald-400">{totalActive}</span>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 flex items-center gap-2">
+              <span className="text-xs text-blue-300">Active</span>
+              <span className="text-sm font-bold text-green-600">{totalActive}</span>
             </div>
-            <div className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-2 flex items-center gap-2">
-              <span className="text-xs text-gray-500">Banned</span>
-              <span className="text-sm font-bold text-red-400">{totalBanned}</span>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-2 flex items-center gap-2">
+              <span className="text-xs text-blue-300">Banned</span>
+              <span className="text-sm font-bold text-red-500">{totalBanned}</span>
             </div>
           </div>
         </div>
@@ -234,8 +235,8 @@ const UserManager = () => {
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-32 gap-3">
-              <Loader2 className="animate-spin text-cyan-400" size={30} />
-              <p className="text-sm text-gray-500">Loading students…</p>
+              <Loader2 className="animate-spin text-blue-600" size={30} />
+              <p className="text-sm text-blue-400">Loading students…</p>
             </div>
 
           ) : visible.length === 0 ? (
@@ -245,7 +246,7 @@ const UserManager = () => {
             <div className="space-y-2">
 
               {/* Column headers — desktop only */}
-              <div className="hidden md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_auto_auto] gap-4 px-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-gray-600">
+              <div className="hidden md:grid md:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.5fr)_auto_auto] gap-4 px-4 pb-1 text-[10px] font-bold uppercase tracking-widest text-blue-300">
                 <span>Student</span>
                 <span>Email</span>
                 <span>Community</span>
@@ -281,10 +282,10 @@ const StudentRow = ({ item, toggling, onToggleBan }) => {
     : "—";
 
   return (
-    <div className={`bg-gray-900 border rounded-2xl px-4 py-3.5 sm:px-5 sm:py-4 transition-all
+    <div className={`bg-white border rounded-2xl px-4 py-3.5 sm:px-5 sm:py-4 transition-all
       ${isBanned
-        ? "border-red-500/20 opacity-70"
-        : "border-gray-700 hover:border-gray-600 hover:shadow-lg hover:shadow-black/20"
+        ? "border-red-200 opacity-70"
+        : "border-blue-100 hover:border-blue-200 hover:shadow-md hover:shadow-blue-100/50"
       }`}
     >
 
@@ -293,25 +294,21 @@ const StudentRow = ({ item, toggling, onToggleBan }) => {
         <Avatar name={student.name} image={student.profileImage} />
 
         <div className="flex-1 min-w-0">
-          {/* Name + plan */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-sm font-bold text-white leading-tight">{student.name}</span>
+            <span className="text-sm font-bold text-[#1e3a5f] leading-tight">{student.name}</span>
             {student.plan === "pro" && <ProBadge />}
           </div>
 
-          {/* Email */}
           <div className="flex items-center gap-1 mt-1">
-            <Mail size={10} className="text-gray-600 shrink-0" />
-            <span className="text-xs text-gray-500 truncate">{student.email}</span>
+            <Mail size={10} className="text-blue-300 shrink-0" />
+            <span className="text-xs text-blue-400 truncate">{student.email}</span>
           </div>
 
-          {/* Community */}
           <div className="flex items-center gap-1 mt-0.5">
-            <Building2 size={10} className="text-gray-600 shrink-0" />
-            <span className="text-xs text-gray-400 font-medium truncate">{community.name}</span>
+            <Building2 size={10} className="text-blue-300 shrink-0" />
+            <span className="text-xs text-[#1e3a5f] font-medium truncate">{community.name}</span>
           </div>
 
-          {/* Status + action row */}
           <div className="flex items-center justify-between mt-2.5 gap-2">
             <StatusBadge status={status} />
             <BanButton isBanned={isBanned} toggling={toggling} onClick={onToggleBan} />
@@ -327,23 +324,23 @@ const StudentRow = ({ item, toggling, onToggleBan }) => {
           <Avatar name={student.name} image={student.profileImage} />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-sm font-semibold text-white truncate">{student.name}</span>
+              <span className="text-sm font-semibold text-[#1e3a5f] truncate">{student.name}</span>
               {student.plan === "pro" && <ProBadge />}
             </div>
-            <span className="text-[10px] text-gray-600">{joined}</span>
+            <span className="text-[10px] text-blue-300">{joined}</span>
           </div>
         </div>
 
         {/* Email */}
         <div className="flex items-center gap-1.5 min-w-0">
-          <Mail size={11} className="text-gray-600 shrink-0" />
-          <span className="text-xs text-gray-500 truncate">{student.email}</span>
+          <Mail size={11} className="text-blue-300 shrink-0" />
+          <span className="text-xs text-blue-400 truncate">{student.email}</span>
         </div>
 
         {/* Community */}
         <div className="flex items-center gap-1.5 min-w-0">
-          <Building2 size={11} className="text-gray-600 shrink-0" />
-          <span className="text-xs font-semibold text-gray-400 truncate">{community.name}</span>
+          <Building2 size={11} className="text-blue-300 shrink-0" />
+          <span className="text-xs font-semibold text-[#1e3a5f] truncate">{community.name}</span>
         </div>
 
         {/* Status */}
@@ -360,20 +357,20 @@ const StudentRow = ({ item, toggling, onToggleBan }) => {
    Empty State
 ───────────────────────────────────────────── */
 const EmptyState = ({ search, onClear }) => (
-  <div className="flex flex-col items-center justify-center py-20 px-6 text-center border-2 border-dashed border-gray-800 rounded-2xl bg-gray-900">
-    <div className="w-14 h-14 rounded-2xl bg-gray-800 flex items-center justify-center mb-4">
-      <Users size={24} className="text-gray-600" />
+  <div className="flex flex-col items-center justify-center py-20 px-6 text-center border-2 border-dashed border-blue-100 rounded-2xl bg-white">
+    <div className="w-14 h-14 rounded-2xl bg-[#1e3a5f] flex items-center justify-center mb-4">
+      <Users size={24} className="text-amber-400" />
     </div>
-    <h3 className="text-sm font-bold text-gray-300">
+    <h3 className="text-sm font-bold text-[#1e3a5f]">
       {search ? `No results for "${search}"` : "No students yet"}
     </h3>
-    <p className="text-xs text-gray-500 mt-1 max-w-xs">
+    <p className="text-xs text-blue-400 mt-1 max-w-xs">
       {search ? "Try a different name or email." : "Students will appear here once they enroll."}
     </p>
     {search && (
       <button
         onClick={onClear}
-        className="mt-4 inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold px-4 py-2 rounded-xl transition-colors"
+        className="mt-4 inline-flex items-center gap-2 bg-[#1e3a5f] hover:bg-blue-800 text-amber-400 text-xs font-semibold px-4 py-2 rounded-xl transition-colors"
       >
         <X size={12} /> Clear search
       </button>

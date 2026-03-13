@@ -36,29 +36,36 @@ const AdminDashboard = () => {
   ];
 
   return (
-    // FIX 1: changed min-h-screen to h-screen and added overflow-hidden to create a proper scroll container
-    <div className="flex h-screen bg-gray-100 relative overflow-hidden">
+    <div className="flex h-screen bg-blue-50 relative overflow-hidden">
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 bg-slate-900 text-white p-4 flex justify-between items-center z-50">
-        <div className="flex items-center gap-2 text-blue-400 font-bold text-lg">
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-[#1e3a5f] text-white p-4 flex justify-between items-center z-50 border-b-2 border-amber-400">
+        <div className="flex items-center gap-2 text-amber-400 font-bold text-lg">
           <ShieldCheck size={24} /> ADMIN
         </div>
-        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1">
+        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 text-amber-400">
           {isSidebarOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      {/* Sidebar — FIX 2: sidebar scrolls internally, page does not */}
+      {/* Sidebar */}
       <aside className={`
-        fixed lg:sticky top-0 h-screen w-64 bg-slate-900 text-white p-6 z-40 transition-transform duration-300 ease-in-out flex-shrink-0
+        fixed lg:sticky top-0 h-screen w-64 bg-[#1e3a5f] text-white z-40
+        transition-transform duration-300 ease-in-out flex-shrink-0
+        flex flex-col
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="flex items-center gap-2 mb-10 text-blue-400 font-bold text-xl">
+
+        {/* Amber left accent bar */}
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-400" />
+
+        {/* Brand */}
+        <div className="flex items-center gap-2 px-6 pt-6 pb-6 text-amber-400 font-bold text-xl border-b border-white/10 ml-1.5">
           <ShieldCheck /> ADMIN
         </div>
 
-        <nav className="space-y-4 overflow-y-auto max-h-[calc(100vh-120px)] scrollbar-hide">
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 ml-1.5 scrollbar-hide">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -66,10 +73,10 @@ const AdminDashboard = () => {
                 setActiveTab(item.id);
                 setIsSidebarOpen(false);
               }}
-              className={`w-full flex gap-3 p-3 rounded-xl transition ${
+              className={`w-full flex gap-3 items-center p-3 rounded-xl transition-all duration-200 border-l-2 ${
                 activeTab === item.id
-                  ? 'bg-blue-600'
-                  : 'text-gray-400 hover:bg-slate-800'
+                  ? 'bg-blue-600 border-amber-400 text-white font-semibold'
+                  : 'border-transparent text-blue-200 hover:bg-white/10 hover:text-white'
               }`}
             >
               {item.icon} {item.label}
@@ -86,8 +93,8 @@ const AdminDashboard = () => {
         />
       )}
 
-      {/* Main Content — FIX 3: this area scrolls, not the whole page */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-10 mt-16 lg:mt-0">
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto p-4 md:p-10 mt-16 lg:mt-0 bg-blue-50">
         <div className="max-w-full">
           {activeTab === 'communities' && <CommunityAdmin />}
           {activeTab === 'mentors' && <MentorManager />}

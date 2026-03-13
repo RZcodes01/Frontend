@@ -41,36 +41,36 @@ const PaymentManager = () => {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">Payment Management</h1>
-        <p className="text-slate-500 mt-1">Track mentor payments and update their payment status.</p>
+        <h1 className="text-2xl font-bold text-[#1e3a5f]">Payment Management</h1>
+        <p className="text-blue-400 mt-1">Track mentor payments and update their payment status.</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-5 mb-8">
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
-            <Users size={22} className="text-blue-500" />
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center">
+            <Users size={22} className="text-amber-400" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">Total Mentors</p>
-            <p className="text-2xl font-bold text-slate-800">{mentors.length}</p>
+            <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Total Mentors</p>
+            <p className="text-2xl font-bold text-[#1e3a5f]">{mentors.length}</p>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
             <CheckCircle size={22} className="text-green-500" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">Paid</p>
+            <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Paid</p>
             <p className="text-2xl font-bold text-green-600">{totalPaid}</p>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4">
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
             <Clock size={22} className="text-amber-500" />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">Unpaid</p>
+            <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Unpaid</p>
             <p className="text-2xl font-bold text-amber-500">{totalUnpaid}</p>
           </div>
         </div>
@@ -79,22 +79,24 @@ const PaymentManager = () => {
       {/* Search + Filter */}
       <div className="flex gap-3 mb-6">
         <div className="relative flex-1">
-          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-300" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name, email or community..."
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl shadow-sm text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 bg-white border border-blue-100 rounded-xl shadow-sm text-sm text-[#1e3a5f] placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
           />
         </div>
-        <div className="flex bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div className="flex bg-white border border-blue-100 rounded-xl shadow-sm overflow-hidden">
           {['all', 'paid', 'unpaid'].map(tab => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}
               className={`px-5 py-2 text-sm font-semibold capitalize transition-colors ${
-                filter === tab ? 'bg-blue-600 text-white' : 'text-slate-500 hover:bg-slate-50'
+                filter === tab
+                  ? 'bg-[#1e3a5f] text-amber-400'
+                  : 'text-blue-400 hover:bg-blue-50'
               }`}
             >
               {tab}
@@ -104,52 +106,56 @@ const PaymentManager = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-100">
-              <th className="text-left px-6 py-4 font-semibold text-slate-500">Mentor</th>
-              <th className="text-left px-6 py-4 font-semibold text-slate-500">Email</th>
-              <th className="text-left px-6 py-4 font-semibold text-slate-500">Community</th>
-              <th className="text-left px-6 py-4 font-semibold text-slate-500">Amount</th>
-              <th className="text-left px-6 py-4 font-semibold text-slate-500">Date</th>
-              <th className="text-left px-6 py-4 font-semibold text-slate-500">Status</th>
-              <th className="text-right px-6 py-4 font-semibold text-slate-500">Action</th>
+            <tr className="bg-blue-50 border-b border-blue-100">
+              <th className="text-left px-6 py-4 font-semibold text-blue-400">Mentor</th>
+              <th className="text-left px-6 py-4 font-semibold text-blue-400">Email</th>
+              <th className="text-left px-6 py-4 font-semibold text-blue-400">Community</th>
+              <th className="text-left px-6 py-4 font-semibold text-blue-400">Amount</th>
+              <th className="text-left px-6 py-4 font-semibold text-blue-400">Date</th>
+              <th className="text-left px-6 py-4 font-semibold text-blue-400">Status</th>
+              <th className="text-right px-6 py-4 font-semibold text-blue-400">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-blue-50">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-16 text-slate-400">
+                <td colSpan={7} className="text-center py-16 text-blue-300">
                   No mentors found{search ? ` matching "${search}"` : ''}.
                 </td>
               </tr>
             ) : (
               filtered.map(mentor => (
-                <tr key={mentor.id} className="hover:bg-slate-50 transition-colors">
+                <tr key={mentor.id} className="hover:bg-blue-50/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold text-white ${mentor.status === 'paid' ? 'bg-blue-500' : 'bg-slate-400'}`}>
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold ${
+                        mentor.status === 'paid'
+                          ? 'bg-[#1e3a5f] text-amber-400'
+                          : 'bg-blue-100 text-blue-400'
+                      }`}>
                         {mentor.avatar}
                       </div>
-                      <span className="font-semibold text-slate-800">{mentor.name}</span>
+                      <span className="font-semibold text-[#1e3a5f]">{mentor.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-slate-500">{mentor.email}</td>
+                  <td className="px-6 py-4 text-blue-400">{mentor.email}</td>
                   <td className="px-6 py-4">
-                    <span className="inline-block px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold">
+                    <span className="inline-block px-3 py-1 bg-blue-50 text-[#1e3a5f] border border-blue-100 rounded-full text-xs font-semibold">
                       {mentor.community}
                     </span>
                   </td>
-                  <td className="px-6 py-4 font-bold text-slate-800">{mentor.amount}</td>
-                  <td className="px-6 py-4 text-slate-400">{mentor.date}</td>
+                  <td className="px-6 py-4 font-bold text-[#1e3a5f]">{mentor.amount}</td>
+                  <td className="px-6 py-4 text-blue-300">{mentor.date}</td>
                   <td className="px-6 py-4">
                     {mentor.status === 'paid' ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-semibold">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 border border-green-100 rounded-full text-xs font-semibold">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span> Paid
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-500 rounded-full text-xs font-semibold">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-xs font-semibold">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span> Unpaid
                       </span>
                     )}
@@ -159,12 +165,12 @@ const PaymentManager = () => {
                       onClick={() => toggleStatus(mentor.id)}
                       className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                         mentor.status === 'paid'
-                          ? 'bg-amber-50 text-amber-500 hover:bg-amber-100'
-                          : 'bg-green-50 text-green-600 hover:bg-green-100'
+                          ? 'bg-amber-50 text-amber-600 border border-amber-100 hover:bg-amber-100'
+                          : 'bg-[#1e3a5f] text-amber-400 hover:bg-blue-800'
                       }`}
                     >
                       {mentor.status === 'paid'
-                        ? <><Clock size={13} /> </>
+                        ? <><Clock size={13} /></>
                         : <><DollarSign size={13} /> Pay</>
                       }
                     </button>
