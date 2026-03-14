@@ -15,18 +15,6 @@ export default function Footer() {
             <p className="text-sm leading-relaxed mb-6">
               Empowering learners to build real skills, work on industry projects, and get hired faster.
             </p>
-
-            <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 rounded-md bg-blue-900 border border-blue-800 flex items-center justify-center hover:border-amber-400/40 hover:text-amber-400 transition">
-                <span className="text-sm">in</span>
-              </a>
-              <a href="#" className="w-10 h-10 rounded-md bg-blue-900 border border-blue-800 flex items-center justify-center hover:border-amber-400/40 hover:text-amber-400 transition">
-                <span className="text-sm">📘</span>
-              </a>
-              <a href="#" className="w-10 h-10 rounded-md bg-blue-900 border border-blue-800 flex items-center justify-center hover:border-amber-400/40 hover:text-amber-400 transition">
-                <span className="text-sm">📷</span>
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
