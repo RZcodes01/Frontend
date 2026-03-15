@@ -23,7 +23,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><a href="/" className="hover:text-amber-400 transition">Home</a></li>
               <li><a href="/quickskills" className="hover:text-amber-400 transition">Quick Skills</a></li>
-              <li><a href="/project" className="hover:text-amber-400 transition">Leaderboard</a></li>
+              <li><a href="/leaderboard  " className="hover:text-amber-400 transition">Leaderboard</a></li>
               <li><a href="/community" className="hover:text-amber-400 transition">Community</a></li>
               <li><a href="/career" className="hover:text-amber-400 transition">Career</a></li>
             </ul>
