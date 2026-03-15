@@ -167,9 +167,14 @@ export default function ProjectDetail() {
             </div>
 
             {/* Placeholder for future "Submit Project" Button */}
-            <button onClick={()=> navigate("/submission")} className="w-full mt-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-cyan-900/20">
-              Submit Project
-            </button>
+            {!isClosed && (
+              <button
+                onClick={() => navigate(`/projects/${projectId}/submit`)}
+                className="w-full mt-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-cyan-900/20"
+              >
+                Submit Project
+              </button>
+            )}
           </div>
         </div>
 

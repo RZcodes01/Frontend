@@ -33,19 +33,24 @@ export default function StudentDashboard() {
         }
 
         const communitiesRes = await fetchMyCommunities();
-        setCommunities(communitiesRes.data.communities || []);
+        const myCommunities = communitiesRes.data.communities || [];
+        setCommunities(myCommunities);
 
-        if (storedUser?.plan === "pro") {
+        // Check if user has Pro plan in ANY community
+        const hasProPlan = myCommunities.some(c => c.plan === "pro");
+
+        if (hasProPlan) {
           setIsPro(true);
-
-          const [batchRes, projectRes] = await Promise.all([
-            fetchMyBatches(),
-            fetchMyProjects()
-          ]);
-
-          setBatches(batchRes.data.batches || []);
-          setProjects(projectRes.data.projects || []);
         }
+
+        // Always fetch projects and batches — backend filters by Pro enrollment
+        const [batchRes, projectRes] = await Promise.all([
+          fetchMyBatches(),
+          fetchMyProjects()
+        ]);
+
+        setBatches(batchRes.data.batches || []);
+        setProjects(projectRes.data.projects || []);
 
       } catch (err) {
         console.error("Dashboard load failed", err);

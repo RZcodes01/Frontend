@@ -21,7 +21,7 @@ import AdminModuleManager from "./pages/AdminModuleManager";
 import CompanyRegister from './pages/CompanyRegister';
 import MentorDashboard from "./pages/MentorDashboard";
 import ProjectSubmission from "./pages/ProjectSubmission";
-import ProjectSubmissions from "./pages/ProjectSubmissions";
+import ProjectSubmissions from "./pages/ProjectGrading";
 import CompanyManager from "./pages/CompanyManager";
 import ProjectView from "./pages/ProjectView";
 import Project from "./pages/Project";
@@ -140,7 +140,7 @@ export default function App() {
           <Route element={<StudentDashLayout />}>
             <Route path="/dashboard" element={<StudentDashboard />} />
             <Route path="/projects/:projectId" element={<ProjectDetail />} />
-            <Route path="/submission" element={<ProjectSubmission />} />
+            <Route path="/projects/:projectId/submit" element={<ProjectSubmission />} />
           </Route>
         </Route>
 

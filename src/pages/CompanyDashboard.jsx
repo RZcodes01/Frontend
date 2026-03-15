@@ -88,7 +88,7 @@ function avatarUrl(name, profileImage) {
 export default function CompanyDashboardPage() {
   const [communities, setCommunities] = useState([]);
   const [selectedCommunityId, setSelectedCommunityId] = useState("");
-  const [selectedCommunityName, setSelectedCommunityName] = useState("All Communities");
+  const [selectedCommunityName, setSelectedCommunityName] = useState("Select Community");
   const [stats, setStats] = useState({ totalStudents: 0, totalCommunities: 0, totalProblemsSolved: 0, activeUsers: 0 });
   const [statsLoading, setStatsLoading] = useState(true);
   const [top3, setTop3] = useState([]);
@@ -112,7 +112,14 @@ export default function CompanyDashboardPage() {
 
   useEffect(() => {
     fetchAllCommunities()
-      .then((res) => setCommunities(res.data?.communities || res.data || []))
+      .then((res) => {
+        const comms = res.data?.communities || res.data || [];
+        setCommunities(comms);
+        if (comms.length > 0 && !selectedCommunityId) {
+          setSelectedCommunityId(comms[0]._id);
+          setSelectedCommunityName(comms[0].name);
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -126,25 +133,28 @@ export default function CompanyDashboardPage() {
   }, []);
 
   useEffect(() => {
+    if (!selectedCommunityId) return;
     setStatsLoading(true);
     setError(null);
-    fetchDashboardStats(selectedCommunityId || undefined)
+    fetchDashboardStats(selectedCommunityId)
       .then((res) => setStats(res.data.stats))
       .catch((err) => setError(err.response?.data?.message || "Failed to load stats"))
       .finally(() => setStatsLoading(false));
   }, [selectedCommunityId]);
 
   useEffect(() => {
+    if (!selectedCommunityId) return;
     setTop3Loading(true);
-    fetchTopPerformers(selectedCommunityId || undefined)
+    fetchTopPerformers(selectedCommunityId)
       .then((res) => setTop3(res.data.topPerformers || []))
       .catch(() => setTop3([]))
       .finally(() => setTop3Loading(false));
   }, [selectedCommunityId]);
 
   useEffect(() => {
+    if (!selectedCommunityId) return;
     setLeaderboardLoading(true);
-    fetchLeaderboard(selectedCommunityId || undefined, currentPage, ITEMS_PER_PAGE, sortOrder)
+    fetchLeaderboard(selectedCommunityId, currentPage, ITEMS_PER_PAGE, sortOrder)
       .then((res) => {
         setLeaderboard(res.data.leaderboard || []);
         setLeaderboardTotal(res.data.total || 0);
@@ -286,14 +296,6 @@ export default function CompanyDashboardPage() {
 
           {dropdownOpen && (
             <div className="absolute right-0 z-50 mt-2 w-full bg-white border border-blue-100 rounded-xl shadow-xl shadow-blue-100/50 overflow-hidden">
-              <button
-                onClick={() => handleCommunitySelect("", "All Communities")}
-                className={`w-full text-left px-4 py-3 text-sm font-semibold transition-colors border-b border-blue-50 ${
-                  !selectedCommunityId ? "bg-amber-50 text-amber-600" : "text-[#1e3a5f] hover:bg-blue-50"
-                }`}
-              >
-                All Communities
-              </button>
               {communities.map((c) => (
                 <button
                   key={c._id}
@@ -447,8 +449,8 @@ export default function CompanyDashboardPage() {
                 <tr>
                   <td colSpan={6} className="text-center py-16">
                     <Users className="mx-auto text-blue-200 mb-3" size={48} />
-                    <p className="text-[#1e3a5f] font-bold text-lg">No students found</p>
-                    <p className="text-blue-400 text-sm mt-1">Try selecting a different community</p>
+                    <p className="text-[#1e3a5f] font-bold text-lg">No students with active scores</p>
+                    <p className="text-blue-400 text-sm mt-1">Students will appear here once they have been graded for their submissions.</p>
                   </td>
                 </tr>
               )}

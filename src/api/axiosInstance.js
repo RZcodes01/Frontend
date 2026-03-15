@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com",
+    baseURL: "https://s",
 });
 
 axiosInstance.interceptors.request.use((config) => {
@@ -10,9 +10,9 @@ axiosInstance.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Automatically set multipart headers for FormData
+    // Let the browser set Content-Type with proper boundary for FormData
     if (config.data instanceof FormData) {
-        config.headers["Content-Type"] = "multipart/form-data";
+        delete config.headers["Content-Type"];
     }
 
     return config;
