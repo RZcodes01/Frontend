@@ -5,18 +5,18 @@ import {
     CreditCard,
     Lock,
     CheckCircle2,
-    Calendar,
     Users,
     Zap,
-    IndianRupee
 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
+import { upgradeEnrollmentToPro } from '../api/enrollment.api';
 
 const fmt = (date) =>
     date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
-export default function PaymentPage({ batch, onBack, onSuccess }) {
+export default function PaymentPage({ communityId, communityName, price, onBack, onSuccess }) {
     const [form, setForm] = useState({ name: '', email: '', cardNumber: '', expiry: '', cvv: '', upi: '' });
     const [method, setMethod] = useState('card');
     const [loading, setLoading] = useState(false);
@@ -25,8 +25,8 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
     const [showPopup, setShowPopup] = useState(false);
     const navigate = useNavigate();
 
-    const gst = Math.round(batch.price * 0.18);
-    const total = batch.price + gst;
+    const gst = Math.round(price * 0.18);
+    const total = price + gst;
 
     const set = (key) => (e) => {
         let val = e.target.value;
@@ -55,14 +55,26 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
     const handlePay = async () => {
         if (!validate()) return;
         setLoading(true);
-        await new Promise((r) => setTimeout(r, 2000));
-        setLoading(false);
-        setShowPopup(true);
-        setTimeout(() => {
-            setShowPopup(false);
-            setDone(true);
-            onSuccess?.();
-        }, 2500);
+
+        try {
+            // Simulate payment processing delay
+            await new Promise((r) => setTimeout(r, 2000));
+
+            // Call upgrade API
+            await upgradeEnrollmentToPro(communityId);
+
+            setLoading(false);
+            setShowPopup(true);
+
+            setTimeout(() => {
+                setShowPopup(false);
+                setDone(true);
+                onSuccess?.();
+            }, 2500);
+        } catch (err) {
+            setLoading(false);
+            toast.error(err.response?.data?.message || "Upgrade failed. Please try again.");
+        }
     };
 
     const inputClass = (key) =>
@@ -76,13 +88,12 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                     <div className="w-20 h-20 rounded-full bg-amber-400/15 border border-amber-400/30 flex items-center justify-center mx-auto mb-6 animate-pulse">
                         <CheckCircle2 className="w-10 h-10 text-amber-500" />
                     </div>
-                    <h1 className="text-4xl font-black mb-3 text-blue-950">You're In! 🎉</h1>
+                    <h1 className="text-4xl font-black mb-3 text-blue-950">You're Pro! 🎉</h1>
                     <p className="text-blue-600 text-xl font-medium mb-2">
-                        Payment successful for <span className="text-blue-950 font-black">{batch.name}</span>
+                        Payment successful for <span className="text-blue-950 font-black">{communityName}</span>
                     </p>
                     <p className="text-blue-500 text-base font-medium mb-8">
-                        A confirmation has been sent to <span className="text-amber-500 font-bold">{form.email}</span>. Your batch starts on{' '}
-                        <span className="text-blue-900 font-black">{fmt(batch.startDate)}</span>.
+                        A confirmation has been sent to <span className="text-amber-500 font-bold">{form.email}</span>. You now have full Pro access to all projects and resources.
                     </p>
                     <div className="flex flex-col gap-3">
                         <button
@@ -92,7 +103,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                             Go to Dashboard
                         </button>
                         <button onClick={onBack} className="text-blue-400 hover:text-blue-600 text-base font-semibold transition-colors">
-                            Back to Course
+                            Back to Community
                         </button>
                     </div>
                 </div>
@@ -107,12 +118,12 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
             {/* Success Popup */}
             {showPopup && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-blue-950/60 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 flex flex-col items-center gap-4 animate-bounce-once max-w-sm mx-4 text-center">
+                    <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 flex flex-col items-center gap-4 max-w-sm mx-4 text-center">
                         <div className="w-16 h-16 rounded-full bg-amber-400/15 border border-amber-400/40 flex items-center justify-center">
                             <CheckCircle2 className="w-9 h-9 text-amber-500" />
                         </div>
-                        <h2 className="text-2xl font-black text-blue-950">Payment Done Successfully!</h2>
-                        <p className="text-blue-500 font-medium text-base">Your enrollment is confirmed. Redirecting…</p>
+                        <h2 className="text-2xl font-black text-blue-950">Payment Successful!</h2>
+                        <p className="text-blue-500 font-medium text-base">Your Pro access is now active. Redirecting…</p>
                     </div>
                 </div>
             )}
@@ -122,7 +133,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                 <div className="max-w-5xl mx-auto flex items-center justify-between">
                     <button onClick={onBack} className="flex items-center gap-2 text-amber-400 hover:text-amber-300 transition-colors font-black text-base group">
                         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                        Change Batch
+                        Back to Community
                     </button>
                     <div className="flex items-center gap-2 text-amber-400">
                         <Crown className="w-5 h-5" />
@@ -137,7 +148,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                 <div className="lg:col-span-3 space-y-8">
                     <div>
                         <h1 className="text-3xl font-black mb-1 text-blue-950">Complete Payment</h1>
-                        <p className="text-blue-500 text-lg font-medium">Secure, encrypted payment powered by Razorpay</p>
+                        <p className="text-blue-500 text-lg font-medium">Secure, encrypted checkout</p>
                     </div>
 
                     {/* Personal Info */}
@@ -170,7 +181,7 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                                 <button
                                     key={m}
                                     onClick={() => setMethod(m)}
-                                    className={`py-2.5 rounded-xl border text-base font-black transition-all ${method === m ? 'bg-amber-400/10 border-amber-400/50 text-amber-500' : 'border-blue-300 text-blue-600 hover:border-blue-500 text-base'}`}
+                                    className={`py-2.5 rounded-xl border text-base font-black transition-all ${method === m ? 'bg-amber-400/10 border-amber-400/50 text-amber-500' : 'border-blue-300 text-blue-600 hover:border-blue-500'}`}
                                 >
                                     {m === 'card' ? '💳 Card' : '⚡ UPI'}
                                 </button>
@@ -238,27 +249,18 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                             <Crown className="w-5 h-5 text-amber-400" /> Order Summary
                         </h3>
 
-                        {/* Batch Card */}
+                        {/* Community Card */}
                         <div className="bg-blue-50 rounded-xl border border-blue-300 p-4 mb-5">
-                            <p className="text-amber-500 text-sm font-black uppercase tracking-widest mb-1">Selected Batch</p>
-                            <p className="text-blue-900 font-black text-2xl">{batch.name}</p>
-                            <div className="mt-3 space-y-1.5 text-lg text-blue-700 font-medium">
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="w-4 h-4 text-amber-400/60" />
-                                    {fmt(batch.startDate)} → {fmt(batch.endDate)}
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Users className="w-4 h-4 text-amber-400/60" />
-                                    {batch.seatsLeft} seats remaining
-                                </div>
-                            </div>
+                            <p className="text-amber-500 text-sm font-black uppercase tracking-widest mb-1">Upgrading</p>
+                            <p className="text-blue-900 font-black text-2xl">{communityName}</p>
+                            <p className="text-blue-500 text-sm font-medium mt-1">Pro Plan — Lifetime Access</p>
                         </div>
 
                         {/* Pricing Breakdown */}
                         <div className="space-y-3 text-base">
                             <div className="flex justify-between text-blue-700 font-medium text-lg">
-                                <span>Course Fee</span>
-                                <span>₹{batch.price.toLocaleString('en-IN')}</span>
+                                <span>Pro Fee</span>
+                                <span>₹{price.toLocaleString('en-IN')}</span>
                             </div>
                             <div className="flex justify-between text-blue-700 font-medium text-lg">
                                 <span>GST (18%)</span>
@@ -275,9 +277,10 @@ export default function PaymentPage({ batch, onBack, onSuccess }) {
                         <div className="mt-6 space-y-2">
                             <p className="text-base text-blue-500 uppercase tracking-widest font-black mb-3">What's included</p>
                             {[
-                                'Lifetime access to batch recordings',
+                                'Access to all community projects',
                                 'Certificate of completion',
-                                'Private community access',
+                                'Private Pro community access',
+                                'Mentor feedback on submissions',
                             ].map((perk, i) => (
                                 <div key={i} className="flex items-center gap-2 text-lg text-blue-700 font-medium">
                                     <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />

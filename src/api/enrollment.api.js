@@ -23,3 +23,6 @@ export const removeMentorAssignment = (enrollmentId) =>
 // Fetch all members of a community (including the mentor)
 export const fetchCommunityMembers = (communityId) =>
     axiosInstance.get(`/enrollments/community/${communityId}/members`);
+
+export const upgradeEnrollmentToPro = (communityId) =>
+    axiosInstance.patch("/enrollments/upgrade", { communityId });

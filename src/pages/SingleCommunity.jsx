@@ -13,22 +13,33 @@ import {
     ArrowLeft,
     Lock
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { fetchCommunityById } from "../api/community.api";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BatchSelectionPage from "./Batchselection";
 import PaymentPage from "./Payment";
-import { enrollCommunity, fetchMyEnrollments } from "../api/enrollment.api";
+import { fetchMyEnrollments, enrollCommunity } from "../api/enrollment.api";
+import { fetchCommunityById } from "../api/community.api";
+
+
+const PRICES = [4000, 8000];
 
 export default function SingleCommunity() {
     const [course, setCourse] = useState(null);
     const { communityId } = useParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     const [page, setPage] = useState("overview");
     const [selectedBatch, setSelectedBatch] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isPro, setIsPro] = useState(false);
+
+    // Pick a stable random price per community
+    const price = useMemo(() => {
+        const idx = parseInt(communityId?.slice(-1), 16) % PRICES.length;
+        return PRICES[idx] || PRICES[0];
+    }, [communityId]);
 
     const handleEnroll = async () => {
         try {
@@ -48,10 +59,14 @@ export default function SingleCommunity() {
             }
             try {
                 const res = await fetchMyEnrollments();
-                const enrolledIds = res.data.enrollments.map(
-                    (e) => e.communityId.toString()
+                console.log("enrollments response:", res.data);  // add this
+                const enrollments = res.data.enrollments || [];
+                const match = enrollments.find(
+                    (e) => e.communityId.toString() === communityId
                 );
-                setIsEnrolled(enrolledIds.includes(communityId));
+                console.log("match:", match);  // add this too
+                setIsEnrolled(!!match);
+                setIsPro(match?.plan === "pro");
             } catch (err) {
                 console.log("Enrollment check failed");
             }
@@ -71,6 +86,8 @@ export default function SingleCommunity() {
                 setCourse(res.data.community);
             } catch (error) {
                 console.error(error);
+            } finally {
+                setLoading(false)
             }
         };
         fetchCommunity();
@@ -88,13 +105,27 @@ export default function SingleCommunity() {
         );
     }
 
-    if (page === "payment" && selectedBatch) {
+    if (page === "payment") {
         return (
             <PaymentPage
-                batch={selectedBatch}
-                onBack={() => setPage("batches")}
-                onSuccess={() => console.log("Payment done!")}
+                communityId={communityId}
+                communityName={course?.name}
+                price={price}
+                onBack={() => setPage("overview")}
+                onSuccess={() => {
+                    setIsPro(true);
+                    setPage("overview");
+                }}
             />
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-blue-50 flex flex-col items-center justify-center space-y-4">
+                <div className="w-10 h-10 border-4 border-amber-400/20 border-t-amber-400 rounded-full animate-spin"></div>
+                <p className="text-blue-500 font-semibold text-base animate-pulse">Loading</p>
+            </div>
         );
     }
 
@@ -103,7 +134,7 @@ export default function SingleCommunity() {
 
             {/* --- HERO HEADER SECTION --- */}
             <div className="relative">
-                <button 
+                <button
                     onClick={() => navigate(-1)}
                     className="absolute top-4 left-4 md:top-8 md:left-12 z-30 flex items-center gap-2 md:gap-3 px-4 py-2 md:px-6 md:py-3 bg-blue-950/60 backdrop-blur-md border border-white/20 text-white rounded-xl hover:bg-blue-950 hover:scale-105 transition-all font-black text-sm md:text-lg shadow-2xl"
                 >
@@ -174,12 +205,23 @@ export default function SingleCommunity() {
                                         <CheckCircle2 size={18} /> Joined
                                     </div>
                                 )}
-                                <button
-                                    onClick={() => setPage("batches")}
-                                    className="px-8 py-3.5 rounded-xl bg-blue-800 border border-blue-600 text-blue-100 font-black text-base transition-all hover:bg-blue-700 w-full sm:w-auto"
-                                >
-                                    Pro Benefits
-                                </button>
+
+                                {/* Only show Upgrade button if enrolled but not pro */}
+                                {isEnrolled && !isPro && (
+                                    <button
+                                        onClick={() => setPage("payment")}
+                                        className="px-8 py-3.5 rounded-xl bg-blue-800 border border-blue-600 text-blue-100 font-black text-base transition-all hover:bg-blue-700 w-full sm:w-auto"
+                                    >
+                                        Upgrade to Pro
+                                    </button>
+                                )}
+
+                                {/* Show Pro badge if already pro */}
+                                {isPro && (
+                                    <div className="px-8 py-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-500 font-black text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+                                        <Crown size={18} /> Pro Member
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -239,34 +281,50 @@ export default function SingleCommunity() {
 
                             <div className="relative z-10">
                                 <h3 className="text-xl md:text-2xl font-black mb-6 flex items-center gap-2 text-blue-900">
-                                    Pro Benefits <Sparkles className="text-amber-400" size={18} />
+                                    {isPro ? "Membership" : "Pro Benefits"}
+                                    <Sparkles className="text-amber-400" size={18} />
                                 </h3>
 
-                                <div className="space-y-6 mb-8">
-                                    <SidebarFeature icon={<Video />} title="Live Classes" desc="Weekly mentor sessions." />
-                                    <SidebarFeature icon={<Code />} title="Project Files" desc="Premium assets & code." />
-                                    <SidebarFeature icon={<Trophy />} title="Certificates" desc="Industry recognition." />
-                                </div>
-
-                                {/* Lock banner — only visible when not enrolled */}
-                                {!isEnrolled && (
-                                    <div className="flex items-center gap-3 bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3 mb-6">
-                                        <div className="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
-                                            <Lock size={14} className="text-amber-400" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Locked</p>
-                                            <p className="text-[10px] text-blue-700 font-medium">Upgrade to Pro to access these features</p>
-                                        </div>
+                                {!isPro && (
+                                    <div className="space-y-6 mb-8">
+                                        <SidebarFeature icon={<Video />} title="Live Classes" desc="Weekly mentor sessions." />
+                                        <SidebarFeature icon={<Code />} title="Project Files" desc="Premium assets & code." />
+                                        <SidebarFeature icon={<Trophy />} title="Certificates" desc="Industry recognition." />
                                     </div>
                                 )}
 
-                                <button
-                                    onClick={() => setPage("batches")}
-                                    className="w-full py-4 bg-amber-400 text-blue-950 font-black rounded-xl hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10 active:scale-95 text-base"
-                                >
-                                    Upgrade to Pro
-                                </button>
+                                {isPro ? (
+                                    // Already pro — show active status
+                                    <div className="flex items-center gap-3 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                                        <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                            <CheckCircle2 size={14} className="text-green-500" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-black text-green-500 uppercase tracking-widest">Active</p>
+                                            <p className="text-[10px] text-blue-700 font-medium">You have full Pro access</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {!isEnrolled && (
+                                            <div className="flex items-center gap-3 bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3 mb-6">
+                                                <div className="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
+                                                    <Lock size={14} className="text-amber-400" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Locked</p>
+                                                    <p className="text-[10px] text-blue-700 font-medium">Upgrade to Pro to access these features</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <button
+                                            onClick={() => isEnrolled ? setPage("payment") : (isLoggedIn ? handleEnroll() : navigate("/login"))}
+                                            className="w-full py-4 bg-amber-400 text-blue-950 font-black rounded-xl hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10 active:scale-95 text-base"
+                                        >
+                                            {isEnrolled ? `Upgrade to Pro — ₹${price.toLocaleString('en-IN')}` : "Enroll Now"}
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>

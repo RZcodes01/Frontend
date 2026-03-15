@@ -6,3 +6,4 @@ export const fetchMyBatches = () => axiosInstance.get("/userdashboards/student-b
 
 export const fetchMyProjects = () =>
     axiosInstance.get("/userdashboards/my-projects");
+
