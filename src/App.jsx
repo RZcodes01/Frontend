@@ -27,6 +27,7 @@ import ProjectView from "./pages/ProjectView";
 import Project from "./pages/Project";
 import ProfilePage from "./pages/ProfilePage";
 import CompanyDashboardPage from "./pages/CompanyDashboard";
+import VerifyOTP from "./pages/VerifyOTP";
 
 function MainLayout() {
   return (
@@ -103,6 +104,7 @@ export default function App() {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/register/mentor" element={<MentorRegister />} />
         <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
         <Route path="/career" element={<Career />} />

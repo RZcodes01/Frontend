@@ -34,7 +34,7 @@ const StudentRegister = () => {
       setTimeout(() => {
         setShowPopup(false);
         alert(res.data.message);
-        navigate("/login");
+        navigate("/verify-otp");
       }, 1500);
 
     } catch (error) {
