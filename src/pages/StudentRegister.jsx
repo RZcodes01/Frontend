@@ -34,7 +34,7 @@ const StudentRegister = () => {
       setTimeout(() => {
         setShowPopup(false);
         alert(res.data.message);
-        navigate("/verify-otp");
+        navigate("/verify-otp", { state: { email: studentData.email } }); // ✅ pass email
       }, 1500);
 
     } catch (error) {

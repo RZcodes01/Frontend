@@ -14,7 +14,7 @@ const VerifyOTP = () => {
     useEffect(() => {
         if (!email) {
             toast.error("Email not found. Please sign up again.");
-            navigate("/login");
+            navigate("/register");
         }
     }, [email, navigate]);
 
@@ -37,7 +37,7 @@ const VerifyOTP = () => {
                 }
             );
 
-            navigate("/register"); // UNCOMMENTED - Navigate after success
+            navigate("/login"); // UNCOMMENTED - Navigate after success
         } catch (error) {
             console.error("OTP verification failed:", error);
         }
