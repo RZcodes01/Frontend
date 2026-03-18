@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { registerUser } from "../api/auth.api";
 
 const StudentRegister = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
 
   const [studentData, setStudentData] = useState({
     name: "",
@@ -30,15 +30,18 @@ const StudentRegister = () => {
         role: "student"
       });
 
-      setShowPopup(true);
-      setTimeout(() => {
-        setShowPopup(false);
-        alert(res.data.message);
-        navigate("/verify-otp", { state: { email: studentData.email } }); // ✅ pass email
-      }, 1500);
+      toast.success(res.data.message || "OTP sent to your email!");
+      navigate("/verify-otp", { state: { email: studentData.email.trim().toLowerCase() } });
 
     } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      const msg = error.response?.data?.message || "Registration failed";
+      const retryAfter = error.response?.data?.retryAfterSeconds;
+
+      if (retryAfter) {
+        toast.error(`${msg} (${retryAfter}s)`);
+      } else {
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
@@ -46,21 +49,6 @@ const StudentRegister = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center py-10 px-4">
-
-      {/* Success Popup */}
-      {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/30">
-          <div className="bg-white rounded-2xl shadow-2xl px-10 py-8 flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
-              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800">Registration Successful!</h3>
-            <p className="text-sm text-gray-500">Your student account has been created.</p>
-          </div>
-        </div>
-      )}
 
       <div className="w-full max-w-[550px] bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-slate-100">
 
@@ -116,9 +104,9 @@ const StudentRegister = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold"
+            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Processing..." : "Create Student Account"}
+            {loading ? "Sending OTP..." : "Create Student Account"}
           </button>
         </form>
 
