@@ -4,6 +4,8 @@ const axiosInstance = axios.create({
     baseURL: "https://skillconnect-backend-7ftb.onrender.com",
 });
 
+// https://skillconnect-backend-7ftb.onrender.com
+
 axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem("accessToken");
     if (token) {
