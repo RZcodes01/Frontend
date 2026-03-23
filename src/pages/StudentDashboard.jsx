@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   BookOpen,
   ChevronRight,
@@ -6,10 +6,18 @@ import {
   Video,
   Award,
   FileText,
-  X
+  X,
+  Download,
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fetchMyBatches, fetchMyCommunities, fetchMyProjects } from '../api/userDashboard.api';
+import { generateCertificate, getScore } from '../api/certificate.api';
+import { QRCodeSVG } from 'qrcode.react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { toast } from 'sonner';
 
 export default function StudentDashboard() {
   const [communities, setCommunities] = useState([]);
@@ -20,6 +28,11 @@ export default function StudentDashboard() {
   const [studentName, setStudentName] = useState("Student");
   const [isCertificateOpen, setIsCertificateOpen] = useState(false);
   const [selectedCertificateCommunity, setSelectedCertificateCommunity] = useState(null);
+  const [certificateData, setCertificateData] = useState(null);
+  const [certGenerating, setCertGenerating] = useState(false);
+  const [certDownloading, setCertDownloading] = useState(false);
+  const [userScore, setUserScore] = useState(0);
+  const certRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -35,6 +48,12 @@ export default function StudentDashboard() {
         const communitiesRes = await fetchMyCommunities();
         const myCommunities = communitiesRes.data.communities || [];
         setCommunities(myCommunities);
+
+        // Fetch user score for certificate eligibility
+        try {
+          const scoreRes = await getScore();
+          setUserScore(scoreRes.data.score || 0);
+        } catch { /* score fetch is non-critical */ }
 
         // Check if user has Pro plan in ANY community
         const hasProPlan = myCommunities.some(c => c.plan === "pro");
@@ -61,6 +80,67 @@ export default function StudentDashboard() {
 
     loadData();
   }, []);
+
+  const handleOpenCertificate = async (community) => {
+    setSelectedCertificateCommunity(community);
+    setIsCertificateOpen(true);
+    setCertificateData(null);
+
+    if (userScore <= 60) return; // Will show locked state
+
+    try {
+      setCertGenerating(true);
+      const res = await generateCertificate(community._id, community.name || "Community Projects");
+      setCertificateData(res.data.certificate);
+    } catch (err) {
+      if (err.response?.status === 409 && err.response?.data?.certificate) {
+        // Certificate already exists — use it
+        setCertificateData(err.response.data.certificate);
+      } else {
+        toast.error(err.response?.data?.message || "Failed to generate certificate");
+      }
+    } finally {
+      setCertGenerating(false);
+    }
+  };
+
+  const handleCloseCertificate = () => {
+    setIsCertificateOpen(false);
+    setSelectedCertificateCommunity(null);
+    setCertificateData(null);
+  };
+
+  const handleDownloadPDF = async () => {
+    if (!certRef.current) return;
+    try {
+      setCertDownloading(true);
+      const canvas = await html2canvas(certRef.current, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        width: certRef.current.scrollWidth,
+        height: certRef.current.scrollHeight
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4"
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`certificate-${certificateData.certificateId || "download"}.pdf`);
+      toast.success("Certificate downloaded!");
+    } catch {
+      toast.error("Failed to download certificate");
+    } finally {
+      setCertDownloading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -137,12 +217,11 @@ export default function StudentDashboard() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedCertificateCommunity(community);
-                      setIsCertificateOpen(true);
+                      handleOpenCertificate(community);
                     }}
                     className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded-md text-xs font-semibold transition"
                   >
-                    Generate Certificate
+                    {userScore > 60 ? 'View Certificate' : '🔒 Certificate'}
                   </button>
 
                 </div>
@@ -161,103 +240,169 @@ export default function StudentDashboard() {
 
         {isCertificateOpen && selectedCertificateCommunity && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden">
 
-            <div className="relative bg-white h-[80vh] max-w-3xl rounded-2xl p-6 shadow-2xl"> 
-
-              {/* Close Button */}
-              <button
-                onClick={() => {
-                  setIsCertificateOpen(false);
-                  setSelectedCertificateCommunity(null);
-                }}
-                className="absolute top-6 right-6 text-gray-400 hover:text-black"
-              >
-                <X size={24} />
-              </button>
-
-              {/* Decorative Corners */}
-              <div className="absolute top-0 left-0 w-16 h-16 border-t-8 border-l-8 border-amber-400 rounded-tl-2xl" />
-              <div className="absolute top-0 right-0 w-16 h-16 border-t-8 border-r-8 border-amber-400 rounded-tr-2xl" />
-              <div className="absolute bottom-0 left-0 w-16 h-16 border-b-8 border-l-8 border-amber-400 rounded-bl-2xl" />
-              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-8 border-r-8 border-amber-400 rounded-br-2xl" />
-
-              {/* Certificate Body */}
-              <div className="relative border border-gray-200 rounded-xl p-6 text-center bg-gradient-to-br from-white via-amber-50/40 to-white overflow-hidden">
-
-                {/* Watermark */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="text-8xl font-extrabold text-blue-900 opacity-5 tracking-widest">
-                    SKILLCONNECT
-                  </span>
-                </div>
-
-                {/* Brand */}
-                <div className="mb-8 relative">
-                  <h1 className="text-4xl font-extrabold tracking-widest text-blue-900">
-                    SKILLCONNECT
-                  </h1>
-                  <div className="w-24 h-1 bg-amber-400 mx-auto mt-3 rounded-full" />
-                </div>
-
-                {/* Title */}
-                <h2 className="text-4xl font-serif font-bold text-gray-800 mb-6 relative">
-                  Certificate of Completion
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <h2 className="font-bold text-blue-900 flex items-center gap-2">
+                  <Award size={20} className="text-amber-500" />
+                  Certificate — {selectedCertificateCommunity.name}
                 </h2>
-
-                <p className="text-gray-600 text-lg mb-6 relative">
-                  This is proudly presented to
-                </p>
-
-                {/* Student Name */}
-                <h3 className="text-3xl font-bold text-blue-900 mb-6 tracking-wide relative">
-                  {studentName}
-                </h3>
-
-                <p className="text-gray-600 text-lg mb-6 relative">
-                  for successfully completing the community
-                </p>
-
-                {/* Community Name */}
-                <h4 className="text-2xl font-semibold text-amber-600 mb-12 relative">
-                  {selectedCertificateCommunity.name}
-                </h4>
-
-                {/* Signature Section */}
-                <div className="flex justify-between items-end mt-12 px-10 relative">
-
-                  <div className="text-left">
-                    <div className="w-40 border-t border-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600 font-medium">
-                      Program Director
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-                    <div className="w-40 border-t border-gray-400 mb-2 ml-auto" />
-                    <p className="text-sm text-gray-600 font-medium">
-                      Date: {new Date().toLocaleDateString()}
-                    </p>
-                  </div>
-
-                </div>
-
-                {/* Certificate ID */}
-                <p className="mt-12 text-xs text-gray-400 tracking-widest relative">
-                  Certificate ID: {selectedCertificateCommunity._id.slice(-6).toUpperCase()}
-                </p>
-
-              </div>
-
-              {/* Footer Actions */}
-              <div className="mt-8 flex justify-end">
                 <button
-                  onClick={() => window.print()}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition shadow-md"
+                  onClick={handleCloseCertificate}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  Download / Print
+                  <X size={18} className="text-gray-500" />
                 </button>
               </div>
 
+              {/* Content */}
+              <div className="p-6 overflow-y-auto" style={{ maxHeight: '75vh' }}>
+
+                {userScore <= 60 ? (
+                  /* Locked State */
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Award size={32} className="text-amber-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-blue-900 mb-2">Certificate Locked</h3>
+                    <p className="text-gray-600 mb-6">
+                      Score at least <span className="font-bold text-blue-900">60 points</span> to unlock your certificate
+                    </p>
+
+                    {/* Progress */}
+                    <div className="max-w-sm mx-auto">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-500">Your Score</span>
+                        <span className="font-bold text-blue-900">{userScore}/61</span>
+                      </div>
+                      <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-1000"
+                          style={{ width: `${Math.min((userScore / 61) * 100, 100)}%` }}
+                        />
+                      </div>
+                      <p className="text-sm text-gray-500 mt-3">
+                        You need <span className="font-bold text-amber-600">{Math.max(61 - userScore, 0)}</span> more points
+                      </p>
+                    </div>
+                  </div>
+                ) : certGenerating ? (
+                  /* Generating State */
+                  <div className="text-center py-16">
+                    <Loader2 size={36} className="animate-spin text-blue-600 mx-auto mb-4" />
+                    <p className="text-gray-600">Generating your certificate...</p>
+                  </div>
+                ) : certificateData ? (
+                  /* Certificate Template */
+                  <>
+                    <div
+                      ref={certRef}
+                      className="relative bg-white rounded-xl overflow-hidden border border-gray-200"
+                      style={{ aspectRatio: '297/210' }}
+                    >
+                      <div className="absolute inset-0 p-10 flex flex-col items-center justify-between">
+
+                        {/* Watermark */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden="true">
+                          <p className="text-[100px] font-black tracking-widest rotate-[-30deg]" style={{ color: 'rgba(0,0,0,0.03)' }}>SKILLCONNECT</p>
+                        </div>
+
+                        {/* Decorative borders */}
+                        <div className="absolute inset-3 border-2 border-blue-200 rounded-lg pointer-events-none" />
+                        <div className="absolute inset-5 border border-blue-100 rounded-md pointer-events-none" />
+
+                        {/* Corner decorations */}
+                        <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-transparent rounded-br-full opacity-60" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-100 to-transparent rounded-bl-full opacity-60" />
+                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-50 to-transparent rounded-tr-full opacity-60" />
+                        <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-indigo-50 to-transparent rounded-tl-full opacity-60" />
+
+                        {/* Content */}
+                        <div className="relative z-10 flex flex-col items-center justify-center flex-1 text-center w-full">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                              <Award size={22} className="text-white" />
+                            </div>
+                            <div className="text-left">
+                              <p className="text-[10px] font-bold tracking-[0.2em] text-blue-500 uppercase">SkillConnect</p>
+                              <p className="text-[8px] text-gray-400 tracking-widest uppercase">Academy</p>
+                            </div>
+                          </div>
+
+                          <h1 className="text-3xl font-black text-gray-800 tracking-tight mb-1" style={{ fontFamily: "Georgia, serif" }}>
+                            Certificate of Completion
+                          </h1>
+                          <p className="text-sm text-gray-400 mb-4">This is to certify that</p>
+
+                          <p className="text-3xl font-black text-blue-700 mb-2" style={{ fontFamily: "Georgia, serif" }}>
+                            {studentName}
+                          </p>
+                          <p className="text-sm text-gray-500 mb-3">has successfully completed the course</p>
+
+                          <div className="inline-block px-6 py-2 bg-blue-600 text-white rounded-full font-bold text-sm mb-4 shadow-lg shadow-blue-500/20">
+                            {certificateData.courseName}
+                          </div>
+
+                          <p className="text-xs text-gray-400 max-w-md">
+                            Awarded in recognition of successful completion of all required projects and assessments.
+                          </p>
+                        </div>
+
+                        {/* Bottom */}
+                        <div className="relative z-10 w-full flex items-end justify-between px-6">
+                          <div className="flex flex-col items-center">
+                            <QRCodeSVG
+                              value={`${window.location.origin}/certificate/verify/${certificateData.certificateId}`}
+                              size={56}
+                              bgColor="transparent"
+                              fgColor="#1e293b"
+                              level="M"
+                            />
+                            <p className="text-[8px] text-gray-400 mt-0.5">Scan to verify</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-xs font-bold text-gray-700">
+                              {new Date(certificateData.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                            </p>
+                            <div className="w-24 h-px bg-gray-300 mx-auto mt-1 mb-0.5" />
+                            <p className="text-[9px] text-gray-400 uppercase tracking-wider">Date of Issue</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[9px] text-gray-400 uppercase tracking-wider">Certificate ID</p>
+                            <p className="text-[10px] font-mono text-gray-500 mt-0.5">{certificateData.certificateId?.slice(0, 18)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center justify-between mt-5">
+                      <button
+                        onClick={() => navigate(`/certificate/${certificateData._id}`)}
+                        className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+                      >
+                        <ExternalLink size={14} />
+                        View Full Page
+                      </button>
+
+                      <button
+                        onClick={handleDownloadPDF}
+                        disabled={certDownloading}
+                        className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-md disabled:opacity-50"
+                      >
+                        {certDownloading ? (
+                          <><Loader2 size={15} className="animate-spin" /> Generating PDF...</>
+                        ) : (
+                          <><Download size={15} /> Download PDF</>
+                        )}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">Something went wrong. Please try again.</div>
+                )}
+              </div>
             </div>
           </div>
         )}

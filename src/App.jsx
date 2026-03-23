@@ -28,6 +28,9 @@ import Project from "./pages/Project";
 import ProfilePage from "./pages/ProfilePage";
 import CompanyDashboardPage from "./pages/CompanyDashboard";
 import VerifyOTP from "./pages/VerifyOTP";
+import CertificateGate from "./pages/CertificateGate";
+import CertificateView from "./pages/CertificateView";
+import CertificateVerify from "./pages/CertificateVerify";
 
 function MainLayout() {
   return (
@@ -109,6 +112,9 @@ export default function App() {
         <Route path="/register/company" element={<CompanyRegister />} /> {/* */}
         <Route path="/career" element={<Career />} />
         <Route path="/" element={<Homepage />} />
+
+        {/* Public certificate verification */}
+        <Route path="/certificate/verify/:certId" element={<CertificateVerify />} />
         <Route element={<MainLayout />}>
           <Route path="/community" element={<Community />} />
           <Route path="/community/:communityId" element={<SingleCommunity />} />
@@ -143,6 +149,8 @@ export default function App() {
             <Route path="/dashboard" element={<StudentDashboard />} />
             <Route path="/projects/:projectId" element={<ProjectDetail />} />
             <Route path="/projects/:projectId/submit" element={<ProjectSubmission />} />
+            <Route path="/certificates" element={<CertificateGate />} />
+            <Route path="/certificate/:id" element={<CertificateView />} />
           </Route>
         </Route>
 
