@@ -31,7 +31,8 @@ export default function StudentDashboard() {
   const [certificateData, setCertificateData] = useState(null);
   const [certGenerating, setCertGenerating] = useState(false);
   const [certDownloading, setCertDownloading] = useState(false);
-  const [userScore, setUserScore] = useState(0);
+  const [communityScore, setCommunityScore] = useState(0);
+  const [scoreLoading, setScoreLoading] = useState(false);
   const certRef = useRef(null);
 
   const navigate = useNavigate();
@@ -48,12 +49,6 @@ export default function StudentDashboard() {
         const communitiesRes = await fetchMyCommunities();
         const myCommunities = communitiesRes.data.communities || [];
         setCommunities(myCommunities);
-
-        // Fetch user score for certificate eligibility
-        try {
-          const scoreRes = await getScore();
-          setUserScore(scoreRes.data.score || 0);
-        } catch { /* score fetch is non-critical */ }
 
         // Check if user has Pro plan in ANY community
         const hasProPlan = myCommunities.some(c => c.plan === "pro");
@@ -85,22 +80,31 @@ export default function StudentDashboard() {
     setSelectedCertificateCommunity(community);
     setIsCertificateOpen(true);
     setCertificateData(null);
-
-    if (userScore <= 60) return; // Will show locked state
+    setCommunityScore(0);
 
     try {
+      setScoreLoading(true);
+      const scoreRes = await getScore(community._id);
+      const score = scoreRes.data.score || 0;
+      setCommunityScore(score);
+
+      if (score < 60) {
+        setScoreLoading(false);
+        return; // Will show locked state
+      }
+
       setCertGenerating(true);
       const res = await generateCertificate(community._id, community.name || "Community Projects");
       setCertificateData(res.data.certificate);
     } catch (err) {
       if (err.response?.status === 409 && err.response?.data?.certificate) {
-        // Certificate already exists — use it
         setCertificateData(err.response.data.certificate);
       } else {
         toast.error(err.response?.data?.message || "Failed to generate certificate");
       }
     } finally {
       setCertGenerating(false);
+      setScoreLoading(false);
     }
   };
 
@@ -114,28 +118,90 @@ export default function StudentDashboard() {
     if (!certRef.current) return;
     try {
       setCertDownloading(true);
-      const canvas = await html2canvas(certRef.current, {
+
+      const element = certRef.current;
+      const allEls = [element, ...element.querySelectorAll("*")];
+      const overrides = [];
+
+      const hasUnsupported = (val) =>
+        val && (val.includes("oklch") || val.includes("oklab") || val.includes("color-mix"));
+
+      allEls.forEach((el) => {
+        const cs = window.getComputedStyle(el);
+        const restored = [];
+
+        // Solid color props
+        const colorProps = [
+          "color", "background-color", "border-color",
+          "border-top-color", "border-bottom-color",
+          "border-left-color", "border-right-color",
+          "outline-color", "text-decoration-color", "fill", "stroke",
+        ];
+        colorProps.forEach((prop) => {
+          const val = cs.getPropertyValue(prop);
+          if (hasUnsupported(val)) {
+            const prev = el.style.getPropertyValue(prop);
+            const prevPriority = el.style.getPropertyPriority(prop);
+            el.style.setProperty(prop, "#1e3a5f", "important");
+            restored.push({ prop, prev, prevPriority });
+          }
+        });
+
+        // background-image — strip oklch from gradients
+        const bgImage = cs.getPropertyValue("background-image");
+        if (hasUnsupported(bgImage)) {
+          const prev = el.style.getPropertyValue("background-image");
+          const prevPriority = el.style.getPropertyPriority("background-image");
+          el.style.setProperty("background-image", "none", "important");
+          // Preserve the background color fallback so it doesn't go transparent
+          const bgColor = cs.getPropertyValue("background-color");
+          if (!hasUnsupported(bgColor)) {
+            // bg-color is fine, gradient just gets removed
+          } else {
+            el.style.setProperty("background-color", "#ffffff", "important");
+          }
+          restored.push({ prop: "background-image", prev, prevPriority });
+        }
+
+        // box-shadow can also carry oklch
+        const shadow = cs.getPropertyValue("box-shadow");
+        if (hasUnsupported(shadow)) {
+          const prev = el.style.getPropertyValue("box-shadow");
+          const prevPriority = el.style.getPropertyPriority("box-shadow");
+          el.style.setProperty("box-shadow", "none", "important");
+          restored.push({ prop: "box-shadow", prev, prevPriority });
+        }
+
+        if (restored.length) overrides.push({ el, restored });
+      });
+
+      const canvas = await html2canvas(element, {
         scale: 3,
         useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
-        width: certRef.current.scrollWidth,
-        height: certRef.current.scrollHeight
+      });
+
+      // Restore all original styles
+      overrides.forEach(({ el, restored }) => {
+        restored.forEach(({ prop, prev, prevPriority }) => {
+          if (prev) {
+            el.style.setProperty(prop, prev, prevPriority);
+          } else {
+            el.style.removeProperty(prop);
+          }
+        });
       });
 
       const imgData = canvas.toDataURL("image/png", 1.0);
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4"
-      });
-
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`certificate-${certificateData.certificateId || "download"}.pdf`);
       toast.success("Certificate downloaded!");
-    } catch {
+    } catch (err) {
+      console.error("Certificate download error:", err);
       toast.error("Failed to download certificate");
     } finally {
       setCertDownloading(false);
@@ -221,7 +287,7 @@ export default function StudentDashboard() {
                     }}
                     className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded-md text-xs font-semibold transition"
                   >
-                    {userScore > 60 ? 'View Certificate' : '🔒 Certificate'}
+                    🎓 Certificate
                   </button>
 
                 </div>
@@ -259,7 +325,13 @@ export default function StudentDashboard() {
               {/* Content */}
               <div className="p-6 overflow-y-auto" style={{ maxHeight: '75vh' }}>
 
-                {userScore <= 60 ? (
+                {scoreLoading ? (
+                  /* Loading Score */
+                  <div className="text-center py-16">
+                    <Loader2 size={36} className="animate-spin text-blue-600 mx-auto mb-4" />
+                    <p className="text-gray-600">Checking your eligibility...</p>
+                  </div>
+                ) : communityScore < 60 ? (
                   /* Locked State */
                   <div className="text-center py-12">
                     <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -274,16 +346,16 @@ export default function StudentDashboard() {
                     <div className="max-w-sm mx-auto">
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-gray-500">Your Score</span>
-                        <span className="font-bold text-blue-900">{userScore}/61</span>
+                        <span className="font-bold text-blue-900">{communityScore}/60</span>
                       </div>
                       <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-1000"
-                          style={{ width: `${Math.min((userScore / 61) * 100, 100)}%` }}
+                          style={{ width: `${Math.min((communityScore / 60) * 100, 100)}%` }}
                         />
                       </div>
                       <p className="text-sm text-gray-500 mt-3">
-                        You need <span className="font-bold text-amber-600">{Math.max(61 - userScore, 0)}</span> more points
+                        You need <span className="font-bold text-amber-600">{Math.max(60 - communityScore, 0)}</span> more points
                       </p>
                     </div>
                   </div>
