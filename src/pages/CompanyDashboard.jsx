@@ -200,11 +200,18 @@ export default function CompanyDashboardPage() {
   // ─── Student Profile View ──────────────────
   if (selectedStudentId) {
     return (
-      <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
-        <CompanyStudentProfile
-          studentId={selectedStudentId}
-          onBack={() => setSelectedStudentId(null)}
-        />
+      <div className="relative min-h-screen bg-white font-sans overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1800&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", opacity: 0.08, zIndex: 0 }} />
+        <div className="absolute inset-0 opacity-[0.08] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)", backgroundSize: "28px 28px", zIndex: 0 }} />
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-400 z-0 pointer-events-none" />
+        
+        <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+          <CompanyStudentProfile
+            studentId={selectedStudentId}
+            onBack={() => setSelectedStudentId(null)}
+          />
+        </div>
       </div>
     );
   }
@@ -217,7 +224,13 @@ export default function CompanyDashboardPage() {
   ];
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+    <div className="relative min-h-screen bg-white font-sans overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1800&q=80')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", opacity: 0.08, zIndex: 0 }} />
+      <div className="absolute inset-0 opacity-[0.08] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle, #000 1px, transparent 1px)", backgroundSize: "28px 28px", zIndex: 0 }} />
+      <div className="absolute top-0 left-0 w-1.5 h-full bg-amber-400 z-0 pointer-events-none" />
+
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
 
       {/* ══════════ HEADER ══════════ */}
       <div className="mb-10">
@@ -500,6 +513,7 @@ export default function CompanyDashboardPage() {
         }
         .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
       `}</style>
+      </div>
     </div>
   );
 }
