@@ -7,12 +7,12 @@ import {
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-const stats = [
-  { value: '12K+', label: 'Students Enrolled' },
-  { value: '340+', label: 'Expert Mentors' },
-  { value: '95%', label: 'Placement Rate' },
-  { value: '80+', label: 'Partner Companies' },
-];
+// const stats = [
+//   { value: '5K+', label: 'Students Enrolled' },
+//   { value: '34+', label: 'Expert Mentors' },
+//   { value: '95%', label: 'Placement Rate' },
+//   { value: '80+', label: 'Partner Companies' },
+// ];
 
 const values = [
   { icon: Heart, title: 'Student First', desc: 'Every decision we make starts with how it benefits our learners.' },
@@ -99,7 +99,7 @@ export default function Career() {
         </section>
 
         {/* ── STATS ────────────────────────────────────────────────────── */}
-        <section className="border-y border-blue-200 bg-blue-100 py-12 px-6">
+        {/* <section className="border-y border-blue-200 bg-blue-100 py-12 px-6">
           <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map(({ value, label }) => (
               <div key={label}>
@@ -108,7 +108,7 @@ export default function Career() {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* ── ABOUT ────────────────────────────────────────────────────── */}
         <section id="about" className="py-16 md:py-24 px-6">
@@ -203,8 +203,7 @@ export default function Career() {
                   <div className="space-y-3">
                     <button
                       onClick={() => navigate('/register/mentor')}
-                      className="w-full flex items-center justify-center gap-2 py-4 bg-amber-400 text-blue-950 font-black rounded-2xl hover:bg-amber-300 transition-colors text-base"
-                    >
+                      className="w-full flex items-center justify-center gap-2 py-4 bg-amber-400 text-blue-950 font-black rounded-2xl hover:bg-amber-300 transition-colors text-base">
                       Apply as Mentor <ArrowRight size={18} />
                     </button>
                     <p className="text-center text-blue-500 text-sm font-medium">
@@ -234,7 +233,7 @@ export default function Career() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 items-stretch">
               {/* CTA Card for Companies */}
-              <div className="relative bg-gradient-to-br from-blue-900/80 to-blue-800/80 border border-blue-700 rounded-2xl p-6 md:p-8 overflow-hidden">
+              <div className="relative bg-blue-900 border border-blue-700 rounded-2xl p-6 md:p-8 overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col h-full">
@@ -256,7 +255,7 @@ export default function Career() {
                   <div className="mt-auto space-y-3">
                     <button
                       onClick={() => navigate('/register/company')}
-                      className="w-full flex items-center justify-center gap-2 py-4 bg-blue-500 text-blue-50 font-black rounded-2xl hover:bg-blue-400 transition-colors text-base"
+                      className="w-full flex items-center justify-center gap-2 py-4 bg-amber-400 text-blue-950 font-black rounded-2xl hover:bg-amber-300 transition-colors text-base"
                     >
                       Register Company <ArrowRight size={18} />
                     </button>
