@@ -34,6 +34,7 @@ export default function SingleCommunity() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [isPro, setIsPro] = useState(false);
+    const [userRole, setUserRole] = useState(null);
 
     // Pick a stable random price per community
     const price = useMemo(() => {
@@ -77,6 +78,10 @@ export default function SingleCommunity() {
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         setIsLoggedIn(!!token);
+        try {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            if (storedUser?.role) setUserRole(storedUser.role);
+        } catch {}
     }, []);
 
     useEffect(() => {
@@ -239,11 +244,13 @@ export default function SingleCommunity() {
                     </div>
 
                     <div className="space-y-4">
-                        {course?.modules?.map((module, idx) => (
+                        {course?.modules?.map((module, idx) => {
+                            const isCompany = userRole === "company";
+                            return (
                             <div
                                 key={module._id}
-                                onClick={() => navigate(`/community/${communityId}/module/${module._id}`)}
-                                className="group bg-white rounded-[2rem] border-2 border-blue-500 hover:border-amber-400/60 hover:bg-blue-50 transition-all p-6 md:p-8 cursor-pointer relative overflow-hidden"
+                                onClick={() => !isCompany && navigate(`/community/${communityId}/module/${module._id}`)}
+                                className={`group bg-white rounded-[2rem] border-2 border-blue-500 ${!isCompany ? 'hover:border-amber-400/60 hover:bg-blue-50 cursor-pointer' : ''} transition-all p-6 md:p-8 relative overflow-hidden`}
                             >
                                 <div className="flex flex-col md:flex-row md:items-start gap-6 relative z-10">
                                     <div className="bg-blue-950 border border-blue-700 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-sm md:text-base font-black text-blue-400 group-hover:text-amber-400 group-hover:border-amber-400/30 transition-all">
@@ -266,10 +273,15 @@ export default function SingleCommunity() {
                                                 </div>
                                             ))}
                                         </div>
+
+                                        {isCompany && (
+                                            <p className="text-xs text-blue-400 mt-2 font-medium italic">Module content is restricted for company accounts</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 

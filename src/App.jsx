@@ -121,16 +121,21 @@ export default function App() {
         </Route>
 
 
-        {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
-        <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin", "company "]} />}>
+        {/* --- SHARED PROTECTED ROUTES (Student, Mentor, Admin, Company) --- */}
+        <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin", "company"]} />}>
           <Route element={<MainLayout />}>
             <Route path="/leaderboard" element={<Leaderboard />} />
-            {/* <Route path="/leaderboard" element={<Project />} /> */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/project-view" element={<ProjectView />} />
             <Route path="/projectdetail" element={<ProjectDetail />} />
             <Route path="/quickskills" element={<QuickSkills />} />
             <Route path="/upload-skill" element={<UploadReel />} />
+          </Route>
+        </Route>
+
+        {/* --- MODULE ROUTE (Student, Mentor, Admin only — NOT company) --- */}
+        <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin"]} />}>
+          <Route element={<MainLayout />}>
             <Route path="/community/:id/module/:moduleId" element={<ModulePage />} />
           </Route>
         </Route>

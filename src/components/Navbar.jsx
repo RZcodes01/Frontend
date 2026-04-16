@@ -77,13 +77,25 @@ export default function Navbar() {
   const isActive = (path) =>
     location.pathname === path || location.hash === path;
 
-  const navLinks = [
+  const allNavLinks = [
     { path: '/', label: 'Home' },
     { path: '/quickskills', label: 'Quick Skills' },
     { path: '/leaderboard', label: 'Leaderboard' },
     { path: '/community', label: 'Community' },
     { path: '/career', label: 'Career' },
   ];
+
+  // Hide Leaderboard link for company users (they have their own in company dashboard)
+  const navLinks = allNavLinks.filter(link => {
+    // Hide Leaderboard and Career for company users
+    if (
+      (link.path === '/leaderboard' || link.path === '/career') &&
+      myData?.role === 'company'
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
