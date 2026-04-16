@@ -124,8 +124,8 @@ export default function App() {
         {/* --- SHARED PROTECTED ROUTES (Student, Mentor, and Admin) --- */}
         <Route element={<ProtectedRoute allowedRoles={["student", "mentor", "admin", "company "]} />}>
           <Route element={<MainLayout />}>
-            <Route path="/leaderboard" element={<Project />} />
-            {/* <Route path="/leaderboard" element={<Leaderboard />} /> */}
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            {/* <Route path="/leaderboard" element={<Project />} /> */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/project-view" element={<ProjectView />} />
             <Route path="/projectdetail" element={<ProjectDetail />} />
