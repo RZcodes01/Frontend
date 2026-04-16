@@ -1,9 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Award, Download, Eye, Sparkles } from "lucide-react";
+import { Award, Eye, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const CertificateUnlocked = ({ certificates, onGenerate, generating }) => {
+const CertificateUnlocked = ({ certificates, onGenerate, generating, communityName, score }) => {
   const navigate = useNavigate();
   const hasCertificates = certificates && certificates.length > 0;
 
@@ -45,6 +45,19 @@ const CertificateUnlocked = ({ certificates, onGenerate, generating }) => {
             <h2 className="text-2xl font-black text-white mb-2 tracking-tight">
               🎉 Certificate Unlocked!
             </h2>
+
+            {/* Community Name & Score */}
+            {communityName && (
+              <p className="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-1">
+                {communityName}
+              </p>
+            )}
+            {score !== undefined && (
+              <p className="text-xs text-neutral-500 mb-4">
+                Your score: <span className="text-emerald-400 font-bold">{score}</span>/60
+              </p>
+            )}
+
             <p className="text-sm text-neutral-400 mb-8 max-w-xs leading-relaxed">
               Congratulations! You've earned the right to claim your certificate.
             </p>
@@ -66,7 +79,7 @@ const CertificateUnlocked = ({ certificates, onGenerate, generating }) => {
                       <button
                         onClick={() => navigate(`/certificate/${cert._id}`)}
                         className="p-2.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors"
-                        title="View Certificate"
+                        title="View & Download Certificate"
                       >
                         <Eye size={16} />
                       </button>

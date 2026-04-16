@@ -2,8 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Lock, TrendingUp } from "lucide-react";
 
-const CertificateLocked = ({ score }) => {
-  const maxScore = 61;
+const CertificateLocked = ({ score, communityName }) => {
+  const maxScore = 60;
   const progress = Math.min((score / maxScore) * 100, 100);
   const remaining = Math.max(maxScore - score, 0);
 
@@ -36,8 +36,17 @@ const CertificateLocked = ({ score }) => {
             <h2 className="text-2xl font-black text-white mb-2 tracking-tight">
               Certificate Locked
             </h2>
+
+            {/* Community Name */}
+            {communityName && (
+              <p className="text-xs font-semibold text-cyan-400 uppercase tracking-widest mb-3">
+                {communityName}
+              </p>
+            )}
+
             <p className="text-sm text-neutral-400 mb-8 max-w-xs leading-relaxed">
-              Score at least <span className="text-white font-bold">60 points</span> to unlock your certificate
+              Score at least <span className="text-white font-bold">60 points</span>{" "}
+              from project submissions to unlock your certificate
             </p>
 
             {/* Score Display */}
@@ -68,7 +77,7 @@ const CertificateLocked = ({ score }) => {
 
               <div className="flex justify-between mt-2">
                 <span className="text-[11px] text-neutral-500">0</span>
-                <span className="text-[11px] text-neutral-500">61 required</span>
+                <span className="text-[11px] text-neutral-500">60 required</span>
               </div>
             </div>
 
