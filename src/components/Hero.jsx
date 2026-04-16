@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // ─── Fake live data ───────────────────────────────────────────────────────────
@@ -8,54 +8,10 @@ const SKILLS = [
   "Cyber Security",
 ];
 
-const ACTIVITY_TEMPLATES = [
-  { icon: "🎓", tpl: (u, s) => `${u} just enrolled in ${s}` },
-  { icon: "✅", tpl: (u, s) => `${u} completed a ${s} challenge` },
-  { icon: "💬", tpl: (u, s) => `${u} got a mentor review on ${s}` },
-  { icon: "🏆", tpl: (u, s) => `${u} earned a ${s} badge` },
-  { icon: "🔴", tpl: (u, s) => `Live ${s} session just started` },
-];
-
-const NAMES = [
-  "Arjun K.", "Priya S.", "Rohan M.", "Sneha P.", "Dev T.",
-  "Aisha B.", "Ravi L.", "Meera N.", "Kiran J.", "Tanvi R.",
-];
-
-function randItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function genActivity() {
-  const t = randItem(ACTIVITY_TEMPLATES);
-  return { icon: t.icon, text: t.tpl(randItem(NAMES), randItem(SKILLS)), id: Math.random() };
-}
-
-const INITIAL_ACTIVITIES = Array.from({ length: 5 }, genActivity);
-
-// ─── Stat counter component ───────────────────────────────────────────────────
-function AnimatedCounter({ target, suffix = "", prefix = "" }) {
-  const [val, setVal] = useState(0);
-  const started = useRef(false);
-  useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    const duration = 1800;
-    const steps = 60;
-    const step = target / steps;
-    let current = 0;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) { setVal(target); clearInterval(timer); }
-      else setVal(Math.floor(current));
-    }, duration / steps);
-    return () => clearInterval(timer);
-  }, [target]);
-  return <span>{prefix}{val.toLocaleString()}{suffix}</span>;
-}
-
 export default function Hero() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  // Activity feed state
-  const [activities, setActivities] = useState(INITIAL_ACTIVITIES);
   const [activeSkill, setActiveSkill] = useState(null);
 
   const handleSearch = () => {
@@ -68,68 +24,13 @@ export default function Hero() {
     if (e.key === "Enter") handleSearch();
   };
 
-  // Push a new activity every 2.8 s
-  useEffect(() => {
-    const id = setInterval(() => {
-      setActivities(prev => [genActivity(), ...prev.slice(0, 5)]);
-    }, 2800);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <>
       <style>{`
-        @keyframes floatY {
-          0%, 100% { transform: translateY(0px); }
-          50%       { transform: translateY(-18px); }
-        }
-        @keyframes rotateSlow {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-        @keyframes rotateSlowReverse {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(-360deg); }
-        }
-        @keyframes pulse-ring {
-          0%, 100% { opacity: 0.35; transform: scale(1); }
-          50%       { opacity: 0.12; transform: scale(1.07); }
-        }
-        @keyframes blink-cursor {
-          0%, 100% { opacity: 1; }
-          50%       { opacity: 0; }
-        }
-        @keyframes dash-flow {
-          to { stroke-dashoffset: -40; }
-        }
-        @keyframes badge-float {
-          0%, 100% { transform: translateY(0px) rotate(-3deg); }
-          50%       { transform: translateY(-9px) rotate(-3deg); }
-        }
-        @keyframes badge2-float {
-          0%, 100% { transform: translateY(0px) rotate(4deg); }
-          50%       { transform: translateY(-11px) rotate(4deg); }
-        }
         @keyframes fadeSlideIn {
           from { opacity: 0; transform: translateX(36px); }
           to   { opacity: 1; transform: translateX(0); }
         }
-        @keyframes dot-ping {
-          0%        { transform: scale(1); opacity: 0.9; }
-          80%, 100% { transform: scale(2.4); opacity: 0; }
-        }
-
-        .hero-illus-float   { animation: floatY 5.5s ease-in-out infinite; }
-        .hero-ring-outer    { animation: rotateSlow 20s linear infinite; transform-origin: 210px 230px; }
-        .hero-ring-inner    { animation: rotateSlowReverse 13s linear infinite; transform-origin: 210px 230px; }
-        .hero-pulse-bg      { animation: pulse-ring 3.8s ease-in-out infinite; }
-        .hero-badge-1       { animation: badge-float 4.2s ease-in-out infinite; }
-        .hero-badge-2       { animation: badge2-float 5.1s ease-in-out 0.7s infinite; }
-        .hero-illus-wrap    { animation: fadeSlideIn 0.95s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
-        .hero-cursor-blink  { animation: blink-cursor 1s step-end infinite; }
-        .hero-flow          { animation: dash-flow 1.9s linear infinite; }
-        .hero-ping-1        { animation: dot-ping 1.8s ease-out infinite; transform-origin: 60px 268px; }
-        .hero-ping-2        { animation: dot-ping 1.8s ease-out 0.6s infinite; transform-origin: 220px 268px; }
 
         /* ── Interactive panel styles ── */
         @keyframes slideDown {
@@ -139,10 +40,6 @@ export default function Hero() {
         @keyframes panel-in {
           from { opacity: 0; transform: translateX(40px); }
           to   { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes live-pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); }
-          50%       { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
         }
 
         .interactive-panel {
@@ -169,13 +66,6 @@ export default function Hero() {
           transform: translateY(-2px);
           box-shadow: 0 4px 14px rgba(245,158,11,0.25);
         }
-        .live-dot {
-          animation: live-pulse 1.8s ease-in-out infinite;
-          border-radius: 50%;
-          width: 8px; height: 8px;
-          background: #22c55e;
-          display: inline-block;
-        }
         .stat-card {
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
@@ -186,6 +76,9 @@ export default function Hero() {
         .search-btn-pulse:focus {
           outline: none;
           box-shadow: 0 0 0 3px rgba(245,158,11,0.4);
+        }
+        .hero-illus-wrap {
+          animation: fadeSlideIn 0.95s cubic-bezier(0.16,1,0.3,1) 0.15s both;
         }
 
         @media (max-width: 900px) {
@@ -337,13 +230,12 @@ export default function Hero() {
                         Top Learners This Week
                       </span>
                     </div>
-                    <span style={{ fontSize: "0.72rem", color: "#f59e0b", fontWeight: 600 }}>LIVE</span>
                   </div>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     {[
                       { rank: 1, name: "Arjun K.", skill: "React", xp: "2,840 XP", medal: "🥇" },
-                      { rank: 2, name: "Priya S.", skill: "Python", xp: "2,610 XP", medal: "🥈" },
+                      { rank: 2, name: "Priya S.", skill: "AI", xp: "2,610 XP", medal: "🥈" },
                       { rank: 3, name: "Rohan M.", skill: "DSA", xp: "2,390 XP", medal: "🥉" },
                     ].map((user, i) => (
                       <div key={user.rank} style={{
@@ -361,7 +253,6 @@ export default function Hero() {
                             <span style={{ fontSize: "0.9rem", fontWeight: i === 0 ? 700 : 500, color: i === 0 ? "#1e3a8a" : "#475569", whiteSpace: "nowrap" }}>
                               {user.name}
                             </span>
-                            <span style={{ fontSize: "0.8rem", color: "#f59e0b", fontWeight: 700, flexShrink: 0 }}>{user.xp}</span>
                           </div>
                           <div style={{ fontSize: "0.75rem", color: "#94a3b8", marginTop: "2px" }}>{user.skill}</div>
                         </div>
