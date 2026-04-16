@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com",
+    baseURL: "http://localhost:4000",
 });
 
 // https://skillconnect-backend-7ftb.onrender.com
