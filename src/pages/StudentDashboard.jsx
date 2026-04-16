@@ -720,12 +720,25 @@ export default function StudentDashboard() {
                           <h3 className="font-semibold text-blue-900">{project.title}</h3>
                           <p className="text-sm text-blue-600">{project.community?.name}</p>
                         </div>
-                        <span className={`text-xs px-3 py-1 rounded-full border font-medium ${project.projectStatus === "open"
-                            ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                            : "bg-red-50 text-red-500 border-red-200"
-                          }`}>
-                          {project.projectStatus}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {/* Submission Status Badge */}
+                          {(project.assignmentStatus === "submitted" || project.assignmentStatus === "graded") && (
+                            <span className={`text-xs px-3 py-1 rounded-full border font-medium ${
+                              project.assignmentStatus === "graded"
+                                ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                : "bg-amber-50 text-amber-600 border-amber-200"
+                            }`}>
+                              {project.assignmentStatus === "graded" ? "✅ Graded" : "📤 Submitted"}
+                            </span>
+                          )}
+                          {/* Project Open/Closed Badge */}
+                          <span className={`text-xs px-3 py-1 rounded-full border font-medium ${project.projectStatus === "open"
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                              : "bg-red-50 text-red-500 border-red-200"
+                            }`}>
+                            {project.projectStatus}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex justify-between items-center text-sm mt-3">
                         <span className="text-blue-600">Due: {new Date(project.dueDate).toLocaleDateString()}</span>

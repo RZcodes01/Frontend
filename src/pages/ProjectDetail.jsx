@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Layers, Clock, Code2, User } from "lucide-react";
+import { ArrowLeft, Calendar, Layers, Clock, Code2, User, CheckCircle2, Star } from "lucide-react";
 import { fetchProjectById } from "../api/project.api";
+import { getMySubmissions } from "../api/submission.api";
 
 export default function ProjectDetail() {
   const { projectId } = useParams();
@@ -9,6 +10,7 @@ export default function ProjectDetail() {
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submission, setSubmission] = useState(null);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -16,6 +18,18 @@ export default function ProjectDetail() {
         const res = await fetchProjectById(projectId);
         // Your backend returns { success: true, data: project }
         setProject(res.data.data);
+
+        // Check if current student already submitted this project
+        try {
+          const subRes = await getMySubmissions();
+          const submissions = subRes.data.data || [];
+          const match = submissions.find(
+            (s) => (s.projectId?._id || s.projectId) === projectId
+          );
+          if (match) setSubmission(match);
+        } catch {
+          // Not a student or no submissions — ignore
+        }
       } catch (err) {
         console.error("Failed to fetch project", err);
       } finally {
@@ -24,7 +38,7 @@ export default function ProjectDetail() {
     };
 
     loadProject();
-  }, [projectId ]);
+  }, [projectId]);
 
   if (loading) {
     return (
@@ -166,15 +180,47 @@ export default function ProjectDetail() {
               </div>
             </div>
 
-            {/* Placeholder for future "Submit Project" Button */}
-            {!isClosed && (
+            {/* Submit / Status Button */}
+            {submission ? (
+              <div className="mt-8 space-y-3">
+                {/* Submitted Badge */}
+                <div className={`w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm border ${
+                  submission.status === "reviewed"
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                    : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                }`}>
+                  <CheckCircle2 size={18} />
+                  {submission.status === "reviewed" ? "Reviewed" : "Submitted"}
+                </div>
+
+                {/* Grade & Feedback (if reviewed) */}
+                {submission.status === "reviewed" && (
+                  <div className="bg-neutral-800/50 rounded-xl border border-neutral-700 p-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-neutral-500 uppercase tracking-wider font-bold">Grade</span>
+                      <div className="flex items-center gap-1.5">
+                        <Star size={14} className="text-amber-400" />
+                        <span className="text-lg font-black text-white">{submission.grade}</span>
+                        <span className="text-neutral-500 text-sm">/100</span>
+                      </div>
+                    </div>
+                    {submission.feedback && (
+                      <div>
+                        <span className="text-xs text-neutral-500 uppercase tracking-wider font-bold">Feedback</span>
+                        <p className="text-sm text-neutral-300 mt-1 leading-relaxed">{submission.feedback}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : !isClosed ? (
               <button
                 onClick={() => navigate(`/projects/${projectId}/submit`)}
                 className="w-full mt-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-cyan-900/20"
               >
                 Submit Project
               </button>
-            )}
+            ) : null}
           </div>
         </div>
 
