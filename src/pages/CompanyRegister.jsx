@@ -1,39 +1,59 @@
 import React, { useState } from "react";
 import { toast } from 'sonner';
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "../api/auth.api";
+import { registerUser, applyForCompany } from "../api/auth.api";
 
 const CompanyRegister = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const isLoggedIn = !!localStorage.getItem("accessToken");
 
   const [companyData, setCompanyData] = useState({
-    company_name: "",
-    company_id: "",
+    // Account fields (only used when not logged in)
+    name: "",
     email: "",
-    website: "",
-    industry_type: "",
-    description: "",
-    password: ""
+    password: "",
+    phone: "",
+    // Company-specific fields
+    company_name: "",
+    company_website: "",
+    company_industry: "",
+    company_description: "",
   });
 
   const handleCompanyChange = (e) =>
     setCompanyData({ ...companyData, [e.target.name]: e.target.value });
 
-  // ---------------- COMPANY REGISTER ----------------
   const handleCompanySubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await registerUser({
-        ...companyData,
-        role: "company"
-      });
-
-      toast.success(res.data.message);
-      navigate("/login");
-
+      if (isLoggedIn) {
+        // Already logged in → just apply for company role
+        const res = await applyForCompany({
+          company_name: companyData.company_name,
+          company_website: companyData.company_website,
+          company_industry: companyData.company_industry,
+          company_description: companyData.company_description,
+        });
+        toast.success(res.data.message || "Application submitted! Your request is under review.");
+      } else {
+        // Not logged in → register new account with company application
+        const res = await registerUser({
+          name: companyData.name,
+          email: companyData.email,
+          password: companyData.password,
+          phone: companyData.phone,
+          registrationType: "company",
+          company_name: companyData.company_name,
+          company_website: companyData.company_website,
+          company_industry: companyData.company_industry,
+          company_description: companyData.company_description,
+        });
+        toast.success(res.data.message || "OTP sent to your email");
+        navigate("/verify-otp", { state: { email: companyData.email } });
+      }
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
     } finally {
@@ -105,11 +125,62 @@ const CompanyRegister = () => {
         {/* Header */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-slate-800">Company Registration</h2>
-          <p className="text-slate-500 text-sm mt-1">Register your company on SkillConnect</p>
+          <p className="text-slate-500 text-sm mt-1">
+            {isLoggedIn
+              ? "Submit your company application for admin review."
+              : "Create your account & register your company. Admin will review and approve."}
+          </p>
         </div>
 
         {/* COMPANY FORM */}
         <form onSubmit={handleCompanySubmit} className="space-y-5">
+
+          {/* Account fields — only shown when NOT logged in */}
+          {!isLoggedIn && (
+            <>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Full Name"
+                value={companyData.name}
+                onChange={handleCompanyChange}
+                required
+                className="w-full px-4 py-3 border rounded-xl"
+              />
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={companyData.email}
+                onChange={handleCompanyChange}
+                required
+                className="w-full px-4 py-3 border rounded-xl"
+              />
+
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Phone Number"
+                value={companyData.phone}
+                onChange={handleCompanyChange}
+                required
+                className="w-full px-4 py-3 border rounded-xl"
+              />
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a Password"
+                value={companyData.password}
+                onChange={handleCompanyChange}
+                required
+                className="w-full px-4 py-3 border rounded-xl"
+              />
+
+              <hr className="border-slate-100 my-1" />
+            </>
+          )}
 
           <input
             type="text"
@@ -122,28 +193,17 @@ const CompanyRegister = () => {
           />
 
           <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={companyData.email}
-            onChange={handleCompanyChange}
-            required
-            className="w-full px-4 py-3 border rounded-xl"
-          />
-
-          <input
             type="url"
-            name="website"
+            name="company_website"
             placeholder="Website (https://...)"
-            value={companyData.website}
+            value={companyData.company_website}
             onChange={handleCompanyChange}
-            required
             className="w-full px-4 py-3 border rounded-xl"
           />
 
           <select
-            name="industry_type"
-            value={companyData.industry_type}
+            name="company_industry"
+            value={companyData.company_industry}
             onChange={handleCompanyChange}
             required
             className="w-full px-4 py-3 border rounded-xl text-slate-500"
@@ -161,38 +221,28 @@ const CompanyRegister = () => {
           </select>
 
           <textarea
-            name="description"
+            name="company_description"
             placeholder="Company Description"
-            value={companyData.description}
+            value={companyData.company_description}
             onChange={handleCompanyChange}
             required
             rows={3}
             className="w-full px-4 py-3 border rounded-xl resize-none"
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={companyData.password}
-            onChange={handleCompanyChange}
-            required
-            className="w-full px-4 py-3 border rounded-xl"
-          />
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold"
+            className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
           >
-            {loading ? "Processing..." : "Register Company"}
+            {loading ? "Submitting..." : (isLoggedIn ? "Submit Company Application" : "Register & Apply")}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <button
             onClick={() => navigate("/login")}
-            className="text-blue-600 font-bold"
+            className="text-blue-600 font-bold text-sm"
           >
             Already have an account? Login
           </button>

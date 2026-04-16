@@ -1,37 +1,56 @@
 import React, { useState } from "react";
 import { toast } from 'sonner';
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { registerUser, applyForMentor } from "../api/auth.api";
 
 const MentorRegister = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const isLoggedIn = !!localStorage.getItem("accessToken");
+
+  // Full registration form (when not logged in)
   const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
     expertise: "",
     experience_years: "",
     resume: "",
-    resumeFile: null // State to handle the chosen file
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      // Logic remains unchanged: sending JSON data
-      await axios.post(
-        "http://localhost:5000/api/mentors/apply",
-        {
+      if (isLoggedIn) {
+        // Already logged in → just apply for mentor role
+        const res = await applyForMentor({
           expertise: form.expertise.split(",").map((e) => e.trim()),
-          experience_years: form.experience_years,
+          experience_years: Number(form.experience_years),
           resume: form.resume
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-          }
-        }
-      );
-
-      toast.success("Application submitted successfully");
+        });
+        toast.success(res.data.message || "Application submitted! Your request is under review.");
+      } else {
+        // Not logged in → register new account with mentor application
+        const res = await registerUser({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          phone: form.phone,
+          registrationType: "mentor",
+          expertise: form.expertise.split(",").map((e) => e.trim()),
+          experience_years: Number(form.experience_years),
+          resume: form.resume
+        });
+        toast.success(res.data.message || "OTP sent to your email");
+        navigate("/verify-otp", { state: { email: form.email } });
+      }
     } catch (err) {
-      toast.error("Application failed");
+      toast.error(err.response?.data?.message || "Application failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,9 +114,69 @@ const MentorRegister = () => {
       />
 
       <div className="max-w-lg mx-auto bg-white p-8 rounded-2xl shadow" style={{ position: "relative", zIndex: 1, width: "100%" }}>
-        <h2 className="text-2xl font-bold mb-6 text-slate-900">Apply As Mentor</h2>
+        <h2 className="text-2xl font-bold mb-2 text-slate-900">Apply As Mentor</h2>
+        <p className="text-slate-500 text-sm mb-6">
+          {isLoggedIn
+            ? "Submit your mentor application for admin review."
+            : "Create your account & submit your mentor application. Admin will review and approve."}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* Account fields — only shown when NOT logged in */}
+          {!isLoggedIn && (
+            <>
+              <div>
+                <label className="block font-semibold mb-1 text-slate-700">Full Name</label>
+                <input
+                  type="text"
+                  className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
+                  placeholder="John Doe"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1 text-slate-700">Email</label>
+                <input
+                  type="email"
+                  className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1 text-slate-700">Phone</label>
+                <input
+                  type="tel"
+                  className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
+                  placeholder="9876543210"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold mb-1 text-slate-700">Password</label>
+                <input
+                  type="password"
+                  className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
+                  placeholder="Create a password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                />
+              </div>
+
+              <hr className="border-slate-100 my-2" />
+            </>
+          )}
 
           <div>
             <label className="block font-semibold mb-1 text-slate-700">Expertise (comma separated)</label>
@@ -124,7 +203,7 @@ const MentorRegister = () => {
 
           <div>
             <label className="block font-semibold mb-0.5 text-slate-700">Resume Link</label>
-            <p className="text-xs text-slate-500 mb-1.5">Please provide a public link to your portfolio or resume (Google Drive, Dropbox, or PDF URL).</p>
+            <p className="text-xs text-slate-500 mb-1.5">Provide a public link to your portfolio or resume (Google Drive, Dropbox, or PDF URL).</p>
             <input
               type="text"
               className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
@@ -135,29 +214,23 @@ const MentorRegister = () => {
             />
           </div>
 
-          <div>
-            <label className="block font-semibold mb-1 text-slate-700">Or Upload File</label>
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              className="w-full text-sm text-slate-500
-                file:mr-4 file:py-2.5 file:px-4
-                file:rounded-xl file:border-0
-                file:text-sm file:font-bold
-                file:bg-slate-100 file:text-slate-700
-                hover:file:bg-slate-200
-                cursor-pointer border border-slate-100 rounded-xl p-1"
-              onChange={(e) => setForm({ ...form, resumeFile: e.target.files[0] })}
-            />
-          </div>
-
           <button
             type="submit"
-            className="w-full bg-slate-900 text-white py-3 mt-4 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200"
+            disabled={loading}
+            className="w-full bg-slate-900 text-white py-3 mt-4 rounded-xl font-bold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit Application
+            {loading ? "Submitting..." : (isLoggedIn ? "Submit Application" : "Register & Apply")}
           </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => navigate("/login")}
+            className="text-slate-600 font-bold text-sm"
+          >
+            Already have an account? Login
+          </button>
+        </div>
       </div>
     </div>
   );
