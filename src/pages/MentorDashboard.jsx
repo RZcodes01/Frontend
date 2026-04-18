@@ -4,9 +4,9 @@ import { useNavigate } from "react-router-dom";
 import {
   Users, Video, Clock, ChevronRight,
   MapPin, ExternalLink, Plus, Edit, Trash2, X, Loader2,
-  BookOpen
+  BookOpen, Search, Mail, Phone, Crown, UserCheck, ChevronDown, ChevronUp
 } from "lucide-react";
-import { getMentorProjects, myAllStudents, myAssignedCommunities } from "../api/mentor.api";
+import { getMentorProjects, myAllStudents, myAssignedCommunities, getEnrolledUsersByCommunity } from "../api/mentor.api";
 import { createBatch, deleteBatch, fetchMentorAssignedBatches, updateBatch } from "../api/batch.api";
 import { createProject, deleteProject, updateProject } from "../api/project.api";
 
@@ -32,6 +32,12 @@ export default function MentorDashboard() {
   const [batches, setBatches] = useState([]);
   const [mentorProjects, setMentorProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // ===== ENROLLED USERS STATE =====
+  const [enrolledData, setEnrolledData] = useState({ communities: [], totalStudents: 0 });
+  const [enrolledLoading, setEnrolledLoading] = useState(false);
+  const [enrolledSearch, setEnrolledSearch] = useState("");
+  const [expandedCommunities, setExpandedCommunities] = useState({});
 
   // ===== PROJECT MODAL STATE =====
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -87,6 +93,23 @@ export default function MentorDashboard() {
 
     fetchData();
   }, []);
+
+  // ===== FETCH ENROLLED USERS (lazy, on tab click) =====
+  const fetchEnrolledUsers = async () => {
+    try {
+      setEnrolledLoading(true);
+      const res = await getEnrolledUsersByCommunity();
+      setEnrolledData({
+        communities: res.data.communities || [],
+        totalStudents: res.data.totalStudents || 0
+      });
+    } catch (err) {
+      console.error("Enrolled users fetch error:", err);
+      toast.error("Failed to load enrolled users");
+    } finally {
+      setEnrolledLoading(false);
+    }
+  };
 
   const stats = useMemo(() => ({
     totalStudents: allStudents.length,
@@ -268,16 +291,23 @@ export default function MentorDashboard() {
           {[
             { id: "communities", label: "Projects" },
             { id: "my-communities", label: "Communities" },
-            { id: "sessions", label: "Sessions" }
+            { id: "sessions", label: "Sessions" },
+            { id: "enrolled-users", label: "Enrolled Users", icon: UserCheck }
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === tab.id
+              onClick={() => {
+                setActiveTab(tab.id);
+                if (tab.id === "enrolled-users" && enrolledData.communities.length === 0) {
+                  fetchEnrolledUsers();
+                }
+              }}
+              className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === tab.id
                   ? "bg-blue-900 text-white"
                   : "bg-white border border-blue-200 text-blue-600 hover:border-amber-400"
                 }`}
             >
+              {tab.icon && <tab.icon size={15} />}
               {tab.label}
             </button>
           ))}
@@ -435,6 +465,150 @@ export default function MentorDashboard() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ================= ENROLLED USERS TAB ================= */}
+        {activeTab === "enrolled-users" && (
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+              <div>
+                <h2 className="text-xl font-bold text-blue-900 tracking-tight">Enrolled Users</h2>
+                <p className="text-sm text-blue-600 mt-1">
+                  {enrolledData.totalStudents} student{enrolledData.totalStudents !== 1 ? 's' : ''} across {enrolledData.communities.length} communit{enrolledData.communities.length !== 1 ? 'ies' : 'y'}
+                </p>
+              </div>
+              <div className="relative w-full sm:w-72">
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400" />
+                <input
+                  type="text"
+                  placeholder="Search students..."
+                  value={enrolledSearch}
+                  onChange={e => setEnrolledSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-blue-200 rounded-lg bg-white text-blue-900 placeholder-blue-300 outline-none focus:border-amber-400 transition-all text-sm"
+                />
+              </div>
+            </div>
+
+            {enrolledLoading ? (
+              <div className="bg-white rounded-xl border border-blue-200 p-12 shadow-sm flex items-center justify-center">
+                <Loader2 className="animate-spin text-blue-600" size={28} />
+                <span className="ml-3 text-blue-600 font-medium">Loading enrolled users...</span>
+              </div>
+            ) : enrolledData.communities.length === 0 ? (
+              <div className="bg-white rounded-xl border border-blue-200 p-12 shadow-sm text-blue-500 text-center">
+                No communities assigned yet.
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {enrolledData.communities.map(community => {
+                  const isExpanded = expandedCommunities[community.communityId] !== false;
+                  const filteredStudents = community.students.filter(s =>
+                    !enrolledSearch ||
+                    s.name?.toLowerCase().includes(enrolledSearch.toLowerCase()) ||
+                    s.email?.toLowerCase().includes(enrolledSearch.toLowerCase()) ||
+                    s.username?.toLowerCase().includes(enrolledSearch.toLowerCase())
+                  );
+
+                  return (
+                    <div key={community.communityId} className="bg-white rounded-xl border border-blue-200 shadow-sm overflow-hidden">
+                      {/* Community Header */}
+                      <button
+                        onClick={() => setExpandedCommunities(prev => ({
+                          ...prev,
+                          [community.communityId]: !isExpanded
+                        }))}
+                        className="w-full flex items-center justify-between p-5 hover:bg-blue-50/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center">
+                            <BookOpen size={18} className="text-amber-400" />
+                          </div>
+                          <div className="text-left">
+                            <h3 className="font-bold text-blue-900">{community.communityName}</h3>
+                            <p className="text-xs text-blue-500">
+                              {community.students.length} enrolled student{community.students.length !== 1 ? 's' : ''}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1 rounded-full">
+                            {filteredStudents.length}{enrolledSearch ? ` / ${community.students.length}` : ''}
+                          </span>
+                          {isExpanded ? <ChevronUp size={18} className="text-blue-400" /> : <ChevronDown size={18} className="text-blue-400" />}
+                        </div>
+                      </button>
+
+                      {/* Students List */}
+                      {isExpanded && (
+                        <div className="border-t border-blue-100">
+                          {filteredStudents.length > 0 ? (
+                            <div className="divide-y divide-blue-50">
+                              {filteredStudents.map((student, idx) => (
+                                <div
+                                  key={student._id}
+                                  className="flex items-center gap-4 px-5 py-4 hover:bg-blue-50/30 transition-colors"
+                                >
+                                  {/* Index */}
+                                  <span className="text-xs font-bold text-blue-300 w-6 text-center">
+                                    {idx + 1}
+                                  </span>
+
+                                  {/* Avatar */}
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-blue-100">
+                                    {student.profileImage ? (
+                                      <img src={student.profileImage} alt={student.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <span className="text-sm font-bold text-blue-600">
+                                        {student.name?.charAt(0)?.toUpperCase()}
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Info */}
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <h4 className="font-semibold text-blue-900 text-sm truncate">{student.name}</h4>
+                                      {student.plan === "pro" && (
+                                        <span className="flex items-center gap-1 bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                          <Crown size={10} /> PRO
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-3 mt-0.5">
+                                      <span className="flex items-center gap-1 text-xs text-blue-500">
+                                        <Mail size={11} /> {student.email}
+                                      </span>
+                                      {student.phone && (
+                                        <span className="flex items-center gap-1 text-xs text-blue-400">
+                                          <Phone size={11} /> {student.phone}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Enrolled date */}
+                                  <div className="text-right flex-shrink-0 hidden sm:block">
+                                    <p className="text-[10px] text-blue-400 uppercase font-semibold">Enrolled</p>
+                                    <p className="text-xs text-blue-600 font-medium">
+                                      {new Date(student.enrolledAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="p-8 text-center text-blue-400 text-sm">
+                              {enrolledSearch ? "No students match your search." : "No students enrolled yet."}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 

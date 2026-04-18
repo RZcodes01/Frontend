@@ -9,3 +9,5 @@ export const allProjectSubmissions = (projectId) => axiosInstance.get(`/mentorda
 export const getMentorProjects = () => axiosInstance.get("/mentordashboards/all-projects");
 
 export const gradeSubmission = (submissionId, data) => axiosInstance.put(`/mentordashboards/grade-submission/${submissionId}`, data);
+
+export const getEnrolledUsersByCommunity = () => axiosInstance.get("/mentordashboards/enrolled-users");
