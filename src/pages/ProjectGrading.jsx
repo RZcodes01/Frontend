@@ -200,32 +200,40 @@ export default function ProjectSubmissions() {
 
                                     {/* Files */}
                                     <div className="flex flex-wrap gap-3 mt-6">
-                                        {sub.files.map((file, idx) => (
-                                            <a
-                                                key={idx}
-                                                href={file.url}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-orange-500 transition-all"
-                                            >
-                                                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-slate-400">
-                                                    {file.type === "video" ? (
-                                                        <Play size={16} />
-                                                    ) : (
-                                                        <FileText size={16} />
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <p className="text-[9px] font-black uppercase">
-                                                        View File
-                                                    </p>
-                                                    <p className="text-[8px] text-slate-400 uppercase">
-                                                        {file.type}
-                                                    </p>
-                                                </div>
-                                                <ExternalLink size={12} />
-                                            </a>
-                                        ))}
+                                        {sub.files.map((file, idx) => {
+                                            // For documents (PDFs etc.), use Google Docs Viewer to display inline
+                                            // instead of Cloudinary raw URL which forces download
+                                            const viewUrl = file.type === "document"
+                                                ? `https://docs.google.com/viewer?url=${encodeURIComponent(file.url)}&embedded=true`
+                                                : file.url;
+
+                                            return (
+                                                <a
+                                                    key={idx}
+                                                    href={viewUrl}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 hover:border-orange-500 transition-all"
+                                                >
+                                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-slate-400">
+                                                        {file.type === "video" ? (
+                                                            <Play size={16} />
+                                                        ) : (
+                                                            <FileText size={16} />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[9px] font-black uppercase">
+                                                            View File
+                                                        </p>
+                                                        <p className="text-[8px] text-slate-400 uppercase">
+                                                            {file.type}
+                                                        </p>
+                                                    </div>
+                                                    <ExternalLink size={12} />
+                                                </a>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>

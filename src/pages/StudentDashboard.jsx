@@ -862,28 +862,36 @@ export default function StudentDashboard() {
                             <div>
                               <p className="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-2">Uploaded Files</p>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                {sub.files.map((file, idx) => (
-                                  <a
-                                    key={idx}
-                                    href={file.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-3 p-3 bg-blue-50/80 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors group"
-                                  >
-                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0 border border-blue-100">
-                                      {file.type === "image" ? (
-                                        <img src={file.url} alt="" className="w-full h-full rounded-lg object-cover" />
-                                      ) : (
-                                        <FileText size={14} className="text-blue-500" />
-                                      )}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <p className="text-xs font-semibold text-blue-900 truncate capitalize">{file.type} file</p>
-                                      <p className="text-[10px] text-blue-500">Click to view</p>
-                                    </div>
-                                    <ExternalLink size={14} className="text-blue-400 group-hover:text-blue-600 flex-shrink-0" />
-                                  </a>
-                                ))}
+                                {sub.files.map((file, idx) => {
+                                  // For documents (PDFs etc.), use Google Docs Viewer to display inline
+                                  // instead of Cloudinary raw URL which forces download
+                                  const viewUrl = file.type === "document"
+                                    ? `https://docs.google.com/viewer?url=${encodeURIComponent(file.url)}&embedded=true`
+                                    : file.url;
+
+                                  return (
+                                    <a
+                                      key={idx}
+                                      href={viewUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex items-center gap-3 p-3 bg-blue-50/80 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors group"
+                                    >
+                                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0 border border-blue-100">
+                                        {file.type === "image" ? (
+                                          <img src={file.url} alt="" className="w-full h-full rounded-lg object-cover" />
+                                        ) : (
+                                          <FileText size={14} className="text-blue-500" />
+                                        )}
+                                      </div>
+                                      <div className="min-w-0 flex-1">
+                                        <p className="text-xs font-semibold text-blue-900 truncate capitalize">{file.type} file</p>
+                                        <p className="text-[10px] text-blue-500">Click to view</p>
+                                      </div>
+                                      <ExternalLink size={14} className="text-blue-400 group-hover:text-blue-600 flex-shrink-0" />
+                                    </a>
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
