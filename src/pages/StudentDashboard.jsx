@@ -9,10 +9,17 @@ import {
   X,
   Download,
   Loader2,
-  ExternalLink
+  ExternalLink,
+  Github,
+  Globe,
+  CheckCircle,
+  MessageSquare,
+  Star,
+  Eye
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fetchMyBatches, fetchMyCommunities, fetchMyProjects } from '../api/userDashboard.api';
+import { getMySubmissions } from '../api/submission.api';
 import { generateCertificate, getScore } from '../api/certificate.api';
 import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
@@ -326,6 +333,7 @@ export default function StudentDashboard() {
   const [communities, setCommunities] = useState([]);
   const [batches, setBatches] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
   const [isPro, setIsPro] = useState(false);
   const [loading, setLoading] = useState(true);
   const [studentName, setStudentName] = useState("Student");
@@ -336,6 +344,7 @@ export default function StudentDashboard() {
   const [certDownloading, setCertDownloading] = useState(false);
   const [communityScore, setCommunityScore] = useState(0);
   const [scoreLoading, setScoreLoading] = useState(false);
+  const [expandedSubmission, setExpandedSubmission] = useState(null);
   const certRef = useRef(null);
   const navigate = useNavigate();
 
@@ -363,12 +372,14 @@ export default function StudentDashboard() {
         const hasProPlan = myCommunities.some(c => c.plan === "pro");
         if (hasProPlan) setIsPro(true);
 
-        const [batchRes, projectRes] = await Promise.all([
+        const [batchRes, projectRes, submissionsRes] = await Promise.all([
           fetchMyBatches(),
-          fetchMyProjects()
+          fetchMyProjects(),
+          getMySubmissions().catch(() => ({ data: { data: [] } }))
         ]);
         setBatches(batchRes.data.batches || []);
         setProjects(projectRes.data.projects || []);
+        setSubmissions(submissionsRes.data.data || []);
       } catch (err) {
         console.error("Dashboard load failed", err);
       } finally {
@@ -753,6 +764,157 @@ export default function StudentDashboard() {
                   ))}
                 </div>
               )}
+            </div>
+          </>
+        )}
+
+        {/* ── My Submissions ──────────────────────────────────────────────── */}
+        {submissions.length > 0 && (
+          <>
+            <SectionTitle title="My Submissions" />
+            <div className="bg-white rounded-xl border border-blue-200 p-6 shadow-sm mt-4 mb-10">
+              <div className="space-y-4">
+                {submissions.map((sub) => {
+                  const isExpanded = expandedSubmission === sub._id;
+                  const projectTitle = sub.projectId?.title || sub.title || "Untitled Project";
+                  const isReviewed = sub.status === "reviewed";
+
+                  return (
+                    <div
+                      key={sub._id}
+                      className="border border-blue-100 rounded-lg overflow-hidden transition-all duration-200 bg-blue-50/50 hover:border-blue-200"
+                    >
+                      {/* Submission Header */}
+                      <div className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="min-w-0 flex-1">
+                            <h3 className="font-semibold text-blue-900 truncate">{projectTitle}</h3>
+                            <p className="text-xs text-blue-500 mt-0.5">
+                              Submitted {new Date(sub.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                            {isReviewed && sub.grade != null && (
+                              <span className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-bold">
+                                <Star size={12} /> {sub.grade}/100
+                              </span>
+                            )}
+                            <span className={`text-xs px-3 py-1 rounded-full border font-medium ${
+                              isReviewed
+                                ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                                : "bg-amber-50 text-amber-600 border-amber-200"
+                            }`}>
+                              {isReviewed ? "✅ Reviewed" : "⏳ Pending"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Quick Info Row */}
+                        <div className="flex flex-wrap items-center gap-3 mt-3">
+                          {sub.githubLink && (
+                            <a
+                              href={sub.githubLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-blue-600 transition-colors bg-white px-3 py-1.5 rounded-lg border border-gray-200"
+                            >
+                              <Github size={13} /> GitHub
+                            </a>
+                          )}
+                          {sub.liveDemoLink && (
+                            <a
+                              href={sub.liveDemoLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-blue-600 transition-colors bg-white px-3 py-1.5 rounded-lg border border-gray-200"
+                            >
+                              <Globe size={13} /> Live Demo
+                            </a>
+                          )}
+                          {sub.files?.length > 0 && (
+                            <span className="flex items-center gap-1.5 text-xs text-gray-500 bg-white px-3 py-1.5 rounded-lg border border-gray-200">
+                              <FileText size={13} /> {sub.files.length} file{sub.files.length !== 1 ? "s" : ""}
+                            </span>
+                          )}
+                          <button
+                            onClick={() => setExpandedSubmission(isExpanded ? null : sub._id)}
+                            className="flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-amber-500 transition-colors ml-auto"
+                          >
+                            <Eye size={13} /> {isExpanded ? "Hide Details" : "View Details"}
+                            <ChevronRight size={14} className={`transition-transform duration-200 ${isExpanded ? "rotate-90" : ""}`} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Expanded Details */}
+                      {isExpanded && (
+                        <div className="border-t border-blue-100 bg-white p-4 space-y-4 animate-fadeIn">
+                          {/* Description */}
+                          {sub.description && (
+                            <div>
+                              <p className="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-1">Description</p>
+                              <p className="text-sm text-gray-700 leading-relaxed">{sub.description}</p>
+                            </div>
+                          )}
+
+                          {/* Uploaded Files */}
+                          {sub.files?.length > 0 && (
+                            <div>
+                              <p className="text-[10px] font-black text-blue-900 uppercase tracking-widest mb-2">Uploaded Files</p>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {sub.files.map((file, idx) => (
+                                  <a
+                                    key={idx}
+                                    href={file.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 p-3 bg-blue-50/80 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors group"
+                                  >
+                                    <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0 border border-blue-100">
+                                      {file.type === "image" ? (
+                                        <img src={file.url} alt="" className="w-full h-full rounded-lg object-cover" />
+                                      ) : (
+                                        <FileText size={14} className="text-blue-500" />
+                                      )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-xs font-semibold text-blue-900 truncate capitalize">{file.type} file</p>
+                                      <p className="text-[10px] text-blue-500">Click to view</p>
+                                    </div>
+                                    <ExternalLink size={14} className="text-blue-400 group-hover:text-blue-600 flex-shrink-0" />
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Grade & Feedback */}
+                          {isReviewed && (
+                            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black text-emerald-800 uppercase tracking-widest flex items-center gap-1.5">
+                                  <CheckCircle size={13} /> Review Results
+                                </span>
+                                {sub.grade != null && (
+                                  <span className="text-lg font-black text-emerald-700">{sub.grade}<span className="text-xs text-emerald-500 font-semibold">/100</span></span>
+                                )}
+                              </div>
+                              {sub.feedback && (
+                                <div>
+                                  <p className="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+                                    <MessageSquare size={12} /> Mentor Feedback
+                                  </p>
+                                  <p className="text-sm text-emerald-900 leading-relaxed">{sub.feedback}</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </>
         )}
