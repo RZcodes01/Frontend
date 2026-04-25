@@ -21,6 +21,9 @@ const MentorRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn && form.password.length < 8) {
+      return toast.error("Password must be at least 8 characters long");
+    }
     setLoading(true);
 
     try {
@@ -167,10 +170,11 @@ const MentorRegister = () => {
                 <input
                   type="password"
                   className="w-full border border-slate-200 p-3 rounded-xl focus:ring-2 focus:ring-slate-400 outline-none"
-                  placeholder="Create a password"
+                  placeholder="Create a password (min 8 characters)"
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   required
+                  minLength={8}
                 />
               </div>
 

@@ -26,6 +26,9 @@ const CompanyRegister = () => {
 
   const handleCompanySubmit = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn && companyData.password.length < 8) {
+      return toast.error("Password must be at least 8 characters long");
+    }
     setLoading(true);
 
     try {
@@ -171,10 +174,11 @@ const CompanyRegister = () => {
               <input
                 type="password"
                 name="password"
-                placeholder="Create a Password"
+                placeholder="Create a Password (min 8 characters)"
                 value={companyData.password}
                 onChange={handleCompanyChange}
                 required
+                minLength={8}
                 className="w-full px-4 py-3 border rounded-xl"
               />
 

@@ -22,6 +22,9 @@ const StudentRegister = () => {
   // ---------------- STUDENT REGISTER ----------------
   const handleStudentSubmit = async (e) => {
     e.preventDefault();
+    if (studentData.password.length < 8) {
+      return toast.error("Password must be at least 8 characters long");
+    }
     setLoading(true);
 
     try {
@@ -94,10 +97,11 @@ const StudentRegister = () => {
           <input
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Password (min 8 characters)"
             value={studentData.password}
             onChange={handleStudentChange}
             required
+            minLength={8}
             className="w-full px-4 py-3 border rounded-xl"
           />
 
