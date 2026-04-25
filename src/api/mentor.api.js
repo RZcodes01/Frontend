@@ -11,3 +11,5 @@ export const getMentorProjects = () => axiosInstance.get("/mentordashboards/all-
 export const gradeSubmission = (submissionId, data) => axiosInstance.put(`/mentordashboards/grade-submission/${submissionId}`, data);
 
 export const getEnrolledUsersByCommunity = () => axiosInstance.get("/mentordashboards/enrolled-users");
+
+export const fetchMentorStudentProfile = (studentId) => axiosInstance.get(`/mentordashboards/student/${studentId}`);
