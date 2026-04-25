@@ -89,7 +89,7 @@ export default function Navbar() {
   const navLinks = allNavLinks.filter(link => {
     // Hide Leaderboard and Career for company users
     if (
-      (link.path === '/leaderboard' || link.path === '/career') &&
+      (link.path === '/leaderboard' || link.path === '/career' || link.path === '/quickskills ') &&
       myData?.role === 'company'
     ) {
       return false;
