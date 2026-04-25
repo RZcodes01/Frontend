@@ -42,9 +42,9 @@ export default function ProjectDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-white font-medium">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-700 font-medium">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
           Loading Project...
         </div>
       </div>
@@ -53,12 +53,12 @@ export default function ProjectDetail() {
 
   if (!project) {
     return (
-      <div className="min-h-screen bg-neutral-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-800">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Project not found</h2>
           <button
             onClick={() => navigate(-1)}
-            className="text-cyan-400 hover:underline"
+            className="text-blue-600 hover:underline"
           >
             Go Back
           </button>
@@ -70,13 +70,13 @@ export default function ProjectDetail() {
   const isClosed = new Date(project.dueDate) < new Date();
 
   return (
-    <div className="min-h-screen bg-neutral-950">
+    <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <nav className="bg-neutral-900 border-b border-neutral-800 sticky top-0 z-50">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-neutral-400 hover:text-cyan-400 font-semibold transition-colors"
+            className="flex items-center gap-2 text-gray-500 hover:text-blue-600 font-semibold transition-colors"
           >
             <ArrowLeft size={20} />
             Back
@@ -89,7 +89,7 @@ export default function ProjectDetail() {
         {/* Left Column: Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Banner Image */}
-          <div className="aspect-video bg-neutral-900 rounded-3xl border border-neutral-800 relative overflow-hidden">
+          <div className="aspect-video bg-white rounded-3xl border border-gray-200 shadow-sm relative overflow-hidden">
             {project.bannerImage ? (
               <img
                 src={project.bannerImage}
@@ -97,34 +97,34 @@ export default function ProjectDetail() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-cyan-500/10 to-blue-500/10">
-                <Code2 size={80} className="text-white/10" />
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+                <Code2 size={80} className="text-gray-200" />
               </div>
             )}
           </div>
 
           {/* Project Header & Description */}
-          <div className="bg-neutral-900 rounded-3xl p-8 border border-neutral-800">
+          <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm">
             <div className="flex justify-between items-start mb-4">
-              <h1 className="text-4xl font-black text-white">
+              <h1 className="text-4xl font-black text-gray-900">
                 {project.title}
               </h1>
               <span
                 className={`px-4 py-1 rounded-full text-xs font-semibold border ${isClosed
-                    ? "bg-red-400/10 text-red-400 border-red-400/20"
-                    : "bg-emerald-400/10 text-emerald-400 border-emerald-400/20"
+                    ? "bg-red-50 text-red-600 border-red-200"
+                    : "bg-emerald-50 text-emerald-600 border-emerald-200"
                   }`}
               >
                 {isClosed ? "Closed" : "Open"}
               </span>
             </div>
 
-            <p className="text-neutral-400 text-lg mb-8 leading-relaxed">
+            <p className="text-gray-600 text-lg mb-8 leading-relaxed">
               {project.description}
             </p>
 
-            <div className="flex items-center gap-3 text-neutral-400 text-sm border-t border-neutral-800 pt-6">
-              <Calendar size={18} className="text-cyan-500" />
+            <div className="flex items-center gap-3 text-gray-500 text-sm border-t border-gray-200 pt-6">
+              <Calendar size={18} className="text-blue-500" />
               <span className="font-medium">Due Date:</span>
               {new Date(project.dueDate).toLocaleDateString(undefined, {
                 weekday: 'long',
@@ -138,44 +138,44 @@ export default function ProjectDetail() {
 
         {/* Right Column: Sidebar Info */}
         <div className="space-y-6">
-          <div className="bg-neutral-900 rounded-3xl p-6 border border-neutral-800 sticky top-24">
-            <h2 className="text-white font-bold text-xl mb-6 border-b border-neutral-800 pb-4">
+          <div className="bg-white rounded-3xl p-6 border border-gray-200 shadow-sm sticky top-24">
+            <h2 className="text-gray-900 font-bold text-xl mb-6 border-b border-gray-200 pb-4">
               Project Details
             </h2>
 
             <div className="space-y-5">
               {/* Community Info */}
               <div className="flex items-start gap-4">
-                <div className="p-2 bg-neutral-800 rounded-lg">
-                  <Layers size={20} className="text-cyan-400" />
+                <div className="p-2 bg-blue-50 rounded-lg">
+                  <Layers size={20} className="text-blue-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Community</p>
-                  <p className="text-neutral-200 font-medium">{project.communityId?.name || "No Community"}</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Community</p>
+                  <p className="text-gray-800 font-medium">{project.communityId?.name || "No Community"}</p>
                 </div>
               </div>
 
               {/* Batch Info */}
               {project.batchId && (
                 <div className="flex items-start gap-4">
-                  <div className="p-2 bg-neutral-800 rounded-lg">
-                    <Clock size={20} className="text-emerald-400" />
+                  <div className="p-2 bg-emerald-50 rounded-lg">
+                    <Clock size={20} className="text-emerald-500" />
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Batch</p>
-                    <p className="text-neutral-200 font-medium">{project.batchId?.name}</p>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Batch</p>
+                    <p className="text-gray-800 font-medium">{project.batchId?.name}</p>
                   </div>
                 </div>
               )}
 
               {/* Mentor Info */}
               <div className="flex items-start gap-4">
-                <div className="p-2 bg-neutral-800 rounded-lg">
-                  <User size={20} className="text-purple-400" />
+                <div className="p-2 bg-purple-50 rounded-lg">
+                  <User size={20} className="text-purple-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Mentor</p>
-                  <p className="text-neutral-200 font-medium">{project.mentorId?.name || "Assigned Mentor"}</p>
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Mentor</p>
+                  <p className="text-gray-800 font-medium">{project.mentorId?.name || "Assigned Mentor"}</p>
                 </div>
               </div>
             </div>
@@ -186,8 +186,8 @@ export default function ProjectDetail() {
                 {/* Submitted Badge */}
                 <div className={`w-full py-4 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm border ${
                   submission.status === "reviewed"
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                    : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                    ? "bg-emerald-50 text-emerald-600 border-emerald-200"
+                    : "bg-amber-50 text-amber-600 border-amber-200"
                 }`}>
                   <CheckCircle2 size={18} />
                   {submission.status === "reviewed" ? "Reviewed" : "Submitted"}
@@ -195,19 +195,19 @@ export default function ProjectDetail() {
 
                 {/* Grade & Feedback (if reviewed) */}
                 {submission.status === "reviewed" && (
-                  <div className="bg-neutral-800/50 rounded-xl border border-neutral-700 p-4 space-y-2">
+                  <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-neutral-500 uppercase tracking-wider font-bold">Grade</span>
+                      <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Grade</span>
                       <div className="flex items-center gap-1.5">
-                        <Star size={14} className="text-amber-400" />
-                        <span className="text-lg font-black text-white">{submission.grade}</span>
-                        <span className="text-neutral-500 text-sm">/100</span>
+                        <Star size={14} className="text-amber-500" />
+                        <span className="text-lg font-black text-gray-900">{submission.grade}</span>
+                        <span className="text-gray-400 text-sm">/100</span>
                       </div>
                     </div>
                     {submission.feedback && (
                       <div>
-                        <span className="text-xs text-neutral-500 uppercase tracking-wider font-bold">Feedback</span>
-                        <p className="text-sm text-neutral-300 mt-1 leading-relaxed">{submission.feedback}</p>
+                        <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Feedback</span>
+                        <p className="text-sm text-gray-600 mt-1 leading-relaxed">{submission.feedback}</p>
                       </div>
                     )}
                   </div>
@@ -216,7 +216,7 @@ export default function ProjectDetail() {
             ) : !isClosed ? (
               <button
                 onClick={() => navigate(`/projects/${projectId}/submit`)}
-                className="w-full mt-8 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-cyan-900/20"
+                className="w-full mt-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-200/50"
               >
                 Submit Project
               </button>

@@ -53,20 +53,20 @@ function CommentPanel({ reelId, comments, onClose, onAddComment, onLikeComment }
 
   return (
     <>
-      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 299, background: "rgba(0,0,0,0.45)", animation: "fadeIn 0.2s ease" }} />
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 299, background: "rgba(0,0,0,0.25)", animation: "fadeIn 0.2s ease" }} />
       <div style={{
         position: "fixed", left: "50%", bottom: 0, transform: "translateX(-50%)",
-        width: "min(430px, 100vw)", height: "60dvh", background: "#0f172a", borderRadius: "20px 20px 0 0",
-        display: "flex", flexDirection: "column", zIndex: 300, boxShadow: "0 -8px 40px rgba(0,0,0,0.7)",
+        width: "min(430px, 100vw)", height: "60dvh", background: "#ffffff", borderRadius: "20px 20px 0 0",
+        display: "flex", flexDirection: "column", zIndex: 300, boxShadow: "0 -8px 40px rgba(0,0,0,0.15)",
         animation: "sheetUp 0.3s cubic-bezier(.34,1.2,.64,1)", overflow: "hidden",
       }}>
-        <div style={{ padding: "12px 16px 8px", borderBottom: "1px solid rgba(99,132,199,0.15)", flexShrink: 0 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(251,191,36,0.3)", margin: "0 auto 12px" }} />
+        <div style={{ padding: "12px 16px 8px", borderBottom: "1px solid #e5e7eb", flexShrink: 0 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: "#d1d5db", margin: "0 auto 12px" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: "#EFF6FF", fontFamily: "'Nunito',sans-serif", fontWeight: 800, fontSize: "1rem" }}>
+            <span style={{ color: "#1f2937", fontFamily: "'Nunito',sans-serif", fontWeight: 800, fontSize: "1rem" }}>
               Comments &nbsp;·&nbsp; {formatCount(comments.length)}
             </span>
-            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "rgba(147,197,253,0.5)" }}>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af" }}>
               <ChevronDown size={22} />
             </button>
           </div>
@@ -74,28 +74,28 @@ function CommentPanel({ reelId, comments, onClose, onAddComment, onLikeComment }
         <div ref={listRef} style={{ flex: 1, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 20 }}>
           {comments.map((c) => (
             <div key={c.id} style={{ display: "flex", gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", background: "rgba(99,132,199,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>{c.avatar}</div>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center" }}>{c.avatar}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-                  <span style={{ color: "#EFF6FF", fontWeight: 700, fontSize: "0.82rem" }}>{c.user}</span>
-                  <span style={{ color: "rgba(147,197,253,0.35)", fontSize: "0.72rem" }}>{c.time}</span>
+                  <span style={{ color: "#1f2937", fontWeight: 700, fontSize: "0.82rem" }}>{c.user}</span>
+                  <span style={{ color: "#9ca3af", fontSize: "0.72rem" }}>{c.time}</span>
                 </div>
-                <p style={{ color: "rgba(239,246,255,0.88)", fontSize: "0.88rem", marginTop: 2 }}>{c.text}</p>
-                <button onClick={() => onLikeComment(reelId, c.id)} style={{ background: "none", border: "none", marginTop: 6, color: c.liked ? "#FBBF24" : "rgba(147,197,253,0.4)", fontSize: "0.75rem" }}>
-                  <ThumbsUp size={13} fill={c.liked ? "#FBBF24" : "transparent"} /> {c.likes > 0 && c.likes}
+                <p style={{ color: "#374151", fontSize: "0.88rem", marginTop: 2 }}>{c.text}</p>
+                <button onClick={() => onLikeComment(reelId, c.id)} style={{ background: "none", border: "none", marginTop: 6, color: c.liked ? "#2563eb" : "#9ca3af", fontSize: "0.75rem", cursor: "pointer" }}>
+                  <ThumbsUp size={13} fill={c.liked ? "#2563eb" : "transparent"} /> {c.likes > 0 && c.likes}
                 </button>
               </div>
             </div>
           ))}
         </div>
-        <div style={{ padding: "10px 12px 18px", borderTop: "1px solid rgba(99,132,199,0.1)", display: "flex", gap: 8, background: "#0f172a" }}>
+        <div style={{ padding: "10px 12px 18px", borderTop: "1px solid #e5e7eb", display: "flex", gap: 8, background: "#ffffff" }}>
           <textarea
             ref={inputRef} rows={1} value={text} onChange={(e) => setText(e.target.value)}
             placeholder="Add a comment…"
-            style={{ flex: 1, background: "rgba(99,132,199,0.1)", border: "none", borderRadius: 24, padding: "10px 15px", color: "#EFF6FF", resize: "none" }}
+            style={{ flex: 1, background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: 24, padding: "10px 15px", color: "#1f2937", resize: "none", outline: "none" }}
           />
-          <button onClick={submit} disabled={!text.trim()} style={{ background: text.trim() ? "#1e3a5f" : "transparent", border: text.trim() ? "2px solid #FBBF24" : "none", borderRadius: "50%", width: 38, height: 38 }}>
-            <Send size={16} color="#FBBF24" />
+          <button onClick={submit} disabled={!text.trim()} style={{ background: text.trim() ? "#2563eb" : "transparent", border: text.trim() ? "none" : "1px solid #e5e7eb", borderRadius: "50%", width: 38, height: 38, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Send size={16} color={text.trim() ? "#fff" : "#9ca3af"} />
           </button>
         </div>
       </div>
@@ -130,14 +130,14 @@ function Reel({ reel, isActive, comments, onOpenComments, isMuted, onToggleMute,
 
   const circleStyle = (active, color) => ({
     width: 44, height: 44, borderRadius: "50%",
-    background: active ? `${color}22` : "rgba(30,58,95,0.6)",
-    border: `2px solid ${active ? color : "transparent"}`,
+    background: active ? `${color}22` : "rgba(255,255,255,0.15)",
+    border: `2px solid ${active ? color : "rgba(255,255,255,0.2)"}`,
     display: "flex", alignItems: "center", justifyContent: "center",
     backdropFilter: "blur(6px)", transition: "all 0.2s",
   });
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%", flexShrink: 0, background: "#0f172a", overflow: "hidden" }}>
+    <div style={{ position: "relative", width: "100%", height: "100%", flexShrink: 0, background: "#000", overflow: "hidden", borderRadius: "16px" }}>
       <video
         ref={videoRef}
         src={reel.video}
@@ -153,40 +153,40 @@ function Reel({ reel, isActive, comments, onOpenComments, isMuted, onToggleMute,
 
       {isBuffering && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
-          <Loader2 className="animate-spin text-amber-400" size={40} />
+          <Loader2 className="animate-spin text-white" size={40} />
         </div>
       )}
 
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15,23,42,0.9) 0%, transparent 40%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 40%)", pointerEvents: "none" }} />
 
       {!playing && !isBuffering && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-blue-950/60 rounded-full pointer-events-none">
-          <Play size={28} fill="#FBBF24" color="#FBBF24" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-black/40 rounded-full pointer-events-none">
+          <Play size={28} fill="#fff" color="#fff" />
         </div>
       )}
 
-      <div style={{ position: "absolute", bottom: 30, left: 16, right: 80, color: "#EFF6FF", pointerEvents: "none" }}>
+      <div style={{ position: "absolute", bottom: 30, left: 16, right: 80, color: "#fff", pointerEvents: "none" }}>
         <h3 style={{ fontWeight: 800, fontSize: "1rem", margin: 0, textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}>{reel.title}</h3>
-        <p style={{ opacity: 0.7, fontSize: "0.85rem", textShadow: "0 1px 2px rgba(0,0,0,0.5)", color: "#93C5FD" }}>{reel.creator}</p>
+        <p style={{ opacity: 0.8, fontSize: "0.85rem", textShadow: "0 1px 2px rgba(0,0,0,0.5)", color: "#e5e7eb" }}>{reel.creator}</p>
       </div>
 
       <div style={{ position: "absolute", right: 12, bottom: 30, display: "flex", flexDirection: "column", gap: 18 }}>
         <ActionBtn
-          icon={<div style={circleStyle(!isMuted, "#FBBF24")}>{isMuted ? <VolumeX size={20} color="#EFF6FF" /> : <Volume2 size={20} color="#FBBF24" />}</div>}
+          icon={<div style={circleStyle(!isMuted, "#fff")}>{isMuted ? <VolumeX size={20} color="#fff" /> : <Volume2 size={20} color="#fff" />}</div>}
           label={isMuted ? "Muted" : "On"}
           onClick={onToggleMute}
         />
         <ActionBtn
-          icon={<div style={circleStyle(liked, "#FBBF24")}><Heart size={22} fill={liked ? "#FBBF24" : "transparent"} color={liked ? "#FBBF24" : "#EFF6FF"} /></div>}
+          icon={<div style={circleStyle(liked, "#ef4444")}><Heart size={22} fill={liked ? "#ef4444" : "transparent"} color={liked ? "#ef4444" : "#fff"} /></div>}
           label={formatCount(likeCount)}
           onClick={() => { setLiked(!liked); setLikeCount(liked ? likeCount - 1 : likeCount + 1); }}
         />
         <ActionBtn
-          icon={<div style={circleStyle(false, "#93C5FD")}><MessageCircle size={22} color="#EFF6FF" /></div>}
+          icon={<div style={circleStyle(false, "#fff")}><MessageCircle size={22} color="#fff" /></div>}
           label={formatCount(comments.length)}
           onClick={() => onOpenComments(reel._id)}
         />
-        <ActionBtn icon={<div style={circleStyle(false, "#93C5FD")}><Eye size={22} color="#EFF6FF" /></div>} label={formatCount(reel.views)} />
+        <ActionBtn icon={<div style={circleStyle(false, "#fff")}><Eye size={22} color="#fff" /></div>} label={formatCount(reel.views)} />
 
         {canDelete && (
           <ActionBtn
@@ -236,17 +236,17 @@ function ManagePanel({ onClose }) {
 
   return (
     <>
-      <div onClick={onClose} className="fixed inset-0 z-[400] bg-black/60 backdrop-blur-sm" />
-      <div className="fixed inset-y-0 right-0 z-[401] w-full max-w-md bg-blue-950 border-l border-blue-800/60 shadow-2xl flex flex-col overflow-hidden"
+      <div onClick={onClose} className="fixed inset-0 z-[400] bg-black/30 backdrop-blur-sm" />
+      <div className="fixed inset-y-0 right-0 z-[401] w-full max-w-md bg-white border-l border-gray-200 shadow-2xl flex flex-col overflow-hidden"
         style={{ animation: "slideInRight 0.3s cubic-bezier(.34,1.2,.64,1)" }}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-blue-800/40 flex-shrink-0">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 flex-shrink-0">
           <div>
-            <h2 className="text-blue-50 font-black text-lg">Manage Reels</h2>
-            <p className="text-blue-400/60 text-xs font-medium">{reels.length} total reels</p>
+            <h2 className="text-gray-900 font-black text-lg">Manage Reels</h2>
+            <p className="text-gray-400 text-xs font-medium">{reels.length} total reels</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-blue-900/60 text-blue-400 transition-colors">
+          <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 transition-colors">
             <X size={20} />
           </button>
         </div>
@@ -255,11 +255,11 @@ function ManagePanel({ onClose }) {
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 size={32} className="text-amber-400 animate-spin mb-3" />
-              <p className="text-blue-400 text-sm">Loading all reels...</p>
+              <Loader2 size={32} className="text-blue-500 animate-spin mb-3" />
+              <p className="text-gray-500 text-sm">Loading all reels...</p>
             </div>
           ) : reels.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-blue-400/60">
+            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
               <AlertCircle size={40} className="mb-3" />
               <p className="font-bold">No reels found</p>
             </div>
@@ -267,17 +267,17 @@ function ManagePanel({ onClose }) {
             reels.map((reel) => (
               <div key={reel._id} className={`rounded-xl border p-4 transition-all ${
                 reel.isDeleted
-                  ? "bg-red-500/5 border-red-500/20"
-                  : "bg-blue-900/30 border-blue-800/40"
+                  ? "bg-red-50 border-red-200"
+                  : "bg-gray-50 border-gray-200"
               }`}>
                 <div className="flex items-start gap-3">
                   {/* Thumbnail */}
-                  <div className="w-14 h-20 rounded-lg overflow-hidden bg-blue-900/60 flex-shrink-0">
+                  <div className="w-14 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                     {reel.thumbnail ? (
                       <img src={reel.thumbnail} alt="" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Play size={16} className="text-blue-500" />
+                        <Play size={16} className="text-gray-400" />
                       </div>
                     )}
                   </div>
@@ -287,18 +287,18 @@ function ManagePanel({ onClose }) {
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                         reel.isDeleted
-                          ? "bg-red-500/15 text-red-400 border border-red-500/20"
-                          : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
+                          ? "bg-red-100 text-red-600 border border-red-200"
+                          : "bg-emerald-100 text-emerald-700 border border-emerald-200"
                       }`}>
                         {reel.isDeleted ? "Deleted" : "Active"}
                       </span>
                     </div>
-                    <h4 className="text-blue-100 font-bold text-sm truncate capitalize">{reel.title}</h4>
-                    <p className="text-blue-500 text-xs mt-0.5">
+                    <h4 className="text-gray-900 font-bold text-sm truncate capitalize">{reel.title}</h4>
+                    <p className="text-gray-500 text-xs mt-0.5">
                       by {reel.creator?.username || "Unknown"} · {new Date(reel.createdAt).toLocaleDateString()}
                     </p>
                     {reel.isDeleted && reel.deletedBy && (
-                      <p className="text-red-400/60 text-[11px] mt-1">
+                      <p className="text-red-400 text-[11px] mt-1">
                         Deleted by {reel.deletedBy.name || reel.deletedBy.username || "admin"} · {reel.deletedAt && new Date(reel.deletedAt).toLocaleDateString()}
                       </p>
                     )}
@@ -310,8 +310,8 @@ function ManagePanel({ onClose }) {
                     disabled={toggling === reel._id}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
                       reel.isDeleted
-                        ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white"
-                        : "bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500 hover:text-white"
+                        ? "bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-500 hover:text-white"
+                        : "bg-red-50 text-red-600 border border-red-200 hover:bg-red-500 hover:text-white"
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {toggling === reel._id ? (
@@ -348,6 +348,8 @@ export default function QuickSkills() {
   const userData = JSON.parse(localStorage.getItem("user") || "{}");
   const canUpload = userData.role === "admin" || userData.role === "mentor";
   const canDelete = userData.role === "admin" || userData.role === "mentor";
+
+  const NAVBAR_HEIGHT = 72;
 
   const loadReels = async () => {
     try {
@@ -431,15 +433,15 @@ export default function QuickSkills() {
 
   if (loading) {
     return (
-      <div className="h-full w-full bg-blue-950 flex flex-col items-center justify-center text-blue-50 gap-4">
-        <Loader2 className="animate-spin text-amber-400" size={40} />
-        <p className="font-bold tracking-widest text-sm uppercase text-blue-300">Syncing Skills...</p>
+      <div className="w-full flex flex-col items-center justify-center text-gray-600 gap-4 bg-gray-50" style={{ height: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}>
+        <Loader2 className="animate-spin text-blue-500" size={40} />
+        <p className="font-bold tracking-widest text-sm uppercase text-gray-400">Syncing Skills...</p>
       </div>
     );
   }
 
   return (
-    <div style={{ height: "100vh", width: "100vw", display: "flex", justifyContent: "center", background: "#0f172a", overflow: "hidden", position: "relative" }}>
+    <div style={{ height: `calc(100vh - ${NAVBAR_HEIGHT}px)`, width: "100%", display: "flex", justifyContent: "center", background: "#f3f4f6", overflow: "hidden", position: "relative" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
         ::-webkit-scrollbar { display: none; }
@@ -452,7 +454,7 @@ export default function QuickSkills() {
       {canUpload && (
         <button
           onClick={() => navigate("/upload-skill")}
-          className="fixed bottom-10 left-10 z-50 flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-blue-950 px-5 py-3 rounded-full font-black shadow-lg shadow-amber-400/40 transition-all hover:scale-105 active:scale-95"
+          className="fixed bottom-10 left-10 z-50 flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-full font-black shadow-lg shadow-blue-200/60 transition-all hover:scale-105 active:scale-95"
         >
           <Plus size={20} strokeWidth={3} />
           <span className="hidden sm:inline">Upload Skill</span>
@@ -463,7 +465,7 @@ export default function QuickSkills() {
       {canDelete && (
         <button
           onClick={() => setShowManagePanel(true)}
-          className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-blue-900/80 hover:bg-blue-800 border border-blue-700/50 text-blue-200 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all hover:scale-105 active:scale-95 backdrop-blur-sm"
+          className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all hover:scale-105 active:scale-95"
         >
           <Settings size={16} />
           <span className="hidden sm:inline">Manage</span>
@@ -473,19 +475,20 @@ export default function QuickSkills() {
       <div
         ref={containerRef}
         style={{
-          height: "100vh",
+          height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
           width: "min(100%, calc((100dvh - 72px) * 9 / 16))",
           overflowY: "scroll",
           scrollSnapType: "y mandatory",
           position: "relative",
-          backgroundColor: "#0f172a",
+          backgroundColor: "#f3f4f6",
           scrollbarWidth: "none",
+          padding: "8px 0",
         }}
       >
         {reels.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-blue-400/60 gap-3">
+          <div className="h-full flex flex-col items-center justify-center text-gray-400 gap-3">
             <AlertCircle size={48} />
-            <p className="font-bold text-lg">No reels available</p>
+            <p className="font-bold text-lg text-gray-600">No reels available</p>
             <p className="text-sm">Be the first to upload a skill!</p>
           </div>
         ) : (
@@ -501,9 +504,10 @@ export default function QuickSkills() {
                 }}
                 data-index={i}
                 style={{
-                  height: "100vh",
+                  height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
                   scrollSnapAlign: "start",
                   scrollSnapStop: "always",
+                  padding: "4px 0",
                 }}
               >
                 <Reel
