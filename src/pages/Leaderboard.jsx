@@ -288,7 +288,7 @@ const Leaderboard = () => {
         >
             <div className="min-h-screen bg-blue-50 pb-20">
                 {/* ── Top Navigation Bar ─────────────────────────────── */}
-                <nav className="bg-blue-900 border-b border-blue-700 px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between sticky top-0 z-50 gap-4 sm:gap-0">
+                <nav className="bg-blue-900 border-b border-blue-700 px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between relative z-30 gap-4 sm:gap-0">
                     <div className="flex items-center gap-4 w-full sm:w-auto">
                         <button
                             onClick={() => window.history.back()}
