@@ -35,8 +35,8 @@ export default function SingleCommunity() {
     const [isPro, setIsPro] = useState(false);
     const [userRole, setUserRole] = useState(null);
 
-    // Use the admin-set price from the community, fallback to 4000
-    const price = course?.price || 4000;
+    // Use the admin-set price, default ₹5000
+    const price = course?.price || 5000;
 
     const handleEnroll = async () => {
         try {
@@ -195,8 +195,8 @@ export default function SingleCommunity() {
                                     </div>
                                     <div className="w-px h-8 bg-blue-300 flex-shrink-0" />
                                     <div className="flex flex-col flex-shrink-0">
-                                        <span className="text-[10px] md:text-xs font-bold text-blue-500 uppercase tracking-widest">Difficulty</span>
-                                        <span className="text-xl md:text-2xl font-black text-amber-400">Pro</span>
+                                        <span className="text-[10px] md:text-xs font-bold text-blue-500 uppercase tracking-widest">Pro Price</span>
+                                        <span className="text-xl md:text-2xl font-black text-amber-500">₹{price.toLocaleString('en-IN')}</span>
                                     </div>
                                 </div>
                             </div>
