@@ -35,8 +35,8 @@ export default function SingleCommunity() {
     const [isPro, setIsPro] = useState(false);
     const [userRole, setUserRole] = useState(null);
 
-    // Use the admin-set price, default ₹5000
-    const price = course?.price;
+    // Use the admin-set price, default ₹4200
+    const price = course?.price || 4200;
 
     const handleEnroll = async () => {
         try {
@@ -93,7 +93,6 @@ export default function SingleCommunity() {
                 }
 
                 setCourse(community);
-                console.log("[DEBUG] community.price from API:", community?.price, typeof community?.price);
             } catch (error) {
                 console.error(error);
             } finally {

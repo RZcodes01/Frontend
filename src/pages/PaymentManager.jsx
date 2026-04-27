@@ -50,7 +50,7 @@ const PaymentManager = () => {
 
     const totalRevenue = payments
         .filter(p => p.status === 'active')
-        .reduce((sum, p) => sum + getTotal(p.communityPrice || 0), 0);
+        .reduce((sum, p) => sum + getTotal(p.communityPrice || 4200), 0);
 
     if (loading) {
         return (
@@ -155,7 +155,7 @@ const PaymentManager = () => {
                             </tr>
                         ) : (
                             filtered.map(payment => {
-                                const base = payment.communityPrice || 0;
+                                const base = payment.communityPrice || 4200;
                                 const gst = Math.round(base * 0.18);
                                 const total = base + gst;
 
