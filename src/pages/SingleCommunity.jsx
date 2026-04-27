@@ -198,34 +198,40 @@ export default function SingleCommunity() {
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                                {!isEnrolled ? (
-                                    <button
-                                        onClick={isLoggedIn ? handleEnroll : () => navigate("/login")}
-                                        className="bg-amber-400 text-blue-950 px-8 py-3.5 rounded-xl font-black text-base transition-all hover:bg-amber-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto"
-                                    >
-                                        Enroll Now <ArrowRight size={16} />
-                                    </button>
+                                {userRole === 'admin' || userRole === 'mentor' || userRole === 'company' ? (
+                                    <div className="px-8 py-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-400 font-black text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+                                        <BookOpen size={18} /> Browse Only
+                                    </div>
                                 ) : (
-                                    <div className="px-8 py-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 font-black text-base flex items-center justify-center gap-2 w-full sm:w-auto">
-                                        <CheckCircle2 size={18} /> Joined
-                                    </div>
-                                )}
+                                    <>
+                                        {!isEnrolled ? (
+                                            <button
+                                                onClick={isLoggedIn ? handleEnroll : () => navigate("/login")}
+                                                className="bg-amber-400 text-blue-950 px-8 py-3.5 rounded-xl font-black text-base transition-all hover:bg-amber-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 w-full sm:w-auto"
+                                            >
+                                                Enroll Now <ArrowRight size={16} />
+                                            </button>
+                                        ) : (
+                                            <div className="px-8 py-3.5 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 font-black text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+                                                <CheckCircle2 size={18} /> Joined
+                                            </div>
+                                        )}
 
-                                {/* Only show Upgrade button if enrolled but not pro */}
-                                {isEnrolled && !isPro && (
-                                    <button
-                                        onClick={() => setPage("payment")}
-                                        className="px-8 py-3.5 rounded-xl bg-blue-800 border border-blue-600 text-blue-100 font-black text-base transition-all hover:bg-blue-700 w-full sm:w-auto"
-                                    >
-                                        Upgrade to Pro
-                                    </button>
-                                )}
+                                        {isEnrolled && !isPro && (
+                                            <button
+                                                onClick={() => setPage("payment")}
+                                                className="px-8 py-3.5 rounded-xl bg-blue-800 border border-blue-600 text-blue-100 font-black text-base transition-all hover:bg-blue-700 w-full sm:w-auto"
+                                            >
+                                                Upgrade to Pro
+                                            </button>
+                                        )}
 
-                                {/* Show Pro badge if already pro */}
-                                {isPro && (
-                                    <div className="px-8 py-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-500 font-black text-base flex items-center justify-center gap-2 w-full sm:w-auto">
-                                        <Crown size={18} /> Pro Member
-                                    </div>
+                                        {isPro && (
+                                            <div className="px-8 py-3.5 rounded-xl bg-amber-400/10 border border-amber-400/30 text-amber-500 font-black text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+                                                <Crown size={18} /> Pro Member
+                                            </div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -236,7 +242,7 @@ export default function SingleCommunity() {
             {/* --- MAIN BODY SECTION --- */}
             <div className="max-w-6xl mx-auto px-4 md:px-6 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16">
 
-                {/* Syllabus Column */}
+                {/* Syllabus Column — visible to all, clickable only for students */}
                 <div className="lg:col-span-8 order-2 lg:order-1">
                     <div className="flex items-center gap-3 mb-8">
                         <BookOpen className="w-6 h-6 text-amber-500" />
@@ -245,20 +251,24 @@ export default function SingleCommunity() {
 
                     <div className="space-y-4">
                         {course?.modules?.map((module, idx) => {
-                            const isCompany = userRole === "company";
+                            const isRestricted = userRole === "company" || userRole === "admin" || userRole === "mentor";
                             return (
                             <div
                                 key={module._id}
-                                onClick={() => !isCompany && navigate(`/community/${communityId}/module/${module._id}`)}
-                                className={`group bg-white rounded-[2rem] border-2 border-blue-500 ${!isCompany ? 'hover:border-amber-400/60 hover:bg-blue-50 cursor-pointer' : ''} transition-all p-6 md:p-8 relative overflow-hidden`}
+                                onClick={() => !isRestricted && navigate(`/community/${communityId}/module/${module._id}`)}
+                                className={`group bg-white rounded-[2rem] border-2 border-blue-500 transition-all p-6 md:p-8 relative overflow-hidden ${
+                                    isRestricted
+                                        ? 'opacity-80'
+                                        : 'hover:border-amber-400/60 hover:bg-blue-50 cursor-pointer'
+                                }`}
                             >
                                 <div className="flex flex-col md:flex-row md:items-start gap-6 relative z-10">
-                                    <div className="bg-blue-950 border border-blue-700 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-sm md:text-base font-black text-blue-400 group-hover:text-amber-400 group-hover:border-amber-400/30 transition-all">
+                                    <div className={`bg-blue-950 border border-blue-700 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-sm md:text-base font-black text-blue-400 ${!isRestricted ? 'group-hover:text-amber-400 group-hover:border-amber-400/30' : ''} transition-all`}>
                                         {(idx + 1).toString().padStart(2, '0')}
                                     </div>
 
                                     <div className="flex-1">
-                                        <h3 className="text-2xl md:text-3xl font-black text-blue-900 mb-2 group-hover:text-amber-500 transition-colors">
+                                        <h3 className={`text-2xl md:text-3xl font-black text-blue-900 mb-2 ${!isRestricted ? 'group-hover:text-amber-500' : ''} transition-colors`}>
                                             {module.title}
                                         </h3>
                                         <p className="text-blue-700 text-lg md:text-xl font-medium mb-6 leading-relaxed line-clamp-2">
@@ -274,8 +284,10 @@ export default function SingleCommunity() {
                                             ))}
                                         </div>
 
-                                        {isCompany && (
-                                            <p className="text-xs text-blue-400 mt-2 font-medium italic">Module content is restricted for company accounts</p>
+                                        {isRestricted && (
+                                            <p className="text-xs text-blue-400 mt-2 font-medium italic flex items-center gap-1">
+                                                <Lock size={12} /> Module content is view-only for your role
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -318,23 +330,37 @@ export default function SingleCommunity() {
                                     </div>
                                 ) : (
                                     <>
-                                        {!isEnrolled && (
-                                            <div className="flex items-center gap-3 bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3 mb-6">
-                                                <div className="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
-                                                    <Lock size={14} className="text-amber-400" />
+                                        {userRole === 'admin' || userRole === 'mentor' || userRole === 'company' ? (
+                                            <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+                                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                                    <Lock size={14} className="text-blue-400" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Locked</p>
-                                                    <p className="text-[10px] text-blue-700 font-medium">Upgrade to Pro to access these features</p>
+                                                    <p className="text-xs font-black text-blue-400 uppercase tracking-widest">Restricted</p>
+                                                    <p className="text-[10px] text-blue-500 font-medium">Enrollment is for students only</p>
                                                 </div>
                                             </div>
+                                        ) : (
+                                            <>
+                                                {!isEnrolled && (
+                                                    <div className="flex items-center gap-3 bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3 mb-6">
+                                                        <div className="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
+                                                            <Lock size={14} className="text-amber-400" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs font-black text-amber-400 uppercase tracking-widest">Locked</p>
+                                                            <p className="text-[10px] text-blue-700 font-medium">Upgrade to Pro to access these features</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <button
+                                                    onClick={() => isEnrolled ? setPage("payment") : (isLoggedIn ? handleEnroll() : navigate("/login"))}
+                                                    className="w-full py-4 bg-amber-400 text-blue-950 font-black rounded-xl hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10 active:scale-95 text-base"
+                                                >
+                                                    {isEnrolled ? `Upgrade to Pro — ₹${price.toLocaleString('en-IN')}` : "Enroll Now"}
+                                                </button>
+                                            </>
                                         )}
-                                        <button
-                                            onClick={() => isEnrolled ? setPage("payment") : (isLoggedIn ? handleEnroll() : navigate("/login"))}
-                                            className="w-full py-4 bg-amber-400 text-blue-950 font-black rounded-xl hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10 active:scale-95 text-base"
-                                        >
-                                            {isEnrolled ? `Upgrade to Pro — ₹${price.toLocaleString('en-IN')}` : "Enroll Now"}
-                                        </button>
                                     </>
                                 )}
                             </div>
