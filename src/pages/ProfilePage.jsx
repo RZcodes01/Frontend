@@ -70,7 +70,7 @@ export default function StudentProfile() {
   const joinedDate = s.joinedDate ? new Date(s.joinedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Unknown";
 
   return (
-    <div className="min-h-screen pb-20 animate-fadeIn pt-24">
+    <div className="min-h-screen bg-white text-gray-900 pb-20 animate-fadeIn pt-24">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
 
         {/* Profile Header */}

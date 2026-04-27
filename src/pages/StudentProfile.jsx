@@ -76,7 +76,7 @@ export default function StudentProfile({ studentId, onBack }) {
   const joinedDate = s.joinedDate ? new Date(s.joinedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Unknown";
 
   return (
-    <div className="min-h-screen pb-20 animate-fadeIn">
+    <div className="min-h-screen bg-white text-gray-900 pb-20 animate-fadeIn">
 
       <button onClick={onBack} className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors mb-8 group font-semibold">
         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" /> Back to Dashboard
