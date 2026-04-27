@@ -6,6 +6,13 @@ import {
 } from 'lucide-react';
 import { approveMentor, fetchActiveMentors, fetchPendingMentors, rejectMentor } from '../api/adminDashboard.api';
 
+const formatVerificationDate = (dateValue) => {
+  if (!dateValue) return 'Not Verified Yet';
+  const date = new Date(dateValue);
+  if (isNaN(date.getTime())) return 'Not Verified Yet';
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+};
+
 const MentorManager = () => {
   const [pendingMentors, setPendingMentors] = useState([]);
   const [activeMentors, setActiveMentors] = useState([]);
@@ -168,7 +175,7 @@ const MentorManager = () => {
                   </td>
                   <td className="p-6 text-sm text-blue-400">{m.email}</td>
                   <td className="p-6 text-center text-xs font-bold text-blue-300">
-                    {new Date(m.createdAt).toLocaleDateString()}
+                    {formatVerificationDate(m.updatedAt || m.verifiedAt || m.createdAt)}
                   </td>
                   <td className="p-6 text-right">
                     <span className="bg-amber-50 text-amber-700 text-[10px] font-black px-4 py-1.5 rounded-full uppercase border border-amber-200">Authorized</span>
