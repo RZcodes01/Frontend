@@ -239,7 +239,7 @@ const CertificateView = () => {
             {/* Bottom Section */}
             <div className="relative z-10 w-full flex items-end justify-between px-8">
               {/* Left - QR Code */}
-              <div className="flex flex-col items-center">
+              {/* <div className="flex flex-col items-center">
                 <QRCodeSVG
                   value={verifyUrl}
                   size={72}
@@ -248,7 +248,7 @@ const CertificateView = () => {
                   level="M"
                 />
                 <p className="text-[9px] text-slate-400 mt-1">Scan to verify</p>
-              </div>
+              </div> */}
 
               {/* Center - Date */}
               <div className="text-center">

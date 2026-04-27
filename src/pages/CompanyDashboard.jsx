@@ -13,13 +13,13 @@ import {
 } from "../api/companyDashboard.api";
 import CompanyStudentProfile from "./CompanyStudentProfile";
 
-// ─── Avatar Helper ──────────────────────────────────────────────────
+// Avatar Helper 
 function avatarUrl(name, profileImage) {
   if (profileImage) return profileImage;
   return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name || "U")}&backgroundColor=0369a1,0e7490,0891b2&fontSize=40`;
 }
 
-// ─── Skeleton Row ───────────────────────────────────────────────────
+//  Skeleton Row 
 function SkeletonRow() {
   return (
     <tr className="animate-pulse">
@@ -156,7 +156,7 @@ export default function CompanyDashboardPage() {
     );
   }
 
-  // ═══════════════════════════════════════════════════════════════════
+  // 
   // COMMUNITY SELECTION VIEW
   // ═══════════════════════════════════════════════════════════════════
   if (!selectedCommunity) {

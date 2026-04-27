@@ -234,9 +234,9 @@ export default function Hero() {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     {[
-                      { rank: 1, name: "Arjun K.", skill: "React", xp: "2,840 XP", medal: "🥇" },
+                      { rank: 1, name: "Abhi", skill: "Cyber Security", xp: "2,840 XP", medal: "🥇" },
                       { rank: 2, name: "Priya S.", skill: "AI", xp: "2,610 XP", medal: "🥈" },
-                      { rank: 3, name: "Rohan M.", skill: "DSA", xp: "2,390 XP", medal: "🥉" },
+                      { rank: 3, name: "Darik", skill: "Cyber Security", xp: "2,390 XP", medal: "🥉" },
                     ].map((user, i) => (
                       <div key={user.rank} style={{
                         display: "flex",

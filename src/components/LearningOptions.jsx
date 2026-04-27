@@ -50,7 +50,7 @@ export default function LearningOptions() {
 
             <div className="flex flex-col h-full">
               <h3 className="text-3xl font-semibold text-blue-50 mb-4">
-                Mentor-Led Cohort
+                Mentor-Led Program
               </h3>
               <p className="text-blue-200 text-lg leading-relaxed mb-8 flex-grow">
                 Learn alongside a small group with guidance from industry experts.
