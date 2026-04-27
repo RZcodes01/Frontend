@@ -2,15 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, CheckCircle, IndianRupee, Users, Loader2, CreditCard } from 'lucide-react';
 import { fetchPayments } from '../api/adminDashboard.api';
 
-// Same pricing logic used in the student payment page
-const PRICES = [4000, 8000];
-const getProPrice = (communityId) => {
-    if (!communityId) return PRICES[0];
-    const idx = parseInt(communityId.slice(-1), 16) % PRICES.length;
-    return PRICES[idx] || PRICES[0];
-};
-const getTotal = (communityId) => {
-    const base = getProPrice(communityId);
+const getTotal = (base) => {
     const gst = Math.round(base * 0.18);
     return base + gst;
 };
@@ -58,7 +50,7 @@ const PaymentManager = () => {
 
     const totalRevenue = payments
         .filter(p => p.status === 'active')
-        .reduce((sum, p) => sum + getTotal(p.communityId), 0);
+        .reduce((sum, p) => sum + getTotal(p.communityPrice || 0), 0);
 
     if (loading) {
         return (
@@ -163,7 +155,7 @@ const PaymentManager = () => {
                             </tr>
                         ) : (
                             filtered.map(payment => {
-                                const base = getProPrice(payment.communityId);
+                                const base = payment.communityPrice || 0;
                                 const gst = Math.round(base * 0.18);
                                 const total = base + gst;
 

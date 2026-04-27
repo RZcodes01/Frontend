@@ -13,7 +13,7 @@ import {
     ArrowLeft,
     Lock
 } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import BatchSelectionPage from "./Batchselection";
 import PaymentPage from "./Payment";
@@ -21,7 +21,6 @@ import { fetchMyEnrollments, enrollCommunity } from "../api/enrollment.api";
 import { fetchCommunityById } from "../api/community.api";
 
 
-const PRICES = [4000, 8000];
 
 export default function SingleCommunity() {
     const [course, setCourse] = useState(null);
@@ -36,11 +35,8 @@ export default function SingleCommunity() {
     const [isPro, setIsPro] = useState(false);
     const [userRole, setUserRole] = useState(null);
 
-    // Pick a stable random price per community
-    const price = useMemo(() => {
-        const idx = parseInt(communityId?.slice(-1), 16) % PRICES.length;
-        return PRICES[idx] || PRICES[0];
-    }, [communityId]);
+    // Use the admin-set price from the community, fallback to 4000
+    const price = course?.price || 4000;
 
     const handleEnroll = async () => {
         try {

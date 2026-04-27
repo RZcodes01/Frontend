@@ -23,6 +23,7 @@ const CommunityAdmin = () => {
     name: '',
     description: '',
     visibility: 'public',
+    price: '',
     banner: null
   });
 
@@ -30,6 +31,7 @@ const CommunityAdmin = () => {
     name: '',
     description: '',
     visibility: 'public',
+    price: '',
     banner: null
   });
 
@@ -78,13 +80,14 @@ const CommunityAdmin = () => {
     data.append('name', formData.name);
     data.append('description', formData.description);
     data.append('visibility', formData.visibility);
+    data.append('price', formData.price || 0);
     if (formData.banner) data.append('bannerImage', formData.banner);
 
     try {
       setLoading(true);
       await createCommunity(data);
       setIsCreateModalOpen(false);
-      setFormData({ name: '', description: '', visibility: 'public', banner: null });
+      setFormData({ name: '', description: '', visibility: 'public', price: '', banner: null });
       await loadInitialData();
     } catch (error) {
       toast.error(error.response?.data?.message || "Creation failed");
@@ -98,6 +101,7 @@ const CommunityAdmin = () => {
       name: selectedComm.name,
       description: selectedComm.description || '',
       visibility: selectedComm.visibility,
+      price: selectedComm.price || '',
       banner: null
     });
     setIsEditModalOpen(true);
@@ -110,6 +114,7 @@ const CommunityAdmin = () => {
     data.append('name', editFormData.name);
     data.append('description', editFormData.description);
     data.append('visibility', editFormData.visibility);
+    data.append('price', editFormData.price || 0);
     if (editFormData.banner) {
       data.append('bannerImage', editFormData.banner);
     }
@@ -209,6 +214,11 @@ const CommunityAdmin = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
+                    <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Pro Price (₹)</label>
+                    <input type="number" min="0" placeholder="e.g. 4000" className="w-full bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 font-bold text-blue-950 outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition placeholder-blue-300"
+                      value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} />
+                  </div>
+                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Visibility</label>
                     <select className="w-full bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 font-bold text-blue-950 outline-none cursor-pointer focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition"
                       value={formData.visibility} onChange={e => setFormData({ ...formData, visibility: e.target.value })}>
@@ -216,10 +226,11 @@ const CommunityAdmin = () => {
                       <option value="private">Private</option>
                     </select>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Banner</label>
-                    <input type="file" className="w-full text-[10px] pt-4 text-blue-500" onChange={e => setFormData({ ...formData, banner: e.target.files[0] })} />
-                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Banner</label>
+                  <input type="file" className="w-full text-[10px] pt-4 text-blue-500" onChange={e => setFormData({ ...formData, banner: e.target.files[0] })} />
                 </div>
 
                 <button disabled={loading} className="w-full bg-blue-900 text-amber-400 py-4 rounded-2xl font-black mt-4 uppercase hover:bg-blue-800 transition disabled:opacity-50">
@@ -391,6 +402,15 @@ const CommunityAdmin = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
+                    <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Pro Price (₹)</label>
+                    <input
+                      type="number" min="0" placeholder="e.g. 4000"
+                      className="w-full bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 font-bold text-blue-950 outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition placeholder-blue-300"
+                      value={editFormData.price}
+                      onChange={e => setEditFormData({ ...editFormData, price: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-1">
                     <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Visibility</label>
                     <select
                       className="w-full bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 font-bold text-blue-950 outline-none cursor-pointer focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400/50 transition"
@@ -401,15 +421,15 @@ const CommunityAdmin = () => {
                       <option value="private">Private</option>
                     </select>
                   </div>
+                </div>
 
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Banner</label>
-                    <input
-                      type="file"
-                      className="w-full text-[10px] pt-4 text-blue-500"
-                      onChange={e => setEditFormData({ ...editFormData, banner: e.target.files[0] })}
-                    />
-                  </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-blue-400 uppercase ml-2">Banner</label>
+                  <input
+                    type="file"
+                    className="w-full text-[10px] pt-4 text-blue-500"
+                    onChange={e => setEditFormData({ ...editFormData, banner: e.target.files[0] })}
+                  />
                 </div>
 
                 <button
