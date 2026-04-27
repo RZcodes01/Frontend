@@ -16,3 +16,6 @@ export const fetchPendingCompanies = () => axiosInstance.get('/admindashboards/p
 export const approveCompany = (userId) => axiosInstance.get(`/admindashboards/approve-company/${userId}`);
 export const rejectCompany = (userId, data) => axiosInstance.post(`/admindashboards/reject-company/${userId}`, data);
 export const fetchActiveCompanies = () => axiosInstance.get('/admindashboards/active-companies');
+
+// Payment records
+export const fetchPayments = () => axiosInstance.get('/admindashboards/payments');

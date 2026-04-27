@@ -1,188 +1,232 @@
-import React, { useState } from 'react';
-import { Search, CheckCircle, Clock, DollarSign, Users, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, CheckCircle, IndianRupee, Users, Loader2, CreditCard } from 'lucide-react';
+import { fetchPayments } from '../api/adminDashboard.api';
 
-const mockMentors = [
-  { id: 1, name: 'James Carter', email: 'james@example.com', avatar: 'JC', community: 'React Developers', amount: '$120', date: 'Feb 10, 2026', status: 'paid' },
-  { id: 2, name: 'Sophia Nguyen', email: 'sophia@example.com', avatar: 'SN', community: 'Python Enthusiasts', amount: '$95', date: 'Feb 12, 2026', status: 'unpaid' },
-  { id: 3, name: 'Liam Patel', email: 'liam@example.com', avatar: 'LP', community: 'UI/UX Designers', amount: '$150', date: 'Feb 14, 2026', status: 'paid' },
-  { id: 4, name: 'Olivia Brown', email: 'olivia@example.com', avatar: 'OB', community: 'Data Science Hub', amount: '$200', date: 'Feb 15, 2026', status: 'unpaid' },
-  { id: 5, name: 'Noah Wilson', email: 'noah@example.com', avatar: 'NW', community: 'Cloud Computing', amount: '$180', date: 'Feb 16, 2026', status: 'paid' },
-  { id: 6, name: 'Emma Davis', email: 'emma@example.com', avatar: 'ED', community: 'React Developers', amount: '$110', date: 'Feb 17, 2026', status: 'unpaid' },
-  { id: 7, name: 'Aiden Garcia', email: 'aiden@example.com', avatar: 'AG', community: 'Cybersecurity', amount: '$130', date: 'Feb 18, 2026', status: 'paid' },
-  { id: 8, name: 'Mia Thompson', email: 'mia@example.com', avatar: 'MT', community: 'Mobile Dev', amount: '$90', date: 'Feb 19, 2026', status: 'unpaid' },
-];
+// Same pricing logic used in the student payment page
+const PRICES = [4000, 8000];
+const getProPrice = (communityId) => {
+    if (!communityId) return PRICES[0];
+    const idx = parseInt(communityId.slice(-1), 16) % PRICES.length;
+    return PRICES[idx] || PRICES[0];
+};
+const getTotal = (communityId) => {
+    const base = getProPrice(communityId);
+    const gst = Math.round(base * 0.18);
+    return base + gst;
+};
+
+const formatDate = (dateStr) => {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+};
 
 const PaymentManager = () => {
-  const [mentors, setMentors] = useState(mockMentors);
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
+    const [payments, setPayments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [filter, setFilter] = useState('all');
 
-  const filtered = mentors.filter(m => {
-    const matchesSearch =
-      m.name.toLowerCase().includes(search.toLowerCase()) ||
-      m.email.toLowerCase().includes(search.toLowerCase()) ||
-      m.community.toLowerCase().includes(search.toLowerCase());
-    const matchesFilter = filter === 'all' || m.status === filter;
-    return matchesSearch && matchesFilter;
-  });
+    useEffect(() => { loadPayments(); }, []);
 
-  const toggleStatus = (id) => {
-    setMentors(prev =>
-      prev.map(m => m.id === id ? { ...m, status: m.status === 'paid' ? 'unpaid' : 'paid' } : m)
-    );
-  };
+    const loadPayments = async () => {
+        setLoading(true);
+        try {
+            const res = await fetchPayments();
+            setPayments(res.data.payments || []);
+        } catch (err) {
+            console.error("Failed to fetch payments:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const totalPaid = mentors.filter(m => m.status === 'paid').length;
-  const totalUnpaid = mentors.filter(m => m.status === 'unpaid').length;
-  const totalRevenue = mentors
-    .filter(m => m.status === 'paid')
-    .reduce((sum, m) => sum + parseInt(m.amount.replace('$', '')), 0);
+    const filtered = payments.filter(p => {
+        const q = search.toLowerCase();
+        const matchesSearch =
+            p.studentName?.toLowerCase().includes(q) ||
+            p.studentEmail?.toLowerCase().includes(q) ||
+            p.communityName?.toLowerCase().includes(q);
+        const matchesFilter =
+            filter === 'all' ||
+            (filter === 'active' && p.status === 'active') ||
+            (filter === 'cancelled' && p.status === 'cancelled') ||
+            (filter === 'banned' && p.status === 'banned');
+        return matchesSearch && matchesFilter;
+    });
 
-  return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#1e3a5f]">Payment Management</h1>
-        <p className="text-blue-400 mt-1">Track mentor payments and update their payment status.</p>
-      </div>
+    const totalRevenue = payments
+        .filter(p => p.status === 'active')
+        .reduce((sum, p) => sum + getTotal(p.communityId), 0);
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-5 mb-8">
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center">
-            <Users size={22} className="text-amber-400" />
-          </div>
-          <div>
-            <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Total Mentors</p>
-            <p className="text-2xl font-bold text-[#1e3a5f]">{mentors.length}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
-            <CheckCircle size={22} className="text-green-500" />
-          </div>
-          <div>
-            <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Paid</p>
-            <p className="text-2xl font-bold text-green-600">{totalPaid}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-            <Clock size={22} className="text-amber-500" />
-          </div>
-          <div>
-            <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Unpaid</p>
-            <p className="text-2xl font-bold text-amber-500">{totalUnpaid}</p>
-          </div>
-        </div>
-      </div>
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center py-40">
+                <Loader2 className="animate-spin text-blue-600" size={40} />
+            </div>
+        );
+    }
 
-      {/* Search + Filter */}
-      <div className="flex gap-3 mb-6">
-        <div className="relative flex-1">
-          <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-300" />
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search by name, email or community..."
-            className="w-full pl-10 pr-4 py-3 bg-white border border-blue-100 rounded-xl shadow-sm text-sm text-[#1e3a5f] placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          />
-        </div>
-        <div className="flex bg-white border border-blue-100 rounded-xl shadow-sm overflow-hidden">
-          {['all', 'paid', 'unpaid'].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setFilter(tab)}
-              className={`px-5 py-2 text-sm font-semibold capitalize transition-colors ${
-                filter === tab
-                  ? 'bg-[#1e3a5f] text-amber-400'
-                  : 'text-blue-400 hover:bg-blue-50'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
+    return (
+        <div>
+            <div className="mb-8">
+                <h1 className="text-2xl font-bold text-[#1e3a5f]">Payment Management</h1>
+                <p className="text-blue-400 mt-1">Track student Pro upgrades and payment records.</p>
+            </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-blue-50 border-b border-blue-100">
-              <th className="text-left px-6 py-4 font-semibold text-blue-400">Mentor</th>
-              <th className="text-left px-6 py-4 font-semibold text-blue-400">Email</th>
-              <th className="text-left px-6 py-4 font-semibold text-blue-400">Community</th>
-              <th className="text-left px-6 py-4 font-semibold text-blue-400">Amount</th>
-              <th className="text-left px-6 py-4 font-semibold text-blue-400">Date</th>
-              <th className="text-left px-6 py-4 font-semibold text-blue-400">Status</th>
-              <th className="text-right px-6 py-4 font-semibold text-blue-400">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-blue-50">
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center py-16 text-blue-300">
-                  No mentors found{search ? ` matching "${search}"` : ''}.
-                </td>
-              </tr>
-            ) : (
-              filtered.map(mentor => (
-                <tr key={mentor.id} className="hover:bg-blue-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold ${
-                        mentor.status === 'paid'
-                          ? 'bg-[#1e3a5f] text-amber-400'
-                          : 'bg-blue-100 text-blue-400'
-                      }`}>
-                        {mentor.avatar}
-                      </div>
-                      <span className="font-semibold text-[#1e3a5f]">{mentor.name}</span>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center">
+                        <Users size={22} className="text-amber-400" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-blue-400">{mentor.email}</td>
-                  <td className="px-6 py-4">
-                    <span className="inline-block px-3 py-1 bg-blue-50 text-[#1e3a5f] border border-blue-100 rounded-full text-xs font-semibold">
-                      {mentor.community}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 font-bold text-[#1e3a5f]">{mentor.amount}</td>
-                  <td className="px-6 py-4 text-blue-300">{mentor.date}</td>
-                  <td className="px-6 py-4">
-                    {mentor.status === 'paid' ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 border border-green-100 rounded-full text-xs font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span> Paid
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-xs font-semibold">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block"></span> Unpaid
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => toggleStatus(mentor.id)}
-                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                        mentor.status === 'paid'
-                          ? 'bg-amber-50 text-amber-600 border border-amber-100 hover:bg-amber-100'
-                          : 'bg-[#1e3a5f] text-amber-400 hover:bg-blue-800'
-                      }`}
-                    >
-                      {mentor.status === 'paid'
-                        ? <><Clock size={13} /></>
-                        : <><DollarSign size={13} /> Pay</>
-                      }
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+                    <div>
+                        <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Pro Students</p>
+                        <p className="text-2xl font-bold text-[#1e3a5f]">{payments.length}</p>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center">
+                        <CheckCircle size={22} className="text-green-500" />
+                    </div>
+                    <div>
+                        <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Active</p>
+                        <p className="text-2xl font-bold text-green-600">{payments.filter(p => p.status === 'active').length}</p>
+                    </div>
+                </div>
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-blue-100 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+                        <IndianRupee size={22} className="text-amber-500" />
+                    </div>
+                    <div>
+                        <p className="text-xs text-blue-300 font-medium uppercase tracking-wide">Total Revenue</p>
+                        <p className="text-2xl font-bold text-amber-500">₹{totalRevenue.toLocaleString('en-IN')}</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Search + Filter */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                <div className="relative flex-1">
+                    <Search size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-300" />
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        placeholder="Search by student name, email or community..."
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-blue-100 rounded-xl shadow-sm text-sm text-[#1e3a5f] placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    />
+                </div>
+                <div className="flex bg-white border border-blue-100 rounded-xl shadow-sm overflow-hidden">
+                    {['all', 'active', 'cancelled', 'banned'].map(tab => (
+                        <button
+                            key={tab}
+                            onClick={() => setFilter(tab)}
+                            className={`px-5 py-2 text-sm font-semibold capitalize transition-colors ${
+                                filter === tab
+                                    ? 'bg-[#1e3a5f] text-amber-400'
+                                    : 'text-blue-400 hover:bg-blue-50'
+                            }`}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Table */}
+            <div className="bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden">
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="bg-blue-50 border-b border-blue-100">
+                            <th className="text-left px-6 py-4 font-semibold text-blue-400">Student</th>
+                            <th className="text-left px-6 py-4 font-semibold text-blue-400">Community</th>
+                            <th className="text-left px-6 py-4 font-semibold text-blue-400">Amount</th>
+                            <th className="text-left px-6 py-4 font-semibold text-blue-400">Status</th>
+                            <th className="text-left px-6 py-4 font-semibold text-blue-400">Paid On</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-blue-50">
+                        {filtered.length === 0 ? (
+                            <tr>
+                                <td colSpan={5} className="text-center py-16">
+                                    <div className="flex flex-col items-center gap-3">
+                                        <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center">
+                                            <CreditCard size={24} className="text-blue-300" />
+                                        </div>
+                                        <p className="text-blue-400 font-medium">
+                                            {search ? `No payments found matching "${search}"` : 'No payments yet'}
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : (
+                            filtered.map(payment => {
+                                const base = getProPrice(payment.communityId);
+                                const gst = Math.round(base * 0.18);
+                                const total = base + gst;
+
+                                return (
+                                    <tr key={payment._id} className="hover:bg-blue-50/50 transition-colors">
+                                        {/* Student */}
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 rounded-full bg-[#1e3a5f] flex items-center justify-center text-xs font-bold text-amber-400 shrink-0">
+                                                    {payment.studentName?.charAt(0)?.toUpperCase() || '?'}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-[#1e3a5f] capitalize truncate">{payment.studentName}</p>
+                                                    <p className="text-[11px] text-blue-300 truncate">{payment.studentEmail}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        {/* Community */}
+                                        <td className="px-6 py-4">
+                                            <span className="inline-block px-3 py-1 bg-blue-50 text-[#1e3a5f] border border-blue-100 rounded-full text-xs font-semibold">
+                                                {payment.communityName}
+                                            </span>
+                                        </td>
+
+                                        {/* Amount */}
+                                        <td className="px-6 py-4">
+                                            <div>
+                                                <p className="font-bold text-[#1e3a5f]">₹{total.toLocaleString('en-IN')}</p>
+                                                <p className="text-[10px] text-blue-300">₹{base.toLocaleString('en-IN')} + ₹{gst.toLocaleString('en-IN')} GST</p>
+                                            </div>
+                                        </td>
+
+                                        {/* Status */}
+                                        <td className="px-6 py-4">
+                                            {payment.status === 'active' ? (
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 border border-green-100 rounded-full text-xs font-semibold">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span> Success
+                                                </span>
+                                            ) : payment.status === 'banned' ? (
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-500 border border-red-100 rounded-full text-xs font-semibold">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block"></span> Banned
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-50 text-gray-500 border border-gray-200 rounded-full text-xs font-semibold">
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-gray-400 inline-block"></span> Cancelled
+                                                </span>
+                                            )}
+                                        </td>
+
+                                        {/* Date */}
+                                        <td className="px-6 py-4 text-blue-300 font-medium">
+                                            {formatDate(payment.paidAt)}
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 };
 
 export default PaymentManager;
