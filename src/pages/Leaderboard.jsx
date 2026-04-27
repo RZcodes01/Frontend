@@ -4,13 +4,24 @@ import { TrophyOutlined, CrownOutlined, ReloadOutlined, UserOutlined } from "@an
 import { Trophy, Medal, ArrowLeft } from "lucide-react";
 import { fetchLeaderboard, fetchMyLeaderboardCommunities } from "../api/leaderboard.api";
 
-// ─── Helper: decode userId from JWT stored in localStorage ──────
+// ─── Helpers: decode userId and role from JWT stored in localStorage ──────
 function getCurrentUserId() {
     try {
         const token = localStorage.getItem("accessToken");
         if (!token) return null;
         const payload = JSON.parse(atob(token.split(".")[1]));
         return payload._id || null;
+    } catch {
+        return null;
+    }
+}
+
+function getUserRole() {
+    try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) return null;
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return payload.role || null;
     } catch {
         return null;
     }
@@ -105,6 +116,7 @@ function PodiumCard({ entry, place }) {
 // ═══════════════════════════════════════════════════════════════════
 const Leaderboard = () => {
     const currentUserId = useMemo(() => getCurrentUserId(), []);
+    const userRole = useMemo(() => getUserRole(), []);
 
     // ── State ────────────────────────────────────────────────────
     const [communities, setCommunities] = useState([]);
@@ -154,7 +166,12 @@ const Leaderboard = () => {
                 total: data.total
             }));
         } catch (err) {
-            setError("Failed to load leaderboard. Please try again.");
+            const status = err?.response?.status;
+            if (status === 403) {
+                setError("Access Denied. You are not assigned to this community.");
+            } else {
+                setError("Failed to load leaderboard. Please try again.");
+            }
             setLeaderboard([]);
         } finally {
             setLoading(false);
@@ -372,7 +389,13 @@ const Leaderboard = () => {
                         <div className="bg-blue-100 p-6 rounded-2xl border border-blue-300 shadow-sm">
                             <p className="text-blue-600 text-sm font-semibold uppercase tracking-wide">Communities</p>
                             <p className="text-4xl font-black text-blue-950">{communities.length}</p>
-                            <p className="text-sm text-blue-500 font-medium mt-1">You're enrolled in</p>
+                            <p className="text-sm text-blue-500 font-medium mt-1">
+                                {userRole === "admin"
+                                    ? "All communities"
+                                    : userRole === "mentor"
+                                    ? "Assigned to"
+                                    : "You're enrolled in"}
+                            </p>
                         </div>
                     </div>
 
