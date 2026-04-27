@@ -139,7 +139,7 @@ const CommunityAdmin = () => {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-blue-50">
         <div className="w-10 h-10 border-4 border-amber-400/20 border-t-amber-400 rounded-full animate-spin"></div>
-        <p className="font-bold text-blue-500 animate-pulse">Loading Hub...</p>
+        <p className="font-bold text-blue-500 animate-pulse">Loading...</p>
       </div>
     );
   }
@@ -150,7 +150,7 @@ const CommunityAdmin = () => {
       <div className="space-y-6 selection:bg-amber-400/30">
         <div className="flex justify-between items-center bg-white p-6 rounded-3xl shadow-sm border border-blue-100">
           <div>
-            <h2 className="text-3xl font-black text-blue-950 tracking-tight uppercase">Community Hub</h2>
+            <h2 className="text-3xl font-black text-blue-950 tracking-tight uppercase">Community</h2>
             <p className="text-blue-500 font-medium">Active Ecosystems: <span className="text-amber-500">{communities.length}</span></p>
           </div>
           <button
