@@ -56,20 +56,20 @@ export default function UploadReel() {
 
     if (status === "success") {
         return (
-            <div className="min-h-[calc(100vh-72px)] bg-neutral-950 flex items-center justify-center text-white">
+            <div className="min-h-[calc(100vh-72px)] bg-gray-50 flex items-center justify-center text-gray-800">
                 <div className="text-center space-y-4 animate-in zoom-in duration-300">
                     <CheckCircle2 size={80} className="text-emerald-500 mx-auto" />
-                    <h2 className="text-3xl font-black">Skill Uploaded!</h2>
-                    <p className="text-neutral-400">Processing on Cloudinary...</p>
+                    <h2 className="text-3xl font-black text-gray-900">Skill Uploaded!</h2>
+                    <p className="text-gray-500">Processing on Cloudinary...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-[calc(100vh-72px)] bg-neutral-950 text-white p-6">
+        <div className="min-h-[calc(100vh-72px)] bg-gray-50 text-gray-800 p-6">
             <div className="max-w-5xl mx-auto">
-                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-neutral-500 hover:text-cyan-400 mb-6 font-bold transition-colors">
+                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-400 hover:text-blue-600 mb-6 font-bold transition-colors">
                     <ArrowLeft size={20} /> Back
                 </button>
 
@@ -78,20 +78,21 @@ export default function UploadReel() {
                     {/* Left: Video Preview */}
                     <div
                         onClick={() => !file && fileInputRef.current.click()}
-                        className={`aspect-[9/16] rounded-3xl border-2 border-dashed flex items-center justify-center relative overflow-hidden transition-all ${file ? "border-neutral-800" : "border-neutral-700 hover:border-cyan-500/50 bg-neutral-900/40 cursor-pointer"
+                        className={`aspect-[9/16] rounded-3xl border-2 border-dashed flex items-center justify-center relative overflow-hidden transition-all ${file ? "border-gray-200" : "border-gray-300 hover:border-blue-400 bg-white cursor-pointer shadow-sm"
                             }`}
                     >
                         {preview ? (
                             <>
                                 <video src={preview} className="w-full h-full object-cover" autoPlay loop muted />
-                                <button onClick={(e) => { e.stopPropagation(); setFile(null); setPreview(""); }} className="absolute top-4 right-4 p-2 bg-black/60 backdrop-blur-xl rounded-full hover:bg-red-500 transition-all">
+                                <button onClick={(e) => { e.stopPropagation(); setFile(null); setPreview(""); }} className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-xl rounded-full hover:bg-red-500 hover:text-white transition-all shadow-md text-gray-600">
                                     <X size={20} />
                                 </button>
                             </>
                         ) : (
                             <div className="text-center space-y-3">
-                                <div className="w-14 h-14 bg-neutral-800 rounded-2xl flex items-center justify-center mx-auto"><Upload className="text-cyan-400" /></div>
-                                <p className="font-bold">Choose Video</p>
+                                <div className="w-14 h-14 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mx-auto"><Upload className="text-blue-500" /></div>
+                                <p className="font-bold text-gray-700">Choose Video</p>
+                                <p className="text-xs text-gray-400">MP4, MOV or WebM</p>
                             </div>
                         )}
                         <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="video/*" className="hidden" />
@@ -99,17 +100,17 @@ export default function UploadReel() {
 
                     {/* Right: Metadata */}
                     <div className="space-y-6">
-                        <h1 className="text-3xl font-black">Reel Details</h1>
+                        <h1 className="text-3xl font-black text-gray-900">Reel Details</h1>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-neutral-500 block mb-2">Title</label>
-                                <input name="title" type="text" value={form.title} onChange={handleChange} placeholder="Give your reel a name" className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 focus:border-cyan-500 outline-none transition-all" required />
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Title</label>
+                                <input name="title" type="text" value={form.title} onChange={handleChange} placeholder="Give your reel a name" className="w-full bg-white border border-gray-300 rounded-xl p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all text-gray-900 placeholder-gray-400" required />
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-neutral-500 block mb-2">Category</label>
-                                <select name="category" value={form.category} onChange={handleChange} className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 focus:border-cyan-500 outline-none transition-all appearance-none">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Category</label>
+                                <select name="category" value={form.category} onChange={handleChange} className="w-full bg-white border border-gray-300 rounded-xl p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all appearance-none text-gray-900 cursor-pointer">
                                     <option>Coding</option>
                                     <option>Design</option>
                                     <option>Marketing</option>
@@ -118,14 +119,14 @@ export default function UploadReel() {
                             </div>
 
                             <div>
-                                <label className="text-[10px] font-black uppercase tracking-widest text-neutral-500 block mb-2">Description</label>
-                                <textarea name="description" value={form.description} onChange={handleChange} placeholder="Describe the skill you're sharing..." rows={4} className="w-full bg-neutral-900 border border-neutral-800 rounded-xl p-4 focus:border-cyan-500 outline-none transition-all resize-none" />
+                                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Description</label>
+                                <textarea name="description" value={form.description} onChange={handleChange} placeholder="Describe the skill you're sharing..." rows={4} className="w-full bg-white border border-gray-300 rounded-xl p-4 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all resize-none text-gray-900 placeholder-gray-400" />
                             </div>
                         </div>
 
-                        <div className="p-4 bg-neutral-900 rounded-2xl flex items-start gap-3 border border-neutral-800">
-                            <Info size={18} className="text-cyan-500 shrink-0 mt-0.5" />
-                            <p className="text-xs text-neutral-500 leading-relaxed">
+                        <div className="p-4 bg-blue-50 rounded-2xl flex items-start gap-3 border border-blue-100">
+                            <Info size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                            <p className="text-xs text-gray-500 leading-relaxed">
                                 By uploading, you agree that this video follows our community guidelines. Videos are optimized for mobile view automatically.
                             </p>
                         </div>
@@ -133,7 +134,7 @@ export default function UploadReel() {
                         <button
                             type="submit"
                             disabled={loading || !file}
-                            className="w-full py-4 bg-cyan-500 hover:bg-cyan-400 disabled:bg-neutral-800 disabled:text-neutral-600 text-slate-950 font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/10"
+                            className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"
                         >
                             {loading ? <><Loader2 className="animate-spin" size={20} /> Posting Skill...</> : "Publish Reel"}
                         </button>
