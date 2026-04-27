@@ -35,9 +35,9 @@ export default function Community() {
     );
   }
 
-  const filteredCommunities = communities.filter((c) =>
-    c.name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCommunities = communities
+    .filter((c) => c.visibility !== "private")
+    .filter((c) => c.name?.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <section className="relative min-h-screen py-16 md:py-24 bg-blue-50 overflow-hidden selection:bg-amber-400/30">

@@ -88,7 +88,15 @@ export default function SingleCommunity() {
         const fetchCommunity = async () => {
             try {
                 const res = await fetchCommunityById(communityId);
-                setCourse(res.data.community);
+                const community = res.data.community;
+
+                // Block access to private communities
+                if (community?.visibility === "private") {
+                    navigate("/communities", { replace: true });
+                    return;
+                }
+
+                setCourse(community);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -96,7 +104,7 @@ export default function SingleCommunity() {
             }
         };
         fetchCommunity();
-    }, [communityId]);
+    }, [communityId, navigate]);
 
     if (page === "batches") {
         return (
