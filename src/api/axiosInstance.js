@@ -1,10 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://skillconnect-backend-7ftb.onrender.com",
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000",
 });
-
-// https://skillconnect-backend-7ftb.onrender.com
 
 axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem("accessToken");
