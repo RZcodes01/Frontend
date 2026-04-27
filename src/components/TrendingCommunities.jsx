@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const TrendingCommunities = () => {
   const communities = [
-    { id: 1, name: "React", members: "30",  },
-    { id: 2, name: "AI", members: "28",  },
-    { id: 3, name: "Cyber Security", members: "30", },
+    { id: 1, name: "Data Structure Algorithms", },
+    { id: 2, name: "MERN Stack Development", },
+    { id: 3, name: "Cyber Security", },
   ];
 
   return (
@@ -95,8 +95,7 @@ const TrendingCommunities = () => {
 
           <Link 
             to="/community" 
-            className="text-blue-900 font-semibold hover:text-blue-700 transition-colors flex items-center gap-2"
-          >
+            className="text-blue-900 font-semibold hover:text-blue-700 transition-colors flex items-center gap-2">
             View all communities <span>&rarr;</span>
           </Link>
         </div>
@@ -105,16 +104,12 @@ const TrendingCommunities = () => {
           {communities.map((item) => (
             <div 
               key={item.id} 
-              className="community-card group bg-blue-900 border border-blue-800 p-10 rounded-2xl shadow-md"
-            >
-            
-
+              className="community-card group bg-blue-900 border border-blue-800 p-10 rounded-2xl shadow-md">
               <h3 className="text-2xl font-bold mb-3 text-blue-50">
                 {item.name}
               </h3>
 
               <p className="card-topic text-blue-200 text-base font-medium mb-8" style={{ transition: "color 0.25s ease" }}>
-                {item.members} active members
               </p>
               
             </div>

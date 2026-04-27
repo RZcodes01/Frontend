@@ -138,8 +138,8 @@ export default function CompanyStudentProfile({ studentId, onBack }) {
           { label: "Community Rank", value: s.communityRank ? `#${s.communityRank}` : "—", icon: Trophy, color: "text-amber-600", iconBg: "bg-amber-50" },
           { label: "Total Score", value: s.score || 0, icon: Award, color: "text-purple-600", iconBg: "bg-purple-50" },
           { label: "Submissions", value: s.submissions || 0, icon: Send, color: "text-emerald-600", iconBg: "bg-emerald-50" },
-          { label: "Acceptance Rate", value: `${s.acceptanceRate || 0}%`, icon: CheckCircle, color: "text-cyan-600", iconBg: "bg-cyan-50" },
-          { label: "In Community", value: s.totalInCommunity ? `of ${s.totalInCommunity}` : "—", icon: Zap, color: "text-orange-600", iconBg: "bg-orange-50" },
+          // { label: "Acceptance Rate", value: `${s.acceptanceRate || 0}%`, icon: CheckCircle, color: "text-cyan-600", iconBg: "bg-cyan-50" },
+          // { label: "In Community", value: s.totalInCommunity ? `of ${s.totalInCommunity}` : "—", icon: Zap, color: "text-orange-600", iconBg: "bg-orange-50" },
         ].map(({ label, value, icon: Icon, color, iconBg }) => (
           <div key={label} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-gray-300 transition-all group">
             <div className={`w-9 h-9 ${iconBg} rounded-lg flex items-center justify-center mb-2`}>
@@ -152,7 +152,7 @@ export default function CompanyStudentProfile({ studentId, onBack }) {
       </div>
 
       {/* Difficulty Breakdown */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
+      {/* <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
         <h3 className="text-gray-900 font-black text-lg mb-4 flex items-center gap-2">
           <BarChart3 size={18} className="text-blue-500" /> Problem Difficulty Breakdown
         </h3>
@@ -167,11 +167,11 @@ export default function CompanyStudentProfile({ studentId, onBack }) {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 border border-gray-200 rounded-xl p-1.5 mb-8 w-fit">
-        {["overview", "submissions", "progress"].map((tab) => (
+        {["overview", "submissions",].map((tab) => (
           <button key={tab} onClick={() => setActiveTab(tab)}
             className={`px-5 py-2.5 rounded-lg text-sm font-bold capitalize transition-all ${
               activeTab === tab ? "bg-blue-600 text-white shadow-sm" : "text-gray-500 hover:text-gray-900 hover:bg-white"
@@ -274,7 +274,7 @@ export default function CompanyStudentProfile({ studentId, onBack }) {
         </div>
       )}
 
-      {/* PROGRESS */}
+      {/* PROGRESS
       {activeTab === "progress" && (
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <h3 className="text-gray-900 font-black mb-6 flex items-center gap-2">
@@ -341,7 +341,7 @@ export default function CompanyStudentProfile({ studentId, onBack }) {
             </>
           )}
         </div>
-      )}
+      )}// */}
     </div>
   );
 }
