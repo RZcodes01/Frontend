@@ -93,6 +93,7 @@ export default function SingleCommunity() {
                 }
 
                 setCourse(community);
+                console.log("[DEBUG] community.price from API:", community?.price, typeof community?.price);
             } catch (error) {
                 console.error(error);
             } finally {
