@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { QRCodeSVG } from "qrcode.react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { getCertificateById } from "../api/certificate.api";
-import { Download, Share2, ArrowLeft, Loader2, Award } from "lucide-react";
+import { Download, Share2, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const CertificateView = () => {
@@ -47,21 +46,12 @@ const CertificateView = () => {
         backgroundColor: "#ffffff",
         logging: false,
         width: certRef.current.scrollWidth,
-        height: certRef.current.scrollHeight
+        height: certRef.current.scrollHeight,
       });
-
       const imgData = canvas.toDataURL("image/png", 1.0);
-
-      // A4 landscape
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "mm",
-        format: "a4"
-      });
-
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`certificate-${certificate.certificateId}.pdf`);
       toast.success("Certificate downloaded!");
@@ -85,7 +75,7 @@ const CertificateView = () => {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="w-10 h-10 border-3 border-white/10 border-t-cyan-500 rounded-full"
+          className="w-10 h-10 border-[3px] border-white/10 border-t-amber-400 rounded-full"
         />
       </div>
     );
@@ -103,12 +93,19 @@ const CertificateView = () => {
   const issuedDate = new Date(certificate.issuedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
-    day: "numeric"
+    day: "numeric",
   });
+
+  // Dynamic values
+  const studentName = certificate.userId?.name || "Student";
+  const communityName = certificate.communityName || certificate.courseName || "SkillConnect Community";
+  const courseName = certificate.courseName || "Course";
+  const certId = certificate.certificateId || "";
 
   return (
     <div className="min-h-screen bg-neutral-950 py-8 px-4">
-      {/* Top Actions */}
+
+      {/* ── Top Actions ── */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -150,7 +147,7 @@ const CertificateView = () => {
         </div>
       </motion.div>
 
-      {/* Certificate Template */}
+      {/* ── Certificate Card ── */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -162,110 +159,147 @@ const CertificateView = () => {
           className="relative bg-white rounded-2xl overflow-hidden shadow-2xl"
           style={{ aspectRatio: "297/210" }}
         >
-          {/* Certificate Inner Content */}
-          <div className="absolute inset-0 p-12 flex flex-col items-center justify-between">
-            {/* Watermark */}
-            <div
-              className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
-              aria-hidden="true"
+          {/* Watermark */}
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+            aria-hidden="true"
+          >
+            <p
+              className="font-black tracking-widest"
+              style={{
+                fontSize: "clamp(40px, 8vw, 100px)",
+                color: "rgba(0,0,0,0.025)",
+                transform: "rotate(-30deg)",
+                whiteSpace: "nowrap",
+              }}
             >
-              <p
-                className="text-[120px] font-black tracking-widest rotate-[-30deg]"
-                style={{ color: "rgba(0,0,0,0.03)" }}
-              >
-                SKILLCONNECT
-              </p>
+              SKILLCONNECT
+            </p>
+          </div>
+
+          {/* Decorative Borders */}
+          <div className="absolute inset-4 border-2 border-blue-200 rounded-xl pointer-events-none" />
+          <div className="absolute inset-6 border border-blue-100 rounded-lg pointer-events-none" />
+
+          {/* Corner Gradients */}
+          <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-blue-100 to-transparent rounded-br-full opacity-60 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-indigo-100 to-transparent rounded-bl-full opacity-60 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-50 to-transparent rounded-tr-full opacity-60 pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-indigo-50 to-transparent rounded-tl-full opacity-60 pointer-events-none" />
+
+          {/* Inner Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-between p-[4%_6%_3.5%]">
+
+            {/* Logo — same as Navbar */}
+            <div className="flex items-center gap-2.5 z-10">
+              <div className="w-11 h-11 rounded-xl bg-blue-950 flex items-center justify-center shadow-md flex-shrink-0">
+                <svg viewBox="0 0 100 100" className="w-7 h-7" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <polygon points="50,15 85,35 50,55 15,35" fill="#fbbf24" />
+                  <rect x="35" y="55" width="30" height="8" rx="4" fill="#fbbf24" />
+                  <line x1="70" y1="35" x2="78" y2="60" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
+                  <ellipse cx="78" cy="68" rx="8" ry="6" stroke="#fbbf24" strokeWidth="3" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="font-black leading-none" style={{ fontSize: "clamp(14px, 2.2vw, 22px)", letterSpacing: "-0.3px" }}>
+                  <span className="text-blue-950">Skill</span>
+                  <span className="text-amber-400">Connect</span>
+                </h1>
+                <p className="text-slate-400 uppercase tracking-widest" style={{ fontSize: "clamp(6px, 0.8vw, 9px)" }}>
+                  Academy
+                </p>
+              </div>
             </div>
 
-            {/* Decorative Border */}
-            <div className="absolute inset-4 border-2 border-blue-200 rounded-xl pointer-events-none" />
-            <div className="absolute inset-6 border border-blue-100 rounded-lg pointer-events-none" />
+            {/* Main Content */}
+            <div className="relative z-10 flex flex-col items-center text-center flex-1 justify-center w-full mt-[-1%]">
 
-            {/* Top Decorations */}
-            <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-blue-100 to-transparent rounded-br-full opacity-60" />
-            <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-indigo-100 to-transparent rounded-bl-full opacity-60" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-50 to-transparent rounded-tr-full opacity-60" />
-            <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-indigo-50 to-transparent rounded-tl-full opacity-60" />
-
-            {/* Content */}
-            <div className="relative z-10 flex flex-col items-center justify-center flex-1 text-center w-full">
-              {/* Logo */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-                  <Award size={26} className="text-white" />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs font-bold tracking-[0.25em] text-blue-500 uppercase">
-                    SkillConnect
-                  </p>
-                  <p className="text-[10px] text-slate-400 tracking-widest uppercase">
-                    Academy
-                  </p>
-                </div>
-              </div>
-
-              {/* Title */}
-              <h1
-                className="text-4xl font-black text-slate-800 tracking-tight mb-1"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              {/* Certificate of Completion */}
+              <h2
+                className="font-black text-slate-800 tracking-tight leading-tight mb-1"
+                style={{ fontFamily: "Georgia,'Times New Roman',serif", fontSize: "clamp(14px, 3vw, 26px)" }}
               >
                 Certificate of Completion
-              </h1>
-              <p className="text-sm text-slate-400 mb-6">This is to certify that</p>
-
-              {/* Recipient Name */}
-              <p
-                className="text-4xl font-black text-blue-700 mb-2"
-                style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
-              >
-                {certificate.userId?.name || "Student"}
+              </h2>
+              <p className="text-slate-400" style={{ fontSize: "clamp(7px, 1vw, 11px)", marginBottom: "6px" }}>
+                This is to certify that
               </p>
 
-              <p className="text-sm text-slate-500 mb-4">
+              {/* Divider */}
+              <div className="flex items-center gap-2 w-48 mb-2">
+                <div className="flex-1 h-px bg-blue-200" />
+                <div className="w-1.5 h-1.5 bg-blue-300 rotate-45 flex-shrink-0" />
+                <div className="flex-1 h-px bg-blue-200" />
+              </div>
+
+              {/* ── DYNAMIC: Student Name ── */}
+              <p
+                className="font-black text-blue-700 leading-tight"
+                style={{ fontFamily: "Georgia,'Times New Roman',serif", fontSize: "clamp(14px, 3vw, 26px)", marginBottom: "4px" }}
+              >
+                {studentName}
+              </p>
+
+              {/* Divider */}
+              <div className="flex items-center gap-2 w-48 mb-2">
+                <div className="flex-1 h-px bg-blue-200" />
+                <div className="w-1.5 h-1.5 bg-blue-300 rotate-45 flex-shrink-0" />
+                <div className="flex-1 h-px bg-blue-200" />
+              </div>
+
+              <p className="text-slate-500" style={{ fontSize: "clamp(7px, 1vw, 11px)", marginBottom: "6px" }}>
                 has successfully completed the course
               </p>
 
-              {/* Course Name Badge */}
-              <div className="inline-block px-8 py-2.5 bg-blue-600 text-white rounded-full font-bold text-base mb-6 shadow-lg shadow-blue-500/20">
-                {certificate.courseName}
+              {/* Course Badge */}
+              <div
+                className="inline-block bg-blue-600 text-white font-bold rounded-full shadow-lg shadow-blue-500/20"
+                style={{ fontSize: "clamp(8px, 1.2vw, 13px)", padding: "5px 20px", marginBottom: "6px" }}
+              >
+                {courseName}
               </div>
 
-              <p className="text-xs text-slate-400 max-w-md">
-                This certificate is awarded in recognition of successful completion of all
-                required projects and assessments in the community program.
+              <p className="text-slate-400" style={{ fontSize: "clamp(6px, 0.85vw, 10px)", maxWidth: "340px", lineHeight: 1.5 }}>
+                This certificate is awarded in recognition of successful completion of all required
+                projects and assessments in the community program.
               </p>
             </div>
 
-            {/* Bottom Section */}
-            <div className="relative z-10 w-full flex items-end justify-between px-8">
-              {/* Left - QR Code */}
-              {/* <div className="flex flex-col items-center">
-                <QRCodeSVG
-                  value={verifyUrl}
-                  size={72}
-                  bgColor="transparent"
-                  fgColor="#1e293b"
-                  level="M"
-                />
-                <p className="text-[9px] text-slate-400 mt-1">Scan to verify</p>
-              </div> */}
+            {/* ── Footer ── */}
+            <div className="relative z-10 w-full flex items-end justify-between px-[3%]">
 
-              {/* Center - Date */}
+              {/* Left: Seal */}
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className="rounded-full border-2 border-blue-600 flex items-center justify-center"
+                  style={{ width: "clamp(32px,4vw,48px)", height: "clamp(32px,4vw,48px)", background: "rgba(37,99,235,0.05)" }}
+                >
+                  <svg viewBox="0 0 100 100" style={{ width: "clamp(18px,2.5vw,28px)", height: "clamp(18px,2.5vw,28px)" }} fill="none">
+                    <polygon points="50,15 85,35 50,55 15,35" fill="#2563eb" />
+                    <rect x="35" y="55" width="30" height="8" rx="4" fill="#2563eb" />
+                    <line x1="70" y1="35" x2="78" y2="60" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
+                    <ellipse cx="78" cy="68" rx="8" ry="6" stroke="#2563eb" strokeWidth="3" />
+                  </svg>
+                </div>
+                <p className="text-slate-400 uppercase tracking-widest" style={{ fontSize: "clamp(5px,0.7vw,8px)" }}>Verified</p>
+              </div>
+
+              {/* Center: Date */}
               <div className="text-center">
-                <p className="text-sm font-bold text-slate-700">{issuedDate}</p>
-                <div className="w-28 h-px bg-slate-300 mx-auto mt-1 mb-1" />
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider">
+                <p className="font-bold text-slate-700" style={{ fontSize: "clamp(7px,1vw,11px)" }}>{issuedDate}</p>
+                <div className="w-24 h-px bg-slate-300 mx-auto my-1" />
+                <p className="text-slate-400 uppercase tracking-wider" style={{ fontSize: "clamp(5px,0.7vw,9px)" }}>
                   Date of Issue
                 </p>
               </div>
 
-              {/* Right - Certificate ID */}
+              {/* Right: Cert ID */}
               <div className="text-right">
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider">
+                <p className="text-slate-400 uppercase tracking-wider" style={{ fontSize: "clamp(5px,0.7vw,9px)" }}>
                   Certificate ID
                 </p>
-                <p className="text-xs font-mono text-slate-500 mt-0.5">
-                  {certificate.certificateId?.slice(0, 18)}
+                <p className="font-mono text-slate-500" style={{ fontSize: "clamp(6px,0.85vw,10px)", marginTop: "2px" }}>
+                  {certId.slice(0, 18)}
                 </p>
               </div>
             </div>
@@ -273,18 +307,36 @@ const CertificateView = () => {
         </div>
       </motion.div>
 
-      {/* Certificate ID Display */}
+      {/* ── DYNAMIC: Student Name & Community below certificate ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="max-w-5xl mx-auto mt-6 flex flex-col items-center gap-1"
+      >
+        {/* Student Name */}
+        <p className="text-white font-bold text-lg tracking-tight">
+          {studentName}
+        </p>
+
+        {/* Community Name */}
+        <div className="flex items-center gap-2">
+          <span className="w-4 h-px bg-neutral-600" />
+          <p className="text-neutral-400 text-sm font-medium">{communityName}</p>
+          <span className="w-4 h-px bg-neutral-600" />
+        </div>
+      </motion.div>
+
+      {/* ── Certificate Meta ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="max-w-5xl mx-auto mt-6 text-center"
+        transition={{ delay: 0.6 }}
+        className="max-w-5xl mx-auto mt-4 text-center"
       >
         <p className="text-xs text-neutral-600">
           Certificate ID:{" "}
-          <span className="font-mono text-neutral-400">
-            {certificate.certificateId}
-          </span>
+          <span className="font-mono text-neutral-400">{certId}</span>
         </p>
         <p className="text-xs text-neutral-600 mt-1">
           Verify at:{" "}

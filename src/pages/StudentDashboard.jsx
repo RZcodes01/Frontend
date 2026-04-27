@@ -21,307 +21,228 @@ import { useNavigate } from 'react-router-dom';
 import { fetchMyBatches, fetchMyCommunities, fetchMyProjects } from '../api/userDashboard.api';
 import { getMySubmissions } from '../api/submission.api';
 import { generateCertificate, getScore } from '../api/certificate.api';
-import { QRCodeSVG } from 'qrcode.react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { toast } from 'sonner';
 
-// ─── Certificate styles (injected once, no Tailwind) ──────────────────────────
+// ─── Certificate styles (injected once) ───────────────────────────────────────
 const CERT_FONT_URL =
   'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap';
 
-const CERT_COLORS = {
-  navy: '#0f2340',
-  navyMid: '#1b3c64',
-  gold: '#d4af6a',
-  goldLight: '#f0e6cc',
-  goldMuted: '#9a8060',
-  goldBorder: 'rgba(212,175,106,0.4)',
-  white: '#ffffff',
-  gray1: '#7a6a55',
-  gray2: '#b8a07a',
-};
-
-// ─── Corner SVG (pure geometry, no oklch) ─────────────────────────────────────
-function CertCorner({ flip }) {
-  const style = {
-    position: 'absolute',
-    width: 52,
-    height: 52,
-    ...(flip === 'tr' && { top: 8, right: 8, transform: 'scaleX(-1)' }),
-    ...(flip === 'tl' && { top: 8, left: 8 }),
-    ...(flip === 'bl' && { bottom: 8, left: 8, transform: 'scaleY(-1)' }),
-    ...(flip === 'br' && { bottom: 8, right: 8, transform: 'scale(-1)' }),
-  };
-  return (
-    <div style={style}>
-      <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" width="52" height="52">
-        <path d="M4 48 L4 8 Q4 4 8 4 L48 4" stroke={CERT_COLORS.gold} strokeWidth="1.5" fill="none" />
-        <circle cx="4" cy="4" r="3" fill={CERT_COLORS.gold} opacity="0.45" />
-        <circle cx="48" cy="4" r="1.5" fill={CERT_COLORS.gold} opacity="0.3" />
-        <circle cx="4" cy="48" r="1.5" fill={CERT_COLORS.gold} opacity="0.3" />
-        <path d="M18 4 L18 9 M32 4 L32 7 M4 18 L9 18 M4 32 L7 32"
-          stroke={CERT_COLORS.gold} strokeWidth="0.8" opacity="0.5" />
-      </svg>
-    </div>
-  );
-}
-
-// ─── Seal SVG ─────────────────────────────────────────────────────────────────
-function CertSeal() {
-  return (
-    <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="44" stroke={CERT_COLORS.gold} strokeWidth="0.8" strokeDasharray="4 3" fill="none" opacity="0.6" />
-      <circle cx="50" cy="50" r="36" fill={CERT_COLORS.navy} />
-      <circle cx="50" cy="50" r="33" stroke={CERT_COLORS.gold} strokeWidth="0.6" fill="none" opacity="0.5" />
-      <path d="M50 20L55 35H71L59 44L63 59L50 50L37 59L41 44L29 35H45L50 20Z"
-        fill={CERT_COLORS.gold} opacity="0.9" />
-      <text x="50" y="72" textAnchor="middle"
-        fontFamily="Lato, sans-serif" fontSize="6" fontWeight="700"
-        letterSpacing="2" fill={CERT_COLORS.gold} opacity="0.8">
-        VERIFIED
-      </text>
-    </svg>
-  );
-}
-
-// ─── The certificate template (all inline styles) ─────────────────────────────
+// ─── The certificate template (matching CertificateView.jsx design) ───────────
 function CertificateTemplate({ certRef, studentName, certificateData }) {
-  const months = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
-  const issued = new Date(certificateData.issuedAt);
-  const dateStr = `${months[issued.getMonth()]} ${issued.getDate()}, ${issued.getFullYear()}`;
+  const issuedDate = new Date(certificateData.issuedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const courseName = certificateData.courseName || "Course";
+  const certId = certificateData.certificateId || "";
 
   return (
     <div
       ref={certRef}
       style={{
         position: 'relative',
-        background: CERT_COLORS.white,
-        border: `1.5px solid ${CERT_COLORS.gold}`,
+        background: '#ffffff',
+        borderRadius: 16,
         overflow: 'hidden',
         width: '100%',
         aspectRatio: '297/210',
-        fontFamily: 'Lato, sans-serif',
         boxSizing: 'border-box',
       }}
     >
-      {/* Grid background */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage:
-          'linear-gradient(rgba(212,175,106,0.06) 1px, transparent 1px),' +
-          'linear-gradient(90deg, rgba(212,175,106,0.06) 1px, transparent 1px)',
-        backgroundSize: '32px 32px',
-      }} />
-
-      {/* Outer border */}
-      <div style={{
-        position: 'absolute', inset: 12,
-        border: `1.5px solid rgba(212,175,106,0.45)`,
-        pointerEvents: 'none', boxSizing: 'border-box',
-      }} />
-
-      {/* Inner border */}
-      <div style={{
-        position: 'absolute', inset: 18,
-        border: `0.5px solid rgba(212,175,106,0.22)`,
-        pointerEvents: 'none', boxSizing: 'border-box',
-      }} />
-
       {/* Watermark */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        pointerEvents: 'none', userSelect: 'none', zIndex: 1,
-      }}>
-        <p style={{
-          fontFamily: 'Playfair Display, serif',
-          fontSize: 88, fontWeight: 900,
-          color: 'rgba(27,60,100,0.025)',
-          transform: 'rotate(-25deg)',
-          whiteSpace: 'nowrap', letterSpacing: '0.1em', margin: 0,
-        }}>SKILLCONNECT</p>
+      <div
+        style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          pointerEvents: 'none', userSelect: 'none',
+        }}
+        aria-hidden="true"
+      >
+        <p
+          style={{
+            fontSize: 80, fontWeight: 900,
+            color: 'rgba(0,0,0,0.025)',
+            transform: 'rotate(-30deg)',
+            whiteSpace: 'nowrap',
+            letterSpacing: '0.15em',
+            margin: 0,
+          }}
+        >
+          SKILLCONNECT
+        </p>
       </div>
 
-      {/* Corners */}
-      <CertCorner flip="tl" />
-      <CertCorner flip="tr" />
-      <CertCorner flip="bl" />
-      <CertCorner flip="br" />
-
-      {/* Body */}
+      {/* Decorative Borders */}
       <div style={{
-        position: 'relative', zIndex: 2,
-        padding: '36px 52px 28px',
+        position: 'absolute', top: 16, left: 16, right: 16, bottom: 16,
+        border: '2px solid #bfdbfe', borderRadius: 12,
+        pointerEvents: 'none', boxSizing: 'border-box',
+      }} />
+      <div style={{
+        position: 'absolute', top: 24, left: 24, right: 24, bottom: 24,
+        border: '1px solid #dbeafe', borderRadius: 8,
+        pointerEvents: 'none', boxSizing: 'border-box',
+      }} />
+
+      {/* Corner Gradients */}
+      <div style={{ position: 'absolute', top: 0, left: 0, width: 160, height: 160, background: 'radial-gradient(circle at 0 0, #dbeafe 0%, transparent 70%)', opacity: 0.6, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: 0, right: 0, width: 160, height: 160, background: 'radial-gradient(circle at 100% 0, #e0e7ff 0%, transparent 70%)', opacity: 0.6, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, width: 128, height: 128, background: 'radial-gradient(circle at 0 100%, #eff6ff 0%, transparent 70%)', opacity: 0.6, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, right: 0, width: 128, height: 128, background: 'radial-gradient(circle at 100% 100%, #e0e7ff 0%, transparent 70%)', opacity: 0.6, pointerEvents: 'none' }} />
+
+      {/* Inner Content */}
+      <div style={{
+        position: 'absolute', inset: 0,
         display: 'flex', flexDirection: 'column',
-        alignItems: 'center', textAlign: 'center',
-        height: '100%', boxSizing: 'border-box',
+        alignItems: 'center', justifyContent: 'space-between',
+        padding: '4% 6% 3.5%',
+        boxSizing: 'border-box',
       }}>
 
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+        {/* Logo — same graduation cap as Navbar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, zIndex: 10 }}>
           <div style={{
-            width: 34, height: 34,
-            background: CERT_COLORS.navyMid,
-            borderRadius: 8,
+            width: 44, height: 44,
+            borderRadius: 12, background: '#172554',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
           }}>
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5L10 2Z"
-                fill={CERT_COLORS.gold} />
+            <svg viewBox="0 0 100 100" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="50,15 85,35 50,55 15,35" fill="#fbbf24" />
+              <rect x="35" y="55" width="30" height="8" rx="4" fill="#fbbf24" />
+              <line x1="70" y1="35" x2="78" y2="60" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
+              <ellipse cx="78" cy="68" rx="8" ry="6" stroke="#fbbf24" strokeWidth="3" />
             </svg>
           </div>
-          <div style={{ textAlign: 'left' }}>
-            <div style={{
-              fontFamily: 'Lato, sans-serif', fontSize: 12, fontWeight: 700,
-              letterSpacing: '0.18em', color: CERT_COLORS.navyMid,
-              textTransform: 'uppercase',
-            }}>SkillConnect</div>
-            <div style={{
-              fontFamily: 'Lato, sans-serif', fontSize: 8, fontWeight: 300,
-              letterSpacing: '0.22em', color: CERT_COLORS.goldMuted,
-              textTransform: 'uppercase',
-            }}>Academy of Excellence</div>
+          <div>
+            <div style={{ fontWeight: 900, fontSize: 20, lineHeight: 1, letterSpacing: '-0.3px' }}>
+              <span style={{ color: '#172554' }}>Skill</span>
+              <span style={{ color: '#fbbf24' }}>Connect</span>
+            </div>
+            <p style={{ fontSize: 8, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.25em', marginTop: 2 }}>
+              Academy
+            </p>
           </div>
         </div>
 
-        {/* Divider */}
+        {/* Main Content */}
         <div style={{
-          width: 72, height: 1.5, marginBottom: 14,
-          background: `linear-gradient(90deg, transparent, ${CERT_COLORS.gold}, transparent)`,
-        }} />
-
-        {/* Title line */}
-        <div style={{
-          fontFamily: 'Lato, sans-serif', fontSize: 10, fontWeight: 400,
-          letterSpacing: '0.35em', color: CERT_COLORS.goldMuted,
-          textTransform: 'uppercase', marginBottom: 4,
-        }}>Certificate of Completion</div>
-
-        {/* Headline */}
-        <div style={{
-          fontFamily: 'Playfair Display, serif', fontSize: 28, fontWeight: 900,
-          color: CERT_COLORS.navy, letterSpacing: '-0.01em',
-          lineHeight: 1.1, marginBottom: 14,
-        }}>Achievement Recognized</div>
-
-        {/* Certify text */}
-        <div style={{
-          fontFamily: 'Cormorant Garamond, serif', fontSize: 13,
-          fontStyle: 'italic', color: CERT_COLORS.gray1, marginBottom: 6,
-        }}>This is to proudly certify that</div>
-
-        {/* Student name */}
-        <div style={{
-          fontFamily: 'Playfair Display, serif', fontSize: 34, fontWeight: 700,
-          color: CERT_COLORS.navyMid, lineHeight: 1.15, marginBottom: 4,
-        }}>{studentName}</div>
-
-        {/* Name underline */}
-        <div style={{
-          width: 150, height: 1,
-          background: `linear-gradient(90deg, transparent, ${CERT_COLORS.gold} 30%, ${CERT_COLORS.gold} 70%, transparent)`,
-          marginBottom: 12,
-        }} />
-
-        {/* Completion text */}
-        <div style={{
-          fontFamily: 'Cormorant Garamond, serif', fontSize: 13,
-          fontStyle: 'italic', color: CERT_COLORS.gray1, marginBottom: 10,
-        }}>has successfully completed all requirements of the</div>
-
-        {/* Community badge */}
-        <div style={{
-          display: 'inline-block',
-          background: CERT_COLORS.navy,
-          color: CERT_COLORS.goldLight,
-          fontFamily: 'Lato, sans-serif', fontSize: 11, fontWeight: 700,
-          letterSpacing: '0.1em', textTransform: 'uppercase',
-          padding: '7px 24px', marginBottom: 12,
-          position: 'relative',
+          position: 'relative', zIndex: 10,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', textAlign: 'center',
+          flex: 1, justifyContent: 'center', width: '100%',
+          marginTop: '-1%',
         }}>
-          {certificateData.courseName}
-        </div>
 
-        {/* Description */}
-        <div style={{
-          fontFamily: 'Lato, sans-serif', fontSize: 9,
-          color: CERT_COLORS.goldMuted, letterSpacing: '0.05em',
-          maxWidth: 400, lineHeight: 1.7, marginBottom: 'auto',
-        }}>
-          Awarded in recognition of demonstrated excellence, project completion, and dedication
-          to mastering modern skills within the SkillConnect learning community.
+          {/* Certificate of Completion */}
+          <h2 style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: 24, fontWeight: 900,
+            color: '#1e293b', letterSpacing: '-0.3px',
+            lineHeight: 1.1, marginBottom: 4, marginTop: 0,
+          }}>
+            Certificate of Completion
+          </h2>
+          <p style={{ fontSize: 10, color: '#94a3b8', marginBottom: 6, marginTop: 0 }}>
+            This is to certify that
+          </p>
+
+          {/* Diamond divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: 192, marginBottom: 8 }}>
+            <div style={{ flex: 1, height: 1, background: '#bfdbfe' }} />
+            <div style={{ width: 6, height: 6, background: '#93c5fd', transform: 'rotate(45deg)', flexShrink: 0 }} />
+            <div style={{ flex: 1, height: 1, background: '#bfdbfe' }} />
+          </div>
+
+          {/* Student Name */}
+          <p style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontSize: 26, fontWeight: 900,
+            color: '#1d4ed8', lineHeight: 1.1,
+            marginBottom: 4, marginTop: 0,
+          }}>
+            {studentName}
+          </p>
+
+          {/* Diamond divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, width: 192, marginBottom: 8 }}>
+            <div style={{ flex: 1, height: 1, background: '#bfdbfe' }} />
+            <div style={{ width: 6, height: 6, background: '#93c5fd', transform: 'rotate(45deg)', flexShrink: 0 }} />
+            <div style={{ flex: 1, height: 1, background: '#bfdbfe' }} />
+          </div>
+
+          <p style={{ fontSize: 10, color: '#64748b', marginBottom: 6, marginTop: 0 }}>
+            has successfully completed the course
+          </p>
+
+          {/* Course Badge */}
+          <div style={{
+            display: 'inline-block',
+            background: '#2563eb', color: '#ffffff',
+            fontWeight: 700, fontSize: 12,
+            borderRadius: 999, padding: '5px 20px',
+            marginBottom: 6,
+          }}>
+            {courseName}
+          </div>
+
+          <p style={{
+            fontSize: 9, color: '#94a3b8',
+            maxWidth: 340, lineHeight: 1.5, marginTop: 0,
+          }}>
+            This certificate is awarded in recognition of successful completion of all required
+            projects and assessments in the community program.
+          </p>
         </div>
 
         {/* Footer */}
         <div style={{
+          position: 'relative', zIndex: 10,
           width: '100%',
-          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-          gap: 12,
-          borderTop: `1px solid rgba(212,175,106,0.3)`,
-          paddingTop: 14, marginTop: 10,
-          alignItems: 'center',
+          display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
+          padding: '0 3%',
+          boxSizing: 'border-box',
         }}>
 
-          {/* QR code */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
-            <QRCodeSVG
-              value={`${window.location.origin}/certificate/verify/${certificateData.certificateId}`}
-              size={48}
-              bgColor="transparent"
-              fgColor={CERT_COLORS.navy}
-              level="M"
-            />
-            <span style={{
-              fontFamily: 'Lato, sans-serif', fontSize: 7,
-              letterSpacing: '0.15em', textTransform: 'uppercase',
-              color: CERT_COLORS.gray2,
-            }}>Scan to verify</span>
-          </div>
-
-          {/* Seal center */}
+          {/* Left: Seal */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-            <CertSeal />
-            <span style={{
-              fontFamily: 'Lato, sans-serif', fontSize: 7,
-              letterSpacing: '0.2em', textTransform: 'uppercase',
-              color: CERT_COLORS.gray2,
-            }}>Official Seal</span>
-          </div>
-
-          {/* Date + ID */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{
-                fontFamily: 'Lato, sans-serif', fontSize: 7,
-                letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: CERT_COLORS.gray2, marginBottom: 2,
-              }}>Date of Issue</div>
-              <div style={{
-                fontFamily: 'Lato, sans-serif', fontSize: 10, fontWeight: 700,
-                color: CERT_COLORS.navyMid,
-              }}>{dateStr}</div>
-            </div>
             <div style={{
-              width: 80, height: 1,
-              background: `linear-gradient(90deg, transparent, ${CERT_COLORS.gold})`,
-            }} />
-            <div style={{ textAlign: 'right' }}>
-              <div style={{
-                fontFamily: 'Lato, sans-serif', fontSize: 7,
-                letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: CERT_COLORS.gray2, marginBottom: 2,
-              }}>Certificate ID</div>
-              <div style={{
-                fontFamily: 'Lato, sans-serif', fontSize: 8,
-                fontWeight: 400, letterSpacing: '0.08em',
-                color: CERT_COLORS.goldMuted, fontVariantNumeric: 'tabular-nums',
-              }}>{certificateData.certificateId?.slice(0, 20)}</div>
+              width: 44, height: 44,
+              borderRadius: '50%', border: '2px solid #2563eb',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(37,99,235,0.05)',
+            }}>
+              <svg viewBox="0 0 100 100" width="24" height="24" fill="none">
+                <polygon points="50,15 85,35 50,55 15,35" fill="#2563eb" />
+                <rect x="35" y="55" width="30" height="8" rx="4" fill="#2563eb" />
+                <line x1="70" y1="35" x2="78" y2="60" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
+                <ellipse cx="78" cy="68" rx="8" ry="6" stroke="#2563eb" strokeWidth="3" />
+              </svg>
             </div>
+            <p style={{ fontSize: 7, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.2em', margin: 0 }}>Verified</p>
           </div>
 
+          {/* Center: Date */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: 10, fontWeight: 700, color: '#334155', margin: 0 }}>{issuedDate}</p>
+            <div style={{ width: 96, height: 1, background: '#cbd5e1', margin: '4px auto' }} />
+            <p style={{ fontSize: 8, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.15em', margin: 0 }}>
+              Date of Issue
+            </p>
+          </div>
+
+          {/* Right: Cert ID */}
+          <div style={{ textAlign: 'right' }}>
+            <p style={{ fontSize: 8, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.15em', margin: 0 }}>
+              Certificate ID
+            </p>
+            <p style={{ fontSize: 9, fontFamily: 'monospace', color: '#64748b', marginTop: 2, marginBottom: 0 }}>
+              {certId.slice(0, 18)}
+            </p>
+          </div>
         </div>
       </div>
     </div>
