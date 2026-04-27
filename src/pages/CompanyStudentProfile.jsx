@@ -138,8 +138,8 @@ export default function CompanyStudentProfile({ studentId, onBack }) {
           { label: "Community Rank", value: s.communityRank ? `#${s.communityRank}` : "—", icon: Trophy, color: "text-amber-600", iconBg: "bg-amber-50" },
           { label: "Total Score", value: s.score || 0, icon: Award, color: "text-purple-600", iconBg: "bg-purple-50" },
           { label: "Submissions", value: s.submissions || 0, icon: Send, color: "text-emerald-600", iconBg: "bg-emerald-50" },
-          { label: "Acceptance Rate", value: `${s.acceptanceRate || 0}%`, icon: CheckCircle, color: "text-cyan-600", iconBg: "bg-cyan-50" },
-          { label: "In Community", value: s.totalInCommunity ? `of ${s.totalInCommunity}` : "—", icon: Zap, color: "text-orange-600", iconBg: "bg-orange-50" },
+          // { label: "Acceptance Rate", value: `${s.acceptanceRate || 0}%`, icon: CheckCircle, color: "text-cyan-600", iconBg: "bg-cyan-50" },
+          // { label: "In Community", value: s.totalInCommunity ? `of ${s.totalInCommunity}` : "—", icon: Zap, color: "text-orange-600", iconBg: "bg-orange-50" },
         ].map(({ label, value, icon: Icon, color, iconBg }) => (
           <div key={label} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-gray-300 transition-all group">
             <div className={`w-9 h-9 ${iconBg} rounded-lg flex items-center justify-center mb-2`}>
