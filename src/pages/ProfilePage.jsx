@@ -139,7 +139,7 @@ export default function StudentProfile() {
         </div>
 
         {/* Difficulty Breakdown */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
+        {/* <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8 shadow-sm">
           <h3 className="text-gray-900 font-black text-lg mb-4 flex items-center gap-2">
             <BarChart3 size={18} className="text-blue-500" /> Problem Difficulty Breakdown
           </h3>
@@ -154,7 +154,7 @@ export default function StudentProfile() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Tabs */}
         <div className="flex gap-1 bg-gray-100 border border-gray-200 rounded-xl p-1.5 mb-8 w-fit">
