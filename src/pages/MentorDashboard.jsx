@@ -233,14 +233,14 @@ export default function MentorDashboard() {
   };
 
   const handleBatchDelete = async (id) => {
-    if (!window.confirm("Delete this session?")) return;
+    if (!window.confirm("Delete this batch?")) return;
     const backup = batches;
     setBatches(prev => prev.filter(b => b._id !== id));
     try {
       await deleteBatch(id);
     } catch {
       setBatches(backup);
-      toast.error("Failed to delete session");
+      toast.error("Failed to delete batch");
     }
   };
 
@@ -283,7 +283,7 @@ export default function MentorDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard label="Communities" value={stats.totalCommunities} icon={MapPin} />
           <StatCard label="Total Students" value={stats.totalStudents} icon={Users} />
-          <StatCard label="Sessions" value={stats.upcomingSessions} icon={Video} />
+          <StatCard label="Batches" value={stats.upcomingSessions} icon={Video} />
         </div>
 
         {/* TABS */}
@@ -291,7 +291,7 @@ export default function MentorDashboard() {
           {[
             { id: "communities", label: "Projects" },
             { id: "my-communities", label: "Communities" },
-            { id: "sessions", label: "Sessions" },
+            { id: "batches", label: "Batches" },
             { id: "enrolled-users", label: "Enrolled Users", icon: UserCheck }
           ].map(tab => (
             <button
@@ -303,8 +303,8 @@ export default function MentorDashboard() {
                 }
               }}
               className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${activeTab === tab.id
-                  ? "bg-blue-900 text-white"
-                  : "bg-white border border-blue-200 text-blue-600 hover:border-amber-400"
+                ? "bg-blue-900 text-white"
+                : "bg-white border border-blue-200 text-blue-600 hover:border-amber-400"
                 }`}
             >
               {tab.icon && <tab.icon size={15} />}
@@ -401,16 +401,16 @@ export default function MentorDashboard() {
           </div>
         )}
 
-        {/* ================= SESSIONS TAB ================= */}
-        {activeTab === "sessions" && (
+        {/* ================= BATCHES TAB ================= */}
+        {activeTab === "batches" && (
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-blue-900 tracking-tight">Manage Sessions</h2>
+              <h2 className="text-xl font-bold text-blue-900 tracking-tight">Manage Batches</h2>
               <button
                 onClick={openBatchCreateModal}
                 className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
               >
-                <Plus size={16} /> Schedule Session
+                <Plus size={16} /> Schedule Batch
               </button>
             </div>
 
@@ -460,7 +460,7 @@ export default function MentorDashboard() {
                 ))}
                 {batches.length === 0 && (
                   <div className="text-blue-500 text-center py-10">
-                    No sessions scheduled.
+                    No batches scheduled.
                   </div>
                 )}
               </div>
@@ -720,7 +720,7 @@ export default function MentorDashboard() {
 
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-extrabold text-blue-900 tracking-tight">
-                {isBatchEdit ? "Edit Session" : "Schedule Session"}
+                {isBatchEdit ? "Edit Batch" : "Schedule Batch"}
               </h3>
               <button
                 onClick={() => setIsBatchModalOpen(false)}
@@ -733,7 +733,7 @@ export default function MentorDashboard() {
             <div className="space-y-4">
               <input
                 type="text"
-                placeholder="Session Name (e.g., Live Q&A)"
+                placeholder="Batch Name (e.g., Live Q&A)"
                 value={batchFormData.name}
                 onChange={e => setBatchFormData({ ...batchFormData, name: e.target.value })}
                 className="w-full p-3 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-900 placeholder-blue-300 outline-none focus:border-amber-400 transition-all"
