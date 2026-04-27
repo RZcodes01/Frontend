@@ -273,13 +273,22 @@ export default function Navbar() {
                         Company Dashboard
                       </Link>
                     ) : (
-                      <Link
-                        to="/dashboard"
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        Student Dashboard
-                      </Link>
+                      <>
+                        <Link
+                          to="/dashboard"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          Student Dashboard
+                        </Link>
+                        <Link
+                          to="/profile"
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-base text-blue-200 hover:bg-blue-800 hover:text-amber-400 transition-colors font-semibold"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <User size={16} /> My Profile
+                        </Link>
+                      </>
                     )}
 
                     <button
@@ -360,13 +369,22 @@ export default function Navbar() {
                       ADMIN DASHBOARD
                     </Link>
                   ) : (
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700"
-                    >
-                      STUDENT DASHBOARD
-                    </Link>
+                    <>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="w-full flex items-center justify-center py-3 px-4 bg-blue-800 text-blue-50 rounded-lg text-base font-bold border border-blue-700"
+                      >
+                        STUDENT DASHBOARD
+                      </Link>
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-800/50 text-blue-200 rounded-lg text-base font-bold border border-blue-700"
+                      >
+                        <User size={16} /> MY PROFILE
+                      </Link>
+                    </>
                   )}
 
                   <button
