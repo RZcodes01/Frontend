@@ -31,6 +31,7 @@ import VerifyOTP from "./pages/VerifyOTP";
 import CertificateGate from "./pages/CertificateGate";
 import CertificateView from "./pages/CertificateView";
 import CertificateVerify from "./pages/CertificateVerify";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function MainLayout() {
   return (
@@ -106,6 +107,7 @@ export default function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/register/mentor" element={<MentorRegister />} />
