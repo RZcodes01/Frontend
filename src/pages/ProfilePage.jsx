@@ -4,9 +4,7 @@ import {
   Trophy, Send, CheckCircle, Clock, BarChart3,
   Zap, Award, TrendingUp, Loader2, AlertCircle,
 } from "lucide-react";
-import { fetchStudentProfile } from "../api/companyDashboard.api";
-import { fetchMe } from "../api/user.api";
-
+import { fetchDetailedProfile } from "../api/user.api";
 
 function avatarUrl(name, profileImage) {
   if (profileImage) return profileImage;
@@ -22,7 +20,7 @@ export default function StudentProfile() {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetchMe()
+    fetchDetailedProfile()
       .then((res) => setStudent(res.data.user))
       .catch((err) => setError(err.response?.data?.message || "Failed to load profile"))
       .finally(() => setLoading(false));
