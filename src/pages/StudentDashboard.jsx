@@ -48,7 +48,7 @@ function CertificateTemplate({ certRef, studentName, certificateData }) {
         borderRadius: 16,
         overflow: 'hidden',
         width: '100%',
-        aspectRatio: '297/210',
+        aspectRatio: '297/180',
         boxSizing: 'border-box',
       }}
     >
@@ -572,15 +572,24 @@ export default function StudentDashboard() {
                         <ExternalLink size={14} />
                         View Full Page
                       </button>
-                      <button
-                        onClick={handleDownloadPDF}
-                        disabled={certDownloading}
-                        className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-md disabled:opacity-50"
-                      >
-                        {certDownloading
-                          ? <><Loader2 size={15} className="animate-spin" /> Generating PDF...</>
-                          : <><Download size={15} /> Download PDF</>}
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={handleCloseCertificate}
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold text-sm transition-colors"
+                        >
+                          <X size={15} />
+                          Close
+                        </button>
+                        <button
+                          onClick={handleDownloadPDF}
+                          disabled={certDownloading}
+                          className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-md disabled:opacity-50"
+                        >
+                          {certDownloading
+                            ? <><Loader2 size={15} className="animate-spin" /> Generating PDF...</>
+                            : <><Download size={15} /> Download PDF</>}
+                        </button>
+                      </div>
                     </div>
                   </>
 
