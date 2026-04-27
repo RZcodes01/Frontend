@@ -70,9 +70,9 @@ export default function ProjectDetail() {
   const isClosed = new Date(project.dueDate) < new Date();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-full bg-gray-50">
       {/* Navbar */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+      <nav className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center">
           <button
             onClick={() => navigate(-1)}
