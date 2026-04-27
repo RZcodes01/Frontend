@@ -80,7 +80,7 @@ const CommunityAdmin = () => {
     data.append('name', formData.name);
     data.append('description', formData.description);
     data.append('visibility', formData.visibility);
-    data.append('price', formData.price || 0);
+    data.append('price', formData.price);
     if (formData.banner) data.append('bannerImage', formData.banner);
 
     try {

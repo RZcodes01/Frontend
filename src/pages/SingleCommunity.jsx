@@ -36,7 +36,7 @@ export default function SingleCommunity() {
     const [userRole, setUserRole] = useState(null);
 
     // Use the admin-set price, default ₹5000
-    const price = course?.price || 5000;
+    const price = course?.price;
 
     const handleEnroll = async () => {
         try {
@@ -77,7 +77,7 @@ export default function SingleCommunity() {
         try {
             const storedUser = JSON.parse(localStorage.getItem("user"));
             if (storedUser?.role) setUserRole(storedUser.role);
-        } catch {}
+        } catch { }
     }, []);
 
     useEffect(() => {
@@ -258,45 +258,44 @@ export default function SingleCommunity() {
                         {course?.modules?.map((module, idx) => {
                             const isRestricted = userRole === "company" || userRole === "admin" || userRole === "mentor";
                             return (
-                            <div
-                                key={module._id}
-                                onClick={() => !isRestricted && navigate(`/community/${communityId}/module/${module._id}`)}
-                                className={`group bg-white rounded-[2rem] border-2 border-blue-500 transition-all p-6 md:p-8 relative overflow-hidden ${
-                                    isRestricted
+                                <div
+                                    key={module._id}
+                                    onClick={() => !isRestricted && navigate(`/community/${communityId}/module/${module._id}`)}
+                                    className={`group bg-white rounded-[2rem] border-2 border-blue-500 transition-all p-6 md:p-8 relative overflow-hidden ${isRestricted
                                         ? 'opacity-80'
                                         : 'hover:border-amber-400/60 hover:bg-blue-50 cursor-pointer'
-                                }`}
-                            >
-                                <div className="flex flex-col md:flex-row md:items-start gap-6 relative z-10">
-                                    <div className={`bg-blue-950 border border-blue-700 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-sm md:text-base font-black text-blue-400 ${!isRestricted ? 'group-hover:text-amber-400 group-hover:border-amber-400/30' : ''} transition-all`}>
-                                        {(idx + 1).toString().padStart(2, '0')}
-                                    </div>
-
-                                    <div className="flex-1">
-                                        <h3 className={`text-2xl md:text-3xl font-black text-blue-900 mb-2 ${!isRestricted ? 'group-hover:text-amber-500' : ''} transition-colors`}>
-                                            {module.title}
-                                        </h3>
-                                        <p className="text-blue-700 text-lg md:text-xl font-medium mb-6 leading-relaxed line-clamp-2">
-                                            {module.description}
-                                        </p>
-
-                                        <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-2 mb-2">
-                                            {module.topics?.map((topic, i) => (
-                                                <div key={i} className="flex items-center gap-2 text-blue-700">
-                                                    <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
-                                                    <span className="text-xs md:text-sm font-semibold uppercase tracking-wider">{topic}</span>
-                                                </div>
-                                            ))}
+                                        }`}
+                                >
+                                    <div className="flex flex-col md:flex-row md:items-start gap-6 relative z-10">
+                                        <div className={`bg-blue-950 border border-blue-700 w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0 text-sm md:text-base font-black text-blue-400 ${!isRestricted ? 'group-hover:text-amber-400 group-hover:border-amber-400/30' : ''} transition-all`}>
+                                            {(idx + 1).toString().padStart(2, '0')}
                                         </div>
 
-                                        {isRestricted && (
-                                            <p className="text-xs text-blue-400 mt-2 font-medium italic flex items-center gap-1">
-                                                <Lock size={12} /> Module content is view-only for your role
+                                        <div className="flex-1">
+                                            <h3 className={`text-2xl md:text-3xl font-black text-blue-900 mb-2 ${!isRestricted ? 'group-hover:text-amber-500' : ''} transition-colors`}>
+                                                {module.title}
+                                            </h3>
+                                            <p className="text-blue-700 text-lg md:text-xl font-medium mb-6 leading-relaxed line-clamp-2">
+                                                {module.description}
                                             </p>
-                                        )}
+
+                                            <div className="flex flex-wrap gap-x-4 md:gap-x-6 gap-y-2 mb-2">
+                                                {module.topics?.map((topic, i) => (
+                                                    <div key={i} className="flex items-center gap-2 text-blue-700">
+                                                        <div className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+                                                        <span className="text-xs md:text-sm font-semibold uppercase tracking-wider">{topic}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            {isRestricted && (
+                                                <p className="text-xs text-blue-400 mt-2 font-medium italic flex items-center gap-1">
+                                                    <Lock size={12} /> Module content is view-only for your role
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             );
                         })}
                     </div>
